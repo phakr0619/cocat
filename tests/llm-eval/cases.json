@@ -1,0 +1,264 @@
+{
+  "about": "言葉からスキームの評価の 26 件（2026-10-26 に転位・環化・ジアステレオマーの 6 件を足した）。expect.kind: scheme=正しいスキーム / ask=下書きを作らず聞き返す / flag=分からない構造を要確認にする。SMILES は RDKit で確かめた（立体は CIP で確認）",
+  "cases": [
+    {
+      "id": "amide-hatu",
+      "title": "アミドの縮合（口頭の書き方）",
+      "text": "Boc-Ala-OH と H-Gly-OMe を HATU (1.2 equiv), DIPEA (3 equiv) で DMF 中、室温 2 時間縮合して 3 を得た（85%）。",
+      "expect": {
+        "kind": "scheme",
+        "steps": [
+          {
+            "from": ["CC(C)(C)OC(=O)N[C@@H](C)C(=O)O", "NCC(=O)OC"],
+            "to": ["CC(C)(C)OC(=O)N[C@@H](C)C(=O)NCC(=O)OC"],
+            "reagents": ["HATU", "DIPEA"],
+            "solvent": "DMF",
+            "yield": 85
+          }
+        ]
+      }
+    },
+    {
+      "id": "boc-removal",
+      "title": "Boc の除去",
+      "text": "tert-butyl 4-(hydroxymethyl)piperidine-1-carboxylate を TFA/CH2Cl2 (1:4) で室温 1 時間処理し、脱 Boc 体を定量的に得た。",
+      "expect": {
+        "kind": "scheme",
+        "steps": [{ "from": ["CC(C)(C)OC(=O)N1CCC(CO)CC1"], "to": ["OCC1CCNCC1"], "reagents": ["TFA"] }]
+      }
+    },
+    {
+      "id": "suzuki",
+      "title": "鈴木カップリング",
+      "text": "4-ブロモアニソールとフェニルボロン酸 (1.2 equiv) を Pd(PPh3)4 (5 mol%), K2CO3 (2 equiv) 存在下、トルエン/EtOH/H2O 中 80 °C で 12 時間反応させ、4-メトキシビフェニルを 92% で得た。",
+      "expect": {
+        "kind": "scheme",
+        "steps": [
+          {
+            "from": ["COc1ccc(Br)cc1", "OB(O)c1ccccc1"],
+            "to": ["COc1ccc(-c2ccccc2)cc1"],
+            "reagents": ["Pd(PPh3)4", "K2CO3"],
+            "temp": "80",
+            "yield": 92
+          }
+        ]
+      }
+    },
+    {
+      "id": "reductive-amination",
+      "title": "還元的アミノ化",
+      "text": "ベンズアルデヒドとモルホリンを NaBH(OAc)3 で DCE 中、室温で一晩反応させた。",
+      "expect": {
+        "kind": "scheme",
+        "steps": [{ "from": ["O=Cc1ccccc1", "C1COCCN1"], "to": ["C(c1ccccc1)N1CCOCC1"], "reagents": ["NaBH(OAc)3"] }]
+      }
+    },
+    {
+      "id": "ester-hydrolysis",
+      "title": "エステルの加水分解",
+      "text": "methyl 4-nitrobenzoate was hydrolyzed with LiOH (3 equiv) in THF/H2O at rt for 3 h to give 4-nitrobenzoic acid (95%).",
+      "expect": {
+        "kind": "scheme",
+        "steps": [
+          {
+            "from": ["COC(=O)c1ccc([N+](=O)[O-])cc1"],
+            "to": ["OC(=O)c1ccc([N+](=O)[O-])cc1"],
+            "reagents": ["LiOH"],
+            "yield": 95
+          }
+        ]
+      }
+    },
+    {
+      "id": "nitro-reduction",
+      "title": "ニトロ基の還元",
+      "text": "4-ニトロアニソールを H2 (1 atm), 10% Pd/C, MeOH 中で室温で還元し、p-アニシジンとした。",
+      "expect": {
+        "kind": "scheme",
+        "steps": [{ "from": ["COc1ccc([N+](=O)[O-])cc1"], "to": ["COc1ccc(N)cc1"], "reagents": ["Pd/C"], "solvent": "MeOH" }]
+      }
+    },
+    {
+      "id": "dmp-oxidation",
+      "title": "アルコールの酸化",
+      "text": "シクロヘキシルメタノールを Dess–Martin periodinane (1.2 equiv) で CH2Cl2 中、0 °C から室温で 1 時間酸化してアルデヒドにした。",
+      "expect": {
+        "kind": "scheme",
+        "steps": [{ "from": ["OCC1CCCCC1"], "to": ["O=CC1CCCCC1"], "solvent": "CH2Cl2" }]
+      }
+    },
+    {
+      "id": "grignard",
+      "title": "Grignard 付加",
+      "text": "ベンズアルデヒドに MeMgBr (1.5 equiv) を THF 中 0 °C で加え、1-フェニルエタノールを得た（88%）。",
+      "expect": {
+        "kind": "scheme",
+        "steps": [{ "from": ["O=Cc1ccccc1"], "to": ["CC(O)c1ccccc1"], "reagents": ["MeMgBr"], "solvent": "THF", "yield": 88 }]
+      }
+    },
+    {
+      "id": "wittig",
+      "title": "Wittig 反応",
+      "text": "Ph3PCH3Br を THF 中 n-BuLi で処理してイリドとし、シクロヘキサノンを加えてメチレンシクロヘキサンを得た。",
+      "expect": {
+        "kind": "scheme",
+        "steps": [{ "from": ["O=C1CCCCC1"], "to": ["C=C1CCCCC1"] }]
+      }
+    },
+    {
+      "id": "conjugate-addition",
+      "title": "共役付加（条件なし）",
+      "text": "シクロヘキセノンに N-メチルピロールを共役付加させた。",
+      "expect": {
+        "kind": "scheme",
+        "steps": [{ "from": ["O=C1C=CCCC1", "Cn1cccc1"], "to": ["Cn1cccc1C1CCCC(=O)C1"] }]
+      }
+    },
+    {
+      "id": "mitsunobu",
+      "title": "光延反応（立体の反転）",
+      "text": "(R)-1-フェニルエタノールと 4-ニトロ安息香酸を PPh3, DIAD で THF 中、0 °C から室温で反応させ、立体の反転したエステルを得た。",
+      "expect": {
+        "kind": "scheme",
+        "steps": [
+          {
+            "from": ["C[C@@H](O)c1ccccc1", "OC(=O)c1ccc([N+](=O)[O-])cc1"],
+            "to": ["C[C@H](OC(=O)c1ccc([N+](=O)[O-])cc1)c1ccccc1"],
+            "reagents": ["PPh3", "DIAD"]
+          }
+        ]
+      }
+    },
+    {
+      "id": "benzylation",
+      "title": "O-ベンジル化",
+      "text": "4-hydroxybenzaldehyde (1.0 equiv), benzyl bromide (1.1 equiv), K2CO3 (2.0 equiv), DMF, 60 °C, 4 h → 4-(benzyloxy)benzaldehyde, 90%.",
+      "expect": {
+        "kind": "scheme",
+        "steps": [
+          {
+            "from": ["O=Cc1ccc(O)cc1", "BrCc1ccccc1"],
+            "to": ["O=Cc1ccc(OCc2ccccc2)cc1"],
+            "reagents": ["K2CO3"],
+            "solvent": "DMF",
+            "temp": "60",
+            "yield": 90
+          }
+        ]
+      }
+    },
+    {
+      "id": "boc-protection",
+      "title": "Boc の保護（L-アミノ酸）",
+      "text": "L-フェニルアラニンメチルエステル塩酸塩を Boc2O (1.1 equiv), Et3N (2.5 equiv) で CH2Cl2 中、室温で Boc 保護した。",
+      "expect": {
+        "kind": "scheme",
+        "steps": [
+          {
+            "from": ["N[C@@H](Cc1ccccc1)C(=O)OC"],
+            "to": ["CC(C)(C)OC(=O)N[C@@H](Cc1ccccc1)C(=O)OC"],
+            "reagents": ["Boc2O", "Et3N"]
+          }
+        ]
+      }
+    },
+    {
+      "id": "three-steps",
+      "title": "3 段の合成",
+      "text": "4-ブロモ安息香酸を MeOH 中 H2SO4 (cat.) で還流してメチルエステル (1) とした。1 を 3-ピリジルボロン酸, Pd(dppf)Cl2, Na2CO3 で dioxane/H2O 中 90 °C でカップリングして 2 とし、最後に 2 を LiAlH4 で THF 中 0 °C で還元してアルコール 3 を得た。",
+      "expect": {
+        "kind": "scheme",
+        "steps": [
+          { "from": ["OC(=O)c1ccc(Br)cc1"], "to": ["COC(=O)c1ccc(Br)cc1"], "solvent": "MeOH" },
+          { "from": ["COC(=O)c1ccc(Br)cc1", "OB(O)c1cccnc1"], "to": ["COC(=O)c1ccc(-c2cccnc2)cc1"], "reagents": ["Pd(dppf)Cl2", "Na2CO3"] },
+          { "from": ["COC(=O)c1ccc(-c2cccnc2)cc1"], "to": ["OCc1ccc(-c2cccnc2)cc1"], "reagents": ["LiAlH4"], "solvent": "THF" }
+        ]
+      }
+    },
+    {
+      "id": "existing-number",
+      "title": "番号で今のスキームの化合物を指す",
+      "text": "5 を NaBH4 (1.5 equiv) で MeOH 中 0 °C で還元して 6 を得た（91%）。",
+      "existing": [{ "key": "c5", "number": "5", "smiles": "CC(=O)c1ccc(-c2ccccc2)cc1" }],
+      "expect": {
+        "kind": "scheme",
+        "steps": [{ "from": ["CC(=O)c1ccc(-c2ccccc2)cc1"], "to": ["CC(O)c1ccc(-c2ccccc2)cc1"], "reagents": ["NaBH4"], "solvent": "MeOH", "yield": 91 }]
+      }
+    },
+    {
+      "id": "experimental-en",
+      "title": "論文の実験項（英語）",
+      "text": "To a solution of 2-aminopyridine (1.0 equiv) in CH2Cl2 at 0 °C were added Et3N (1.5 equiv) and acetyl chloride (1.2 equiv). The mixture was stirred at rt for 3 h to afford N-(pyridin-2-yl)acetamide (78%).",
+      "expect": {
+        "kind": "scheme",
+        "steps": [{ "from": ["Nc1ccccn1"], "to": ["CC(=O)Nc1ccccn1"], "reagents": ["Et3N"], "solvent": "CH2Cl2", "yield": 78 }]
+      }
+    },
+    {
+      "id": "click",
+      "title": "Huisgen 環化（click）",
+      "text": "ベンジルアジドとフェニルアセチレンを CuSO4·5H2O (5 mol%), アスコルビン酸ナトリウム (10 mol%) で t-BuOH/H2O 中、室温で反応させ、1,4-二置換トリアゾールを得た。",
+      "expect": {
+        "kind": "scheme",
+        "steps": [{ "from": ["[N-]=[N+]=NCc1ccccc1", "C#Cc1ccccc1"], "to": ["c1ccc(Cn2cc(-c3ccccc3)nn2)cc1"] }]
+      }
+    },
+    {
+      "id": "buchwald",
+      "title": "Buchwald–Hartwig アミノ化",
+      "text": "4-クロロトルエンとモルホリンを Pd2(dba)3 (2 mol%), XPhos (4 mol%), NaOtBu (1.4 equiv) でトルエン中 100 °C で反応させた。",
+      "expect": {
+        "kind": "scheme",
+        "steps": [{ "from": ["Cc1ccc(Cl)cc1", "C1COCCN1"], "to": ["Cc1ccc(N2CCOCC2)cc1"], "reagents": ["Pd2(dba)3", "XPhos", "NaOtBu"], "temp": "100" }]
+      }
+    },
+    {
+      "id": "ask-total-synthesis",
+      "title": "手順の無い文章（全合成の名前だけ）",
+      "text": "Calyciphylline F の全合成スキーム",
+      "expect": { "kind": "ask" }
+    },
+    {
+      "id": "flag-code-names",
+      "title": "社内のコード名（構造が分からない）",
+      "text": "ABC-123 を TFA/CH2Cl2 で脱 Boc して ABC-124 を得た。",
+      "expect": { "kind": "flag" }
+    },
+    {
+      "id": "claisen",
+      "title": "Claisen 転位（骨格の組み替え）",
+      "text": "アリルフェニルエーテルを 200 °C で 3 時間加熱し、Claisen 転位で 2-アリルフェノールを得た（82%）。",
+      "expect": { "kind": "scheme", "steps": [{ "from": ["C=CCOc1ccccc1"], "to": ["C=CCc1ccccc1O"], "temp": "200", "yield": 82 }] }
+    },
+    {
+      "id": "beckmann",
+      "title": "Beckmann 転位（環の拡大）",
+      "text": "シクロヘキサノンオキシムを濃硫酸中 100 °C で Beckmann 転位させ、ε-カプロラクタムを得た。",
+      "expect": { "kind": "scheme", "steps": [{ "from": ["ON=C1CCCCC1"], "to": ["O=C1CCCCCN1"], "reagents": ["H2SO4"] }] }
+    },
+    {
+      "id": "dieckmann",
+      "title": "Dieckmann 縮合（環化）",
+      "text": "アジピン酸ジエチルを NaOEt (1.1 equiv) でトルエン中加熱還流し、Dieckmann 縮合で 2-オキソシクロペンタンカルボン酸エチルを得た。",
+      "expect": { "kind": "scheme", "steps": [{ "from": ["CCOC(=O)CCCCC(=O)OCC"], "to": ["CCOC(=O)C1CCCC1=O"], "reagents": ["NaOEt"] }] }
+    },
+    {
+      "id": "intramolecular-fc",
+      "title": "分子内 Friedel–Crafts アシル化（環化）",
+      "text": "4-フェニル酪酸をポリリン酸 (PPA) 中 90 °C で加熱し、分子内 Friedel–Crafts アシル化で 1-テトラロンを得た。",
+      "expect": { "kind": "scheme", "steps": [{ "from": ["OC(=O)CCCc1ccccc1"], "to": ["O=C1CCCc2ccccc12"], "reagents": ["PPA"], "temp": "90" }] }
+    },
+    {
+      "id": "reduction-diastereomers",
+      "title": "還元でジアステレオマーの混合物（立体を決めない）",
+      "text": "4-tert-ブチルシクロヘキサノンを NaBH4 (1.0 equiv) でメタノール中 0 °C で還元し、4-tert-ブチルシクロヘキサノールを cis/trans の混合物として得た（95%）。",
+      "expect": { "kind": "scheme", "steps": [{ "from": ["CC(C)(C)C1CCC(=O)CC1"], "to": ["CC(C)(C)C1CCC(O)CC1"], "reagents": ["NaBH4"], "yield": 95 }] }
+    },
+    {
+      "id": "aldol-diastereomers",
+      "title": "アルドールでジアステレオマーの混合物（立体を決めない）",
+      "text": "シクロヘキサノンを LDA で THF 中 −78 °C でエノラートにし、ベンズアルデヒドを加えて、アルドール付加体をジアステレオマーの混合物として得た。",
+      "expect": { "kind": "scheme", "steps": [{ "from": ["O=C1CCCCC1", "O=Cc1ccccc1"], "to": ["O=C1CCCCC1C(O)c1ccccc1"], "reagents": ["LDA"], "solvent": "THF" }] }
+    }
+  ]
+}

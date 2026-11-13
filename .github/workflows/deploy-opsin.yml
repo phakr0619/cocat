@@ -1,0 +1,61 @@
+name: Deploy OPSIN
+
+# 名前 → 構造の OPSIN（server/opsin）を Lambda へ上げる（docs/opsin-server.md）。
+# main で server/opsin を変えたマージで動く。Lambda は先に Terraform（infra/opsin.tf）で作っておく。手でも動かせる（Run workflow）
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'server/opsin/**'
+      - '.github/workflows/deploy-opsin.yml'
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+concurrency:
+  group: deploy-opsin
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      FUNCTION_NAME: ${{ vars.OPSIN_FUNCTION_NAME || 'ai-chem-editor-opsin' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - name: jar を作る
+        working-directory: server/opsin
+        run: mvn -B -q package
+      - name: 手元で 1 つ変換してみる
+        run: printf 'ethanol\n' | java -jar server/opsin/target/opsin-lambda.jar | grep -q '"smiles":"C(C)O"'
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ap-northeast-1
+      - name: Lambda の中身を入れ替える
+        run: |
+          aws lambda update-function-code --function-name "$FUNCTION_NAME" --zip-file fileb://server/opsin/target/opsin-lambda.jar >/dev/null
+          aws lambda wait function-updated-v2 --function-name "$FUNCTION_NAME"
+      # 公開したサイトの /api/opsin を、ブラウザと同じ形（本文のハッシュを添えた POST）で呼んで確かめる
+      - name: 公開したサイトで確かめる
+        env:
+          SITE_URL: ${{ vars.SITE_URL }}
+        run: |
+          if [ -z "$SITE_URL" ]; then
+            echo "::error::リポジトリの Variables に SITE_URL（terraform output site_url の値）を入れてください"
+            exit 1
+          fi
+          body='(2S)-2-aminopropanoic acid'
+          hash=$(printf '%s' "$body" | sha256sum | cut -d' ' -f1)
+          out=$(curl -sS --fail-with-body -X POST "$SITE_URL/api/opsin" -H 'content-type: text/plain; charset=utf-8' -H "x-amz-content-sha256: $hash" --data-binary "$body")
+          echo "$out"
+          echo "$out" | grep -q '"status":"SUCCESS"'

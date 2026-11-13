@@ -1,0 +1,567 @@
+<title>Cocat ガイド</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+JP:wght@400;500;700&family=Zen+Kaku+Gothic+New:wght@700;900&display=swap">
+<style>
+/* レイアウト: 実験ノートのような1段組みの本文と、広い画面では左に固定の目次。図は ACS の線画をそのまま白い紙の上に置く */
+:root {
+  --paper: #f6f7f9;
+  --sheet: #ffffff;
+  --ink: #1b2330;
+  --ink-soft: #4d5a6b;
+  --rule: #d9dee6;
+  --accent: #1f5fbf;
+  --accent-soft: #e6eefb;
+  --ok: #1d7a46;
+  --ok-soft: #e3f3ea;
+  --warn: #9a5b00;
+  --warn-soft: #fbf0dc;
+  --figure-bg: #ffffff;
+  --font-display: "Zen Kaku Gothic New", "Hiragino Sans", "Noto Sans JP", sans-serif;
+  --font-body: "IBM Plex Sans JP", "Hiragino Sans", "Noto Sans JP", "Yu Gothic", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #12161d; --sheet: #1a2029; --ink: #e4e8ee; --ink-soft: #a3adbb; --rule: #2e3644;
+    --accent: #7fb0ff; --accent-soft: #1d2d47; --ok: #6fd39b; --ok-soft: #173326; --warn: #f0b45c; --warn-soft: #3a2c14;
+    --figure-bg: #ffffff; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #12161d; --sheet: #1a2029; --ink: #e4e8ee; --ink-soft: #a3adbb; --rule: #2e3644;
+  --accent: #7fb0ff; --accent-soft: #1d2d47; --ok: #6fd39b; --ok-soft: #173326; --warn: #f0b45c; --warn-soft: #3a2c14;
+  --figure-bg: #ffffff; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--paper); color: var(--ink);
+  font-family: var(--font-body); font-size: 15px; line-height: 1.8;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0;
+}
+a { color: var(--accent); }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.shell { max-width: 1120px; margin: 0 auto; display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 48px; padding-block: 40px 80px; }
+nav.toc { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 24px); align-self: start; font-size: 13px; line-height: 1.6; }
+nav.toc p { font-family: var(--font-display); font-weight: 700; letter-spacing: 0.08em; color: var(--ink-soft); margin: 0 0 8px; font-size: 12px; }
+nav.toc ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+nav.toc a { color: var(--ink-soft); text-decoration: none; display: block; padding: 3px 10px; border-left: 2px solid var(--rule); }
+nav.toc a:hover { color: var(--accent); border-left-color: var(--accent); }
+main { min-width: 0; }
+header.hero { border-bottom: 1px solid var(--rule); padding-bottom: 28px; margin-bottom: 8px; }
+.eyebrow { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.06em; color: var(--accent); margin: 0 0 10px; }
+h1 { font-family: var(--font-display); font-weight: 900; font-size: clamp(30px, 5vw, 44px); line-height: 1.25; margin: 0 0 14px; text-wrap: balance; }
+.lead { font-size: 16px; color: var(--ink-soft); max-width: 62ch; margin: 0; }
+.facts { display: flex; flex-wrap: wrap; gap: 8px 20px; margin: 18px 0 0; padding: 0; list-style: none; font-size: 13px; color: var(--ink-soft); }
+.facts b { color: var(--ink); font-weight: 500; }
+section { padding-top: 40px; }
+h2 { font-family: var(--font-display); font-weight: 700; font-size: 24px; line-height: 1.4; margin: 0 0 6px; text-wrap: balance; }
+h2 .num { font-family: var(--font-mono); font-weight: 500; font-size: 14px; color: var(--accent); margin-right: 10px; vertical-align: 3px; }
+h3 { font-size: 17px; margin: 28px 0 6px; }
+p { max-width: 66ch; margin: 0 0 12px; }
+.sub { color: var(--ink-soft); margin-bottom: 18px; }
+figure { margin: 14px 0 20px; }
+figure .plate { background: var(--figure-bg); border: 1px solid var(--rule); border-radius: 6px; padding: 14px; overflow-x: auto; }
+figure img { display: block; max-width: 100%; height: auto; margin: 0 auto; }
+figure.wide img { width: 100%; }
+figcaption { font-size: 13px; color: var(--ink-soft); margin-top: 6px; }
+.pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+.pair figure { margin: 0; }
+.steps { margin: 0 0 14px; padding-left: 1.4em; max-width: 66ch; }
+.steps li { margin: 4px 0; }
+kbd { font-family: var(--font-mono); font-size: 12.5px; padding: 1px 6px; border: 1px solid var(--rule); border-bottom-width: 2px; border-radius: 4px; background: var(--sheet); white-space: nowrap; }
+code { font-family: var(--font-mono); font-size: 13px; background: var(--accent-soft); padding: 1px 5px; border-radius: 3px; overflow-wrap: anywhere; }
+.table-wrap { overflow-x: auto; margin: 10px 0 18px; border: 1px solid var(--rule); border-radius: 6px; background: var(--sheet); }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+tr:last-child td { border-bottom: none; }
+th { font-weight: 500; color: var(--ink-soft); font-size: 12.5px; letter-spacing: 0.03em; background: var(--paper); }
+td.n { font-family: var(--font-mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.chip { display: inline-block; font-size: 12px; font-weight: 500; padding: 1px 9px; border-radius: 999px; white-space: nowrap; }
+.chip.ok { color: var(--ok); background: var(--ok-soft); }
+.chip.warn { color: var(--warn); background: var(--warn-soft); }
+.note { border-left: 3px solid var(--warn); background: var(--warn-soft); padding: 10px 14px; border-radius: 0 6px 6px 0; max-width: 72ch; font-size: 14px; margin: 12px 0; }
+.note p { margin: 0; }
+.cmd { font-family: var(--font-mono); font-size: 13px; background: var(--sheet); border: 1px solid var(--rule); border-radius: 6px; padding: 10px 14px; overflow-x: auto; white-space: pre; margin: 8px 0 16px; }
+ul.plain { padding-left: 1.2em; max-width: 66ch; margin: 0 0 12px; }
+ul.plain li { margin: 3px 0; }
+footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule); font-size: 13px; color: var(--ink-soft); }
+@media (max-width: 860px) {
+  .shell { grid-template-columns: minmax(0, 1fr); gap: 0; padding-block: 24px 60px; }
+  nav.toc { position: static; margin-bottom: 8px; }
+  nav.toc ol { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+}
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+</style>
+
+<div class="shell">
+  <nav class="toc" aria-label="目次">
+    <p>目次</p>
+    <ol>
+      <li><a href="#start">はじめに</a></li>
+      <li><a href="#screen">画面の構成</a></li>
+      <li><a href="#bonds">結合と鎖</a></li>
+      <li><a href="#atoms">原子ラベル・略号</a></li>
+      <li><a href="#rings">環テンプレート</a></li>
+      <li><a href="#edit">選択と編集</a></li>
+      <li><a href="#scheme">反応スキーム</a></li>
+      <li><a href="#scheme-data">スキームのデータと書式</a></li>
+      <li><a href="#tables">検討表</a></li>
+      <li><a href="#project">プロジェクト</a></li>
+      <li><a href="#clean">Clean Structure・整列</a></li>
+      <li><a href="#analysis">分析</a></li>
+      <li><a href="#io">読み込みと書き出し</a></li>
+      <li><a href="#keys">ショートカット</a></li>
+      <li><a href="#style">表示のスタイル</a></li>
+      <li><a href="#results">完了条件の結果</a></li>
+      <li><a href="#limits">既知の課題</a></li>
+      <li><a href="#beta">公開（ベータ）</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <header class="hero">
+      <p class="eyebrow">ai-chem-editor · Phase 1 ＋ M0〜M2 · 2026-10-23</p>
+      <h1>Cocat ガイド</h1>
+      <p class="lead">ChemDraw に近い操作で構造式と反応スキームを描き、SMILES・MOL・CDXML でやり取りできる Web のエディタです。反応スキームと検討表はデータとして持つので、書式を切り替えて描き直せます。描いたものはプロジェクトに書き溜められます。このガイドでは、できることを画面の写真つきでひと通り説明します。</p>
+      <ul class="facts">
+        <li><b>描画</b> SVG を自前で組み立て</li>
+        <li><b>化学の計算</b> RDKit.js</li>
+        <li><b>PDF を開く</b> pdf.js（Apache-2.0。端末の中で開く）</li>
+        <li><b>表示</b> ACS Document 1996</li>
+        <li><b>テスト</b> 単体 141・E2E 51・CDXML 検証 27</li>
+      </ul>
+    </header>
+
+    <section id="start">
+      <h2><span class="num">00</span>はじめに</h2>
+      <p>手元のパソコンで動かします。Node.js を入れたうえで、リポジトリのフォルダで次を実行し、表示された <code>http://localhost:5173</code> をブラウザで開きます。</p>
+      <div class="cmd">npm install
+npm run dev</div>
+      <p>開くと RDKit（化学の計算部分、約 7MB）を読み込み、白いキャンバスが出ます。左のツールを選んでキャンバスをクリックすれば、すぐ描けます。何ができるかを先に見たいときは、上のバーの「ファイル」→「見本を開く」から、アスピリン・タキソール・Boc カップリング・3段のスキーム・条件検討の表・SAR の表を開けます（元に戻すで前の図に戻ります）。</p>
+      <p>描いた内容はブラウザに自動で保存され、ページを開き直すと続きから描けます。ファイルとして残すときは、上のバーの「ファイル」→「保存」（<kbd>Ctrl</kbd>+<kbd>S</kbd>）で <code>.acedoc</code> の文書として保存し、「開く…」（<kbd>Ctrl</kbd>+<kbd>O</kbd>）で開き直します。「新規」は元に戻すで取り消せます。</p>
+      <p>表示はホイールか右ボタンのドラッグ（スペース＋ドラッグ・中ボタンのドラッグでも）で動かし、<kbd>Ctrl</kbd>＋ホイールでカーソルの位置を中心に拡大・縮小します。</p>
+    </section>
+
+    <section id="screen">
+      <h2><span class="num">01</span>画面の構成</h2>
+      <figure class="wide">
+        <div class="plate"><img src="img/overview.png" alt="エディタの全体の画面。左からツール、ライブラリの列、キャンバス、右の欄" width="1650" height="900"></div>
+        <figcaption>見本の Boc カップリングを開き、アスピリンをライブラリに登録したところ。右の欄は SMILES・反応スキーム・検討表・分析・読み込みと書き出しの順に並びます。</figcaption>
+      </figure>
+      <div class="table-wrap"><table>
+        <thead><tr><th>場所</th><th>内容</th></tr></thead>
+        <tbody>
+          <tr><td>上のバー</td><td>メニュー（ファイル: 新規・開く・保存・読み込みと書き出し・見本 / 編集: 切り取り・コピー・貼り付け・反転 / 整える: Clean Structure・整列・略号の展開と縮約 / 設定: AI・図・ページ・略号の辞書 / ヘルプ: キーの操作・このツールについて）、元に戻す・やり直す、拡大・縮小（10% まで縮小できる）、全体を表示（<kbd>Shift</kbd>+<kbd>1</kbd>。拡大率の数字を押しても同じ）、名前から置く、AI で作る（API キーを入れたときだけ）</td></tr>
+          <tr><td>左のツール</td><td>選択（矩形・投げ縄・消しゴム）、結合（くさびの実線と破線は同じ行に並びます）、環（ベンゼンが先頭。芳香環・雛形も）、図形（四角・円・かっこ・線）、機構（電子の動きの矢印・ローンペア・ラジカル・部分電荷）、反応（矢印・＋・文字）。グループの見出し（▾・▸）を押すと、そのグループを畳む・開きます。見出しをドラッグ（<kbd>Alt</kbd>+<kbd>↑</kbd><kbd>↓</kbd>）するとグループの並びを変えられ、列の右の縁をドラッグすると幅を変えられます（広げると道具の列が増えます。ダブルクリックで元の幅）。はじめは図形と機構を畳んでいます。畳んだ状態はブラウザが覚えます。畳んだグループの道具を選んでいるときは、見出しの右にその道具の絵を青く出します</td></tr>
+          <tr><td>ライブラリの列</td><td>プロジェクトの化合物・図・表・部品。キャンバスの左の縁の「▸ ライブラリ」のつまみで開閉します（はじめは閉じています。<a href="#project">プロジェクト</a>）</td></tr>
+          <tr><td>中央</td><td>キャンバス。カーソルの下の原子・結合はオレンジ、選択中は青で示します。価数を超えた原子は赤い枠で示します</td></tr>
+          <tr><td>右の欄</td><td>何も選んでいないときは「この文書」で、「＋ 反応スキーム」「＋ 検討表」と、文書の中のスキーム・検討表・分子の一覧を出します。一覧を押すか、キャンバスで選ぶと、その欄（スキーム・検討表・分子）になります。「← この文書」で戻ります。何も描いていないときは、キャンバスの真ん中に「描く」「見本を開く」「文章や図から作る」の入口を出します。分子と矢印を描くと、キャンバスの上に「スキームにする」を出します。</td></tr>
+          <tr><td>AI</td><td>設定のメニューの「AI の設定」で API キーを入れると、上のバーに「AI で作る」が出て、スキームの欄に「AI で」（言葉で直す・実験項を書く・投稿の形に整える）が出ます。下書きで確かめてほしい所のある化合物には、キャンバスの上に橙の印が付き、押すとその化合物を選びます。AI が作った下書き・答えには、間違っていることがあるという注意がいつも付きます（アプリの確かめを通っても正しいとは限りません。元の図や文章と見比べてから確定してください）。PDF の図が画像として貼られていて解像度が低いときは、さらに警告を出します。論文の PDF から作るときは、SI の PDF も足せます（「SI の PDF を足す」。2 本まとめて選んでもよく、取り違えたら「本文と入れ替える」）。図を読んだ後に、本文・SI から図の化合物番号の段落を探して文字を読み、図に無い条件・収率を補って出所（「SI p.12 から」）を出し、図と食い違えば図の値のまま要確認にします。系統名は OPSIN で構造にして図の構造と比べ、違えば「名前の構造にする」で置き換えられます。送った段落は下書きの「送った文字を見る・外す」で見られ、外して補い直せます。本文・SI から補った条件も、元の論文と見比べてください</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="bonds">
+      <h2><span class="num">02</span>結合と鎖</h2>
+      <p class="sub">結合ツールは6種類。どれも同じ操作で描けます。</p>
+      <figure>
+        <div class="plate"><img src="img/bonds.png" alt="単結合・二重結合・三重結合・くさび（実線）・くさび（破線）・波線" width="470" height="70"></div>
+        <figcaption>左から 単・二重・三重・くさび（実線）・くさび（破線）・波線。</figcaption>
+      </figure>
+      <div class="table-wrap"><table>
+        <thead><tr><th>操作</th><th>結果</th></tr></thead>
+        <tbody>
+          <tr><td>何もない所をクリック</td><td>右上 30° に結合が1本できます</td></tr>
+          <tr><td>原子をクリック</td><td>空いている向きに1本伸びます。鎖の末端なら 120° のジグザグに続きます。既存の原子とぶつかる向きは避けます</td></tr>
+          <tr><td>ドラッグ</td><td>30° 刻みの向きに描けます。離した位置が原子の近くなら、その原子につながります（環を閉じるときなど）</td></tr>
+          <tr><td>既存の結合をクリック</td><td>単結合ツールでは 単→二→三→単。二重結合ツールでは線の位置を 自動→中央→右→左。同じくさびでクリックすると向きが反転します</td></tr>
+        </tbody>
+      </table></div>
+      <p>二重結合の2本目の線は、環の中では環の内側に、鎖では置換基の多い側に自動で置きます。C=O のように片方が末端のときは中央に置きます。</p>
+      <p>結合の道具には、ほかに太い結合・点線の結合・配位結合（矢印の形。M→L）もあります。配位結合は構造（SMILES・Molfile）には入れず、図にだけ描きます。</p>
+      <h3>鎖ツール</h3>
+      <p>ドラッグした長さぶんのジグザグ鎖を一度に描きます。ドラッグ中は、何本の結合になるかを数字で示します。</p>
+      <figure>
+        <div class="plate"><img src="img/chain.png" alt="7本の結合のジグザグ鎖" width="270" height="75"></div>
+      </figure>
+    </section>
+
+    <section id="atoms">
+      <h2><span class="num">03</span>原子ラベル・略号</h2>
+      <p class="sub">原子にカーソルを合わせてキーを押すだけで、元素や電荷を変えられます。水素は自動で付きます。</p>
+      <p>ラベルには置換基の記号 R・R1・R2・R'・Ar・X も入れられます。R1 は R¹ と描き、SMILES では * になります（SAR の表の母核や部品のつなぐ点に使います）。</p>
+      <figure>
+        <div class="plate"><img src="img/labels.png" alt="H2N と OH、NH3+ と O-、MeO2C と Boc のラベル" width="657" height="117"></div>
+        <figcaption>水素は結合の無い側に付きます（左端は H<sub>2</sub>N、右端は OH）。略号も向きで書き方が変わります（左端は MeO<sub>2</sub>C）。</figcaption>
+      </figure>
+      <div class="table-wrap"><table>
+        <thead><tr><th>キー（原子に合わせて）</th><th>結果</th></tr></thead>
+        <tbody>
+          <tr><td><kbd>C</kbd> <kbd>N</kbd> <kbd>O</kbd> <kbd>S</kbd> <kbd>F</kbd> <kbd>P</kbd> <kbd>I</kbd> <kbd>H</kbd></td><td>その元素</td></tr>
+          <tr><td><kbd>L</kbd> / <kbd>B</kbd></td><td>Cl / Br</td></tr>
+          <tr><td><kbd>M</kbd> / <kbd>E</kbd></td><td>Me / Et（略号）</td></tr>
+          <tr><td><kbd>+</kbd> / <kbd>-</kbd></td><td>電荷を1つ増やす / 減らす</td></tr>
+          <tr><td><kbd>Enter</kbd> かダブルクリック</td><td>ラベルの入力欄を開く。<code>NH2</code> <code>OH</code> <code>N+</code> <code>O-</code> <code>OMe</code> <code>Boc</code> <code>CO2Me</code> などを入力できます。<code>13C</code> <code>D</code> と書くと同位体になります</td></tr>
+        </tbody>
+      </table></div>
+      <h3>略号（49種）</h3>
+      <p><code>Me</code> <code>Et</code> <code>Pr</code> <code>iPr</code> <code>Bu</code> <code>tBu</code> <code>Ph</code> <code>Bn</code> <code>Bz</code> <code>Ac</code> <code>Piv</code> <code>Boc</code> <code>Cbz</code> <code>Fmoc</code> <code>PMB</code> <code>TMS</code> <code>TBS</code> <code>TIPS</code> <code>Ts</code> <code>Ms</code> <code>Tf</code> <code>OMe</code> <code>OAc</code> <code>CO2Me</code> <code>CO2Et</code> <code>CO2H</code> <code>CN</code> <code>NO2</code> <code>CF3</code> <code>OTf</code> <code>OTs</code> <code>OMs</code> <code>OBn</code> <code>OTBS</code> <code>NHBoc</code> <code>NHCbz</code> <code>MOM</code> <code>SEM</code> <code>THP</code> <code>Tr</code> <code>Alloc</code> <code>Troc</code> <code>Ns</code> <code>TES</code> <code>TBDPS</code> <code>Bpin</code> <code>Cy</code> <code>Tol</code> <code>Mes</code></p>
+      <p>上のバーの「整える」→「略号を展開」で本来の構造に展開でき、「略号に縮約」で元に戻せます。SMILES などに書き出すときは、自動で展開して扱います。</p>
+    </section>
+
+    <section id="rings">
+      <h2><span class="num">04</span>環テンプレート</h2>
+      <figure>
+        <div class="plate"><img src="img/rings.png" alt="3員環から8員環、ベンゼン、椅子形シクロヘキサン" width="962" height="125"></div>
+        <figcaption>3〜8員環、ベンゼン、椅子形シクロヘキサン。</figcaption>
+      </figure>
+      <div class="table-wrap"><table>
+        <thead><tr><th>クリックする場所</th><th>結果</th></tr></thead>
+        <tbody>
+          <tr><td>何もない所</td><td>その位置に環を置きます</td></tr>
+          <tr><td>結合</td><td>その結合を共有して縮環します。原子の少ない側（環の外側）に置きます。ベンゼンは二重結合が隣り合わないように置きます</td></tr>
+          <tr><td>原子</td><td>その原子を共有する環になります（鎖の末端なら置換基、環の原子ならスピロ環）</td></tr>
+        </tbody>
+      </table></div>
+      <p>押したまま動かすと、置く向きを変えられます。何もない所では押した所を中心に環が回り、原子からは環を出す向き、結合からは縮環する側が変わります。角度は 15° 刻みで、<kbd>Alt</kbd> を押しながら動かすと自由な角度になります。</p>
+      <figure>
+        <div class="plate"><img src="img/fused.png" alt="ベンゼン2つとシクロペンタンの縮環、シクロヘキサンとシクロブタンのスピロ環" width="437" height="187"></div>
+        <figcaption>結合をクリックして縮環（左）、原子をクリックしてスピロ環（右）。</figcaption>
+      </figure>
+      <h3>雛形</h3>
+      <p>環の道具の下の「芳香環・雛形」から、芳香環（ベンゼン・ナフタレン・ピリジン・ピロール・フラン・チオフェン・インドール・キノリンなど 17 種。はじめに開くタブ）・アミノ酸（L 体の20種）・糖（D 体）・核酸塩基・よく使う骨格（ステロイド・ピペリジン・モルホリンなど）を選び、クリックした所に置けます。</p>
+      <h3>略号のラベルと略号の辞書</h3>
+      <ul>
+        <li><b>組み合わせのラベル</b>: 原子のラベルに、標準の略号のほか、<code>NHFmoc</code>・<code>OPMB</code>・<code>N(Boc)2</code> のような「原子＋略号」、<code>CH2OH</code>・<code>CO2tBu</code>・<code>SO2Ph</code> のような縮約式、<code>BF3K</code>・<code>CO2Na</code> のような塩を書けます。左向きの書き方（<code>HOH2C</code>・<code>FmocHN</code>）も読みます。読み方は決まった規則だけで、AI は使いません</li>
+        <li><b>書き出し</b>: CDX・CDXML には、どの略号も中身の構造を入れます（ChemDraw が辞書で読めない略号でも、構造が入ります）</li>
+        <li><b>ChemDraw のファイルの抜け</b>: ChemDraw で構造が埋め込まれなかったラベル（文字だけのもの）は、開くときにラベルから構造を補い、「構造の抜けていたラベル n 個を補いました」と知らせます。読めないラベルは赤い枠で示します。補ったファイルを書き出し直すと、構造の入った CDX になります</li>
+        <li><b>略号の辞書</b>: 「整える」→「略号の辞書…」で、標準の略号を構造の絵つきで見られ、「ラベルを試す」で書き方がどう読まれるかを確かめられます。自分の略号は、名前と SMILES（結合する所を <code>*</code>）で足すか、結合する所を R にした置換基を描いて選び「選んだ構造から」で足します。自分の略号はブラウザが覚え、使った文書にも入ります</li>
+      </ul>
+      <h3>塩と rac・rel</h3>
+      <ul>
+        <li><b>塩をラベルで書く</b>: アミンの N のラベルに <code>NH2Cl</code>・<code>NH3Br</code>・<code>NH·HCl</code> のように入れると、塩酸塩・臭化水素酸塩として扱います（図は書いたとおり）。<code>NH2Cl</code> の形は陽イオンと Cl⁻、<code>NH·HCl</code> の形は中性のアミンと HCl として SMILES・分子量に入ります。水素の数がその N に合わない書き方は知らせます（1 級アミンの塩は <code>NH3Cl</code>）</li>
+        <li><b>塩としてまとめる</b>: 酸と塩基（光学分割のキラルアミンの塩など）を選んで「整える」→「塩としてまとめる」で、1 つの化合物になります。分析・スキーム・ライブラリで 1 つに扱い、ダブルクリックで塩全体を選びます。「まとまりを解く」で戻ります。<code>C[NH3+].[Cl-]</code> のように電荷が打ち消し合う SMILES は、読み込むと 1 つの塩になります</li>
+        <li><b>rac・rel</b>: 不斉中心（くさびの細い側）か分子を選んで「整える」→「立体の表し方」で、絶対配置（abs）・ラセミ（rac）・相対配置（rel）を選びます。分子の中心がすべて同じ組なら分子の下に rac・rel、一部だけなら中心ごとに &amp;1・or1 を出します。SMILES（CXSMILES の <code>|&amp;1:…|</code>）・MOL（V3000）・CDXML・CDX に入ります</li>
+      </ul>
+    </section>
+
+    <section id="edit">
+      <h2><span class="num">05</span>選択と編集</h2>
+      <div class="pair">
+        <div>
+          <ul class="plain">
+            <li>矩形選択・投げ縄選択でドラッグして範囲を選びます。<kbd>Shift</kbd> で追加</li>
+            <li>原子・結合のクリックで1つ選択、ダブルクリックで分子全体</li>
+            <li>選んだ物のドラッグで移動。原子を別の原子に重ねると1つにまとまります</li>
+            <li>枠の上の丸いハンドルをドラッグして回転（<kbd>Shift</kbd> で 15° 刻み）</li>
+            <li>左右・上下の反転、削除、切り取り・コピー・貼り付け</li>
+            <li>消しゴムツールで、クリックした物を消す</li>
+          </ul>
+        </div>
+        <figure>
+          <div class="plate"><img src="img/select.png" alt="アスピリンを選択し、回転のハンドルが出ている" width="252" height="265"></div>
+          <figcaption>選択中は枠と回転のハンドルが出ます。</figcaption>
+        </figure>
+      </div>
+      <h3>反応機構の記号・図形・書式</h3>
+      <div class="table-wrap"><table>
+        <thead><tr><th>道具・メニュー</th><th>できること</th></tr></thead>
+        <tbody>
+          <tr><td>左の「反応」</td><td>反応・平衡・逆合成のほか、共鳴（⟷）・点線・「進まない」（×印）の矢印</td></tr>
+          <tr><td>左の「機構」</td><td>曲がった矢印（電子 2 個・1 個）。原子から原子・結合へドラッグして描き、クリックで曲がりの向きを変え、ドラッグで形を変えます。原子に非共有電子対・ラジカル・δ+／δ− を付けられます</td></tr>
+          <tr><td>左の「図形」</td><td>四角・楕円・線・括弧（[ ]・( )・{ }）。括弧の道具で分子をクリックすると、その分子を括弧で囲みます</td></tr>
+          <tr><td>文字の書式</td><td>新しい文字は「化学式」が入っていて、英字のあとの数字を下付きにします（CH2Cl2 → CH<sub>2</sub>Cl<sub>2</sub>。「2 h」のような空白のあとの数字はそのまま）。入力欄の下のボタンで、下付き・上付き・斜体を入れられます。書き方は <code>Pd^{2+}</code>（上付き）・<code>k_{obs}</code>（下付き）・<code>*t*-BuOK</code>（斜体）・<code>**1a**</code>（太字）</td></tr>
+          <tr><td>「色」のメニュー</td><td>選んだ物の色を変えます</td></tr>
+          <tr><td>「ファイル」→「図の設定…」</td><td>文書全体の線の太さと文字の大きさ（論文用・発表用などの組み合わせ）</td></tr>
+        </tbody>
+      </table></div>
+      <p>どれも CDXML・CDX に入り、ChemDraw で開くと同じ記号になります。</p>
+    </section>
+
+    <section id="scheme">
+      <h2><span class="num">06</span>反応スキーム</h2>
+      <figure>
+        <div class="plate"><img src="img/arrows.png" alt="通常の矢印、平衡の矢印、逆合成の矢印" width="470" height="50"></div>
+        <figcaption>左から 通常・平衡・逆合成。クリックで決まった長さ、ドラッグで向きと長さを決めて置きます。既存の矢印をクリックすると種類が変わります。</figcaption>
+      </figure>
+      <p>反応物と生成物は、矢印の左右の位置で自動で判断します。矢印の上下に置いた文字や分子は、反応条件として扱います。＋記号は「＋」ツールで置きます。</p>
+      <figure class="wide">
+        <div class="plate"><img src="img/scheme.png" alt="Boc-Ala-OH と H-Gly-OMe から Boc-Ala-Gly-OMe への縮合。矢印の上に EDC, HOBt、下に DMF, rt" width="843" height="309"></div>
+        <figcaption>Boc 保護アミノ酸の縮合。この状態で、右上の SMILES 欄には「反応物&gt;&gt;生成物」の反応 SMILES が出ます。</figcaption>
+      </figure>
+    </section>
+
+    <section id="scheme-data">
+      <h2><span class="num">07</span>スキームのデータと書式</h2>
+      <p class="sub">反応スキームを「絵」ではなく、化合物と段（反応）のデータとして持ちます。書式を選ぶと、同じ中身から描き直します。</p>
+      <h3>作り方</h3>
+      <ul class="plain">
+        <li>右の欄の「＋ 反応スキーム」の「名前や SMILES から作る」で、段ごとに基質・試薬・条件・生成物を入れて「スキームにする」。名前は手元の辞書と OPSIN で構造にします（AI は使いません）。空の欄と読めない名前は枠になり、キャンバスに分子を描いて選び、化合物の「選んだ分子にする」で埋められます</li>
+        <li>分子を選んで、右の欄の「＋ 反応スキーム」の「選んだ分子からスキームを始める」。続けて「＋基質」（カップリングの相手）、「選んだ分子を生成物にして段を足す」で段を重ねます</li>
+        <li>描いてある反応式（分子・矢印・条件の文字）は「描いた反応式をスキームにする」でデータにできます。条件の文字は試薬・溶媒・温度・時間・収率に振り分けます</li>
+        <li>分子をドラッグして、スキームの矢印（その段の基質）や右端（次の段の生成物）へ入れることもできます</li>
+        <li>段ごとに 試薬（当量は括弧で）・溶媒・温度・時間・収率・ノート番号 を入れます。化合物には番号（「12」「3a」「ABC-123-01」など自由。無くてもよい）と呼び名を付けられ、「番号を振る」で出てくる順に 1, 2, 3… を振ります</li>
+        <li>キャンバスで分子を直すと、化合物のデータも直り、描き直されます。スキームを丸ごと動かすと置き場所が変わります</li>
+        <li>「スキームを複製」で、化合物を共有したまま条件だけ変えた反応を作れます（番号や構造を直すと両方に反映）</li>
+        <li>「固定する」で、そのスキームを今の形で固定します。ほかのスキームと共有する化合物の番号・構造や書式を後で直しても、固定した図は変わりません（発表やノートに使った図を守るとき）。固定中は欄の入力を触れなくなり、「固定を外す」で今の中身で描き直します。固定した図は、言葉での「直す」と「仕上げ」の対象に入りません</li>
+        <li>欄の「化合物」には、構造の小さな絵が付きます。どの化合物の番号・呼び名かが分かります</li>
+      </ul>
+      <figure class="wide">
+        <div class="plate"><img src="img/scheme-multistep.png" alt="3段のスキーム。縮合、Boc の除去、けん化。条件は矢印の上下、番号は分子の下" width="630" height="347"></div>
+        <figcaption>見本の「3段のスキーム」（ACS の書式）。幅に入らない段は次の行へ折り返し、番号は行ごとに高さをそろえます。</figcaption>
+      </figure>
+      <figure class="wide">
+        <div class="plate"><img src="img/scheme-footnote.png" alt="同じスキームを脚注の書式で描いたもの。矢印には a, b, c、下に Reagents and conditions" width="786" height="417"></div>
+        <figcaption>書式を「脚注」に切り替えたところ。中身は同じで、条件は図の下の Reagents and conditions にまとまります。</figcaption>
+      </figure>
+      <h3>書式</h3>
+      <p>プリセットは ACS（条件を矢印の上下）・脚注（Reagents and conditions）・研究室のメモ（呼び名・ノート番号つき）の3つです。「書式を編集」で、条件の置き場所・当量と収率の書き方・収率の位置・段の記号（a, b / i, ii）・区切り・幅・番号の太字・呼び名・ノート番号を変えられ、「自分のテンプレート」としてブラウザに保存できます。</p>
+      <p>行の幅に入らないスキームは折り返します。「行の折り返し位置」で、矢印の後と化合物の後のどちらで折り返すかを選びます。両方を選ぶと、入る所まで詰めて並べます。「A + B」のように＋でつないだ化合物の途中では折り返しません。ページの設定があるときは、行の幅をページに合わせ、ページの右端の少し内側で折り返します。</p>
+      <h3>化学量論表</h3>
+      <div class="pair">
+        <figure>
+          <div class="plate"><img src="img/scheme-step.png" alt="段の入力欄と化学量論表" width="293" height="384"></div>
+          <figcaption>段の入力欄と化学量論表。</figcaption>
+        </figure>
+        <div>
+          <p>段ごとの「化学量論表」で、最初の基質の量（mg か mmol）を入れると、当量から各試薬の mmol・mg・µL（密度があれば）と生成物の理論収量を出します。よく使う試薬約 50 種の分子量と密度を持っていて、表の上で直すこともできます。「表をコピー」で Excel に貼れる形（タブ区切り）になります。</p>
+          <p>スキームのデータがあれば、折り返した図でも、反応 SMILES と CDXML の段（<code>&lt;step&gt;</code>）はデータの順と中身で書き出します。</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="tables">
+      <h2><span class="num">08</span>検討表</h2>
+      <p class="sub">条件検討や SAR の表を、論文の Table の体裁（題・罫線3本・注）で描きます。表の上には共通の反応式か母核を置きます。</p>
+      <figure class="wide">
+        <div class="plate"><img src="img/table-conditions.png" alt="条件検討の表。上に反応式、下に entry・reagent・solvent・temp・time・workup・purification・yield の表" width="695" height="318"></div>
+        <figcaption>見本の「条件検討の表」。表の上の反応式はスキームのデータなので、番号や構造を直すと表の上も直ります。</figcaption>
+      </figure>
+      <ul class="plain">
+        <li><b>条件検討の表</b>: スキームがあれば、その反応式を表の上に描きます。列は 試薬（当量）・溶媒・温度・時間・後処理・精製・収率</li>
+        <li><b>SAR の表</b>: 原子のラベルに R1・R2 を付けた分子を選んで作ると、それを母核として表の上に描きます。置換基の列に <code>*c1ccc(OC)cc1</code> のように * でつなぐ点を示した SMILES を入れると構造で描き、<code>Ph</code>・<code>4-ClC6H4</code> のような文字はそのまま化学式の書き方で描きます</li>
+        <li>列は種類つきで足し・消し・並べ替えでき、見出し・単位・注の記号（a, b…）を直せます。表の下の注は1行に1つ書きます</li>
+        <li>セルの終わりに <code>^b</code> と書くと、表の下の注 b を指す記号（ᵇ）を付けます（<code>85^b</code>、いくつかなら <code>rt^a,c</code>）。行から反応式を作るときは、記号を外して写します</li>
+        <li>行は左端のつまみ（⠿）のドラッグか、右端の ↑↓ で並べ替えます</li>
+        <li>「Excel から貼り付け」で、Excel の範囲をそのまま行として入れられます。1行目が見出しなら見出しで列を合わせます。「コピー」でタブ区切り、「CSV」で Excel で開けるファイル、「Excel」で .xlsx（題と見出しは太字、数は数として入ります）になります</li>
+        <li>行の「→式」で、その行の条件を入れた反応式を表の下に作ります（「最良の条件でスキームへ」）</li>
+        <li>表を丸ごとドラッグすると、反応式ごと動きます。SAR の母核をキャンバスで直すと、表の母核のデータも直ります</li>
+      </ul>
+      <div class="pair">
+        <figure>
+          <div class="plate"><img src="img/table-sar.png" alt="SAR の表。上に R1・R2 を持つ母核、表の R1 の列に置換基の構造" width="663" height="525"></div>
+          <figcaption>見本の「SAR の表」。R1 の列は SMILES から構造で描き、つなぐ点は波線で示します。</figcaption>
+        </figure>
+        <figure>
+          <div class="plate"><img src="img/table-panel.png" alt="右の欄の検討表の入力" width="319" height="450"></div>
+          <figcaption>右の欄の検討表の入力。セルは Enter かフォーカスが外れたときに確定します。</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section id="project">
+      <h2><span class="num">09</span>プロジェクト（ライブラリ・部品・図・表）</h2>
+      <p class="sub">キャンバスの左の列に、プロジェクトごとの化合物・図・検討表・部品を書き溜めます。保存先はこのブラウザの中（IndexedDB）で、PC の外には出ません。</p>
+      <div class="pair">
+        <figure>
+          <div class="plate"><img src="img/library.png" alt="ライブラリの列。化合物の一覧と、番号・呼び名の入力" width="250" height="480"></div>
+          <figcaption>化合物のライブラリ。</figcaption>
+        </figure>
+        <figure>
+          <div class="plate"><img src="img/parts.png" alt="部品の一覧。Boc と Cbz" width="250" height="360"></div>
+          <figcaption>部品のパレット。R がつなぐ点です。</figcaption>
+        </figure>
+      </div>
+      <ul class="plain">
+        <li><b>化合物</b>: キャンバスの分子を選んで「選んだ分子を登録」。描き方が違っても同じ構造（InChIKey が同じ）なら知らせて、「登録済みのものにつなぐ」か「別の化合物として登録」かを選べます。番号（無くてよい）・呼び名・メモを付け、番号・呼び名・組成式や部分構造（「選んだ分子を含むものだけ」）で探せます</li>
+        <li><b>置く</b>: 一覧の絵をクリックすると表示の中央に、ドラッグすると好きな場所に置きます。置いた分子をキャンバスで直すと「ライブラリの◯◯と違います」と知らせ、「ライブラリを更新」「別の化合物として登録」「つながりを外す」から選びます。黙って更新したり、描いている途中の分子を勝手に結び付けたりはしません</li>
+        <li><b>部品</b>: 原子のラベルに R を付けた分子を選んで「選んだ分子を部品にする」。部品を選んでキャンバスの原子をクリックすると、そこに結合1本でつなぎます。何もない所をクリックすると置きます</li>
+        <li><b>図</b>: 今の図に名前を付けて保存し、あとで開いたり上書きしたりできます</li>
+        <li><b>表</b>: 今の図の検討表を、表の上の反応式ごと「入れる」。入れた表は「置く」で、ほかの図の下に置き直せます（置いた図の中では新しい化合物になり、元の図とは共有しません）</li>
+        <li><b>書き出し</b>: 「一式（JSON）」は別の PC で読み込めます。「一式（zip）」には、図ごとの CDXML・SVG・文書、図の中の検討表の CSV、入れた検討表の .xlsx・CSV、化合物の SDF・CSV が入り、ChemDraw や Excel で開けます。「化合物（SDF）」は番号・呼び名・メモつきです</li>
+      </ul>
+    </section>
+
+    <section id="clean">
+      <h2><span class="num">10</span>Clean Structure・整列</h2>
+      <p><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>K</kbd>（または上のバーの「整える」→「Clean Structure」）で、選んだ分子（選んでいなければ全部）の形を整えます。RDKit の2D座標を使い、元の位置と向きにできるだけ重ねるので、分子が大きく動いたり裏返ったりしません。</p>
+      <div class="pair">
+        <figure>
+          <div class="plate"><img src="img/clean-before.png" alt="原子を引っぱって形が崩れたイブプロフェン" width="377" height="203"></div>
+          <figcaption>整える前（原子を引っぱって崩したイブプロフェン）</figcaption>
+        </figure>
+        <figure>
+          <div class="plate"><img src="img/clean-after.png" alt="Clean Structure で整ったイブプロフェン" width="377" height="203"></div>
+          <figcaption>Clean Structure の後</figcaption>
+        </figure>
+      </div>
+      <p>「整える」→「横にそろえる」「縦にそろえる」で、分子・矢印・＋記号の中心の高さ（または左右の位置）をそろえます。矢印を動かすときは、上下の条件の文字も一緒に動きます。</p>
+    </section>
+
+    <section id="analysis">
+      <h2><span class="num">11</span>分析</h2>
+      <p>右の欄の「この文書」の「分子」を押すと、選んだ分子（選んでいなければ全部の分子を1つずつ）の値が出ます。ChemDraw の Analysis ウィンドウに当たります。</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>項目</th><th>内容</th></tr></thead>
+        <tbody>
+          <tr><td>組成式・分子量・精密質量</td><td>略号は展開して数えます。値をクリックするとコピーできます。塩は全体の値で、「成分」に C<sub>9</sub>H<sub>13</sub>NO·HCl の形で出します</td></tr>
+          <tr><td>m/z</td><td>[M+H]⁺・[M+Na]⁺・[M−H]⁻。電荷を持つ分子は、その分子自体の m/z。塩は炭素を含む成分ごと</td></tr>
+          <tr><td>元素分析</td><td>C・H・N などの重量 %</td></tr>
+          <tr><td>物性</td><td>logP（Crippen）・TPSA・水素結合の供与体と受容体の数・回転できる結合の数・Lipinski の規則</td></tr>
+          <tr><td>立体中心・二重結合</td><td>R/S と、二重結合の E/Z。「R/S・E/Z を表示」でキャンバスにも出ます。決まっていない中心は (?) で示します</td></tr>
+          <tr><td>同位体</td><td>質量分析で見える M・M+1・M+2… の高さ（いちばん高い山を 100）。Cl・Br を含む分子の形がわかります</td></tr>
+          <tr><td>名前</td><td>構造の名前。手元の辞書に無ければ、確かめてから AI に SMILES を送って名前を書かせ、名前から構造に戻して元と同じか確かめます</td></tr>
+          <tr><td>構造チェック</td><td>価数の超過、立体の決まっていない不斉中心、全体の電荷を知らせます。クリックすると、その原子を選びます</td></tr>
+        </tbody>
+      </table></div>
+      <p>「キャンバスに貼る」で、ChemDraw と同じ書き方（Chemical Formula・Exact Mass・Molecular Weight・m/z・Elemental Analysis）の文字を分子の下に置きます。値は RDKit（Python 版）の計算と一致することを、主要な構造22種で確かめています。</p>
+      <h3>NMR の予測（目安）</h3>
+      <p>カードの「NMR の予測の目安（加成則）」を開くと、¹H と ¹³C の化学シフトの<strong>目安</strong>が出ます。教科書に載っている<strong>加成則</strong>（基本の値に、置換基ごとの寄与を足す表）で計算したもので、実測のデータベースは使っていません。</p>
+      <figure>
+        <div class="plate"><img src="img/nmr.png" alt="アセトフェノンの NMR の予測。¹H は 7.89（2H）・7.48・7.41・2.60、¹³C は 198.0 から 26.2 まで" width="275" height="389"></div>
+        <figcaption>アセトフェノンの予測。ortho の H の行をクリックして固定したところ（キャンバスでは ortho の 2 つの炭素が緑で示されます）。</figcaption>
+      </figure>
+      <div class="table-wrap"><table>
+        <thead><tr><th>対象</th><th>使う表</th></tr></thead>
+        <tbody>
+          <tr><td>¹³C 脂肪族（sp3）</td><td>Grant–Paul 型（α・β・γ・δ の炭素と立体の補正）に、OH・OR・C=O・ハロゲンなどの置換基の寄与を足す</td></tr>
+          <tr><td>¹³C ベンゼン環</td><td>128.5 に、置換基の ipso・ortho・meta・para の寄与を足す</td></tr>
+          <tr><td>¹³C アルケン・アルキン</td><td>123.3（アルキンは 71.9）に、同じ側・反対側の置換基の寄与を足す</td></tr>
+          <tr><td>¹³C カルボニル・ニトリル</td><td>ケトン・アルデヒド・酸・エステル・アミドなど種類ごとの基本の値に、共役と隣の枝分かれの補正</td></tr>
+          <tr><td>¹H 脂肪族</td><td>Shoolery 型（CH₃ 0.90・CH₂ 1.20・CH 1.55 に、隣と 2 つ先の置換基の寄与）</td></tr>
+          <tr><td>¹H ベンゼン環・アルケン</td><td>7.27 に置換基の ortho・meta・para の寄与。アルケンは Pascual–Meier–Simon の式（5.25 に gem・cis・trans の寄与。cis・trans は図の向きで読む）</td></tr>
+        </tbody>
+      </table></div>
+      <ul>
+        <li>等価な原子（対称で同じ位置）は 1 行にまとめ、数（2H・2C など）を出します。</li>
+        <li>行にマウスを載せると、その原子をキャンバスで緑に示します。クリックで固定、もう一度クリックで外します。</li>
+        <li>「値をコピー」で <code>1H NMR (predicted, additivity rules): δ 7.89 (2H), …</code> の形の文字をコピーします。予測値であることが分かる書き方にしています。</li>
+        <li><strong>表で読めない原子は「—」と「予測できない」の理由を出し、値は出しません。</strong>ピリジン・フランなどベンゼン以外の芳香環、ナフタレンなどの縮環、イミン・C=S、ホウ素・ケイ素などの置換基、芳香環の N に付いたメチル、CF₃ の炭素のように同じ炭素にヘテロ原子が 3 つ重なる形が対象外です。OH・NH の H は溶媒や濃度で大きく動くので出しません。</li>
+        <li>△ は、置換基が込み合う・小さな環の中など、加成則が当てになりにくい形の印です。</li>
+      </ul>
+      <p>精度の目安: よく知られた化合物の教科書の実測値（CDCl₃）と比べたところ、表を書くときに見た 19 件では ¹³C の 100%（77 点）が ±5 ppm、¹H の 97%（61 点）が ±0.3 ppm に、表を書いた後に足した 12 件では ¹³C の 85%（48 点）、¹H の 92%（39 点）が収まりました。初めて見る分子では後の数字の方が実際に近いと考えてください。外れやすいのは、シクロヘキセン・シクロヘキサノンの環の CH₂、tert-ブチル基の付いたエーテル、DMF の N–CH₃、CH₂Cl₂ のように同じ炭素に置換基が重なる形です。帰属の確認や論文の値には、必ず実測を使ってください。</p>
+    </section>
+
+    <section id="io">
+      <h2><span class="num">12</span>読み込みと書き出し</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>形式</th><th>読み込み</th><th>書き出し</th><th>補足</th></tr></thead>
+        <tbody>
+          <tr><td>SMILES</td><td><span class="chip ok">○</span></td><td><span class="chip ok">○</span></td><td>反応 SMILES（<code>A.B&gt;試薬&gt;C</code>）も読めます。読むと反応物・＋・矢印・生成物を一列に並べます</td></tr>
+          <tr><td>MOL（V2000）</td><td><span class="chip ok">○</span></td><td><span class="chip ok">○</span></td><td>V3000 は RDKit で V2000 に直して読みます</td></tr>
+          <tr><td>CDXML</td><td><span class="chip ok">○</span></td><td><span class="chip ok">○</span></td><td>ACS 1996 の設定、ラベル、くさび、略号（展開した構造入り）、反応の <code>&lt;scheme&gt;</code>/<code>&lt;step&gt;</code> を書きます</td></tr>
+          <tr><td>CDX</td><td><span class="chip ok">○</span></td><td><span class="chip ok">○</span></td><td>ChemDraw のバイナリの形式。中身は CDXML と同じです</td></tr>
+          <tr><td>SVG</td><td>—</td><td><span class="chip ok">○</span></td><td>大きさは pt 単位。論文や資料に貼れます</td></tr>
+          <tr><td>PNG</td><td>Cocat の図</td><td><span class="chip ok">○</span></td><td>300 dpi。あとで開き直せるよう、図のデータを中に入れます（下の「スライドに貼った図を開き直す」）</td></tr>
+          <tr><td>PowerPoint（.pptx）</td><td>Cocat の図</td><td>—</td><td>スライドに貼った Cocat の図を開き直します</td></tr>
+          <tr><td>文書（.acedoc）</td><td><span class="chip ok">○</span></td><td><span class="chip ok">○</span></td><td>エディタの文書をそのまま保存（スキーム・検討表のデータ入り）。上のバーの「ファイル」→「開く…」「保存」</td></tr>
+          <tr><td>プロジェクト</td><td><span class="chip ok">○</span></td><td><span class="chip ok">○</span></td><td>一式の JSON（読み込みも）、zip（CDXML・SVG・SDF・CSV）、化合物の SDF</td></tr>
+          <tr><td>検討表</td><td>Excel から貼り付け</td><td><span class="chip ok">○</span></td><td>タブ区切りのコピー、CSV、Excel（.xlsx）</td></tr>
+          <tr><td>印刷・PDF</td><td>—</td><td><span class="chip ok">○</span></td><td>「ファイル」→「印刷・PDF」か <kbd>Ctrl</kbd>+<kbd>P</kbd>。ページの設定が無ければ、図を A4 かレターの紙に収めます。ページの設定があれば、1 ページずつその大きさの紙に原寸で出します。PDF はブラウザの印刷の「PDF に保存」で</td></tr>
+        </tbody>
+      </table></div>
+      <h3>ページの設定</h3>
+      <p>「ファイル」→「ページの設定…」で、キャンバスを A4（縦・横）か PowerPoint のスライド（16:9・4:3）1 枚を単位に、横と縦に何枚並べるかで決められます（1〜10 枚ずつ）。ページは白、ページの外は灰色で、灰色の所は印刷されません。「図に合わせる」で、今の図が入る枚数にします。「ページにしない」を選ぶと、今までどおりどこまでも広いキャンバスに戻ります。</p>
+      <p>ふだんはキャンバス全体を書き出します。表示の外にも物があるときは、書き出しの欄にその数が出ます。何かを選んでいるときは「選んだ物だけ書き出す」に印を付けると、選んだ物だけを書き出します。範囲はコピーと同じです。</p>
+      <p>書き出すファイルの名前は、ファイルのメニューの「SMILES・MOL・CDXML の読み込みと書き出し…」の「ファイル名」に入れます（拡張子は形式に合わせて付きます。空なら <code>structure</code>）。文書の保存（<kbd>Ctrl</kbd>+<kbd>S</kbd>）も同じ名前です。ファイルを開くと、その名前が入ります。「新規」で空に戻ります。</p>
+      <h3>スライドに貼った図を開き直す</h3>
+      <p>Cocat の「コピー」で PowerPoint に貼った図と、書き出した PNG を挿入した図は、あとで Cocat で開き直して直せます。ファイルのメニューの「SMILES・MOL・CDXML の読み込みと書き出し…」の「ファイルを開く」で、その PowerPoint のファイル（.pptx）を選びます。Cocat の図が 1 つならすぐ開き、2 つ以上ならスライドの番号と小さな絵の一覧から選びます。今の図と置き換わり、元に戻すと前の図に戻ります。直したら、もう一度コピーしてスライドの図と差し替えてください。</p>
+      <p>図の画像には、開き直すためのデータ（構造・条件・番号・呼び名など、その図に描いてあるもの）が目に見えない形で入っています。スライドを人に渡すと、受け取った人も Cocat で開けます。化合物のメモ、プロジェクトのほかの化合物、化学量論表の量、AI に送った文章は入れません。PowerPoint の「図として保存」で取り出した画像からは開けません（PowerPoint が描き直すため）。PowerPoint の SVG の図にも入りません。</p>
+      <p>読み込みは、右の欄に貼り付けて「読み込む」を押すか、「ファイルを開く」で選びます。形式は中身から自動で判定します。ほかのアプリでコピーした SMILES・Molfile・CDXML は、キャンバスに <kbd>Ctrl</kbd>+<kbd>V</kbd> で貼れます。</p>
+    </section>
+
+    <section id="keys">
+      <h2><span class="num">13</span>ショートカット</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>キー</th><th>動作</th></tr></thead>
+        <tbody>
+          <tr><td><kbd>Ctrl</kbd>+<kbd>S</kbd> / <kbd>Ctrl</kbd>+<kbd>O</kbd></td><td>文書を保存 / 開く（<code>.acedoc</code>）</td></tr>
+          <tr><td><kbd>Ctrl</kbd>+<kbd>P</kbd></td><td>印刷・PDF</td></tr>
+          <tr><td>ホイール・<kbd>Space</kbd>+ドラッグ</td><td>表示を動かす。<kbd>Ctrl</kbd>＋ホイールで拡大・縮小</td></tr>
+          <tr><td><kbd>Shift</kbd>+<kbd>1</kbd></td><td>図の全体を表示する</td></tr>
+          <tr><td><kbd>Ctrl</kbd>+<kbd>Z</kbd> / <kbd>Ctrl</kbd>+<kbd>Y</kbd></td><td>元に戻す / やり直す（<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd> でもやり直せます）</td></tr>
+          <tr><td><kbd>Ctrl</kbd>+<kbd>X</kbd> <kbd>C</kbd> <kbd>V</kbd> <kbd>A</kbd></td><td>切り取り・コピー・貼り付け・すべて選択。コピーするとほかのアプリへは図（PNG）と SMILES が渡ります</td></tr>
+          <tr><td><kbd>Delete</kbd> / <kbd>Backspace</kbd></td><td>選択（無ければカーソルの下の物）を消す</td></tr>
+          <tr><td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>K</kbd></td><td>Clean Structure</td></tr>
+          <tr><td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>H</kbd> / <kbd>V</kbd></td><td>左右 / 上下の反転</td></tr>
+          <tr><td>結合に合わせて <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd></td><td>単・二重・三重結合にする</td></tr>
+          <tr><td>結合に合わせて <kbd>W</kbd> <kbd>H</kbd> <kbd>Y</kbd></td><td>くさび（実線）・くさび（破線）・波線にする</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td>選択を外す</td></tr>
+        </tbody>
+      </table></div>
+      <p>原子に合わせて押すキーは「<a href="#atoms">原子ラベル・略号</a>」の表にあります。</p>
+    </section>
+
+    <section id="style">
+      <h2><span class="num">14</span>表示のスタイル（ACS Document 1996）</h2>
+      <p>ChemDraw の「ACS Document 1996」と同じ値で描きます。CDXML にも同じ値を書くので、ChemDraw で開いても同じ設定になります。</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>項目</th><th>値</th></tr></thead>
+        <tbody>
+          <tr><td>結合長</td><td class="n">14.4 pt</td></tr>
+          <tr><td>線幅</td><td class="n">0.6 pt</td></tr>
+          <tr><td>太線の幅（くさび）</td><td class="n">2.0 pt</td></tr>
+          <tr><td>ラベルの周りの余白</td><td class="n">1.6 pt</td></tr>
+          <tr><td>破線の間隔</td><td class="n">2.5 pt</td></tr>
+          <tr><td>二重結合の線の間隔</td><td class="n">結合長の 18%</td></tr>
+          <tr><td>鎖の角度</td><td class="n">120°</td></tr>
+          <tr><td>フォント</td><td class="n">Arial 10 pt</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="results">
+      <h2><span class="num">15</span>完了条件の結果</h2>
+      <h3>5分以内に描けるか</h3>
+      <p>画面の操作（クリック・ドラッグ・キー）だけで描く自動テストで、操作の回数を数えました。1操作を4秒として見積もっています。人が実際に描いた時間は、まだ測っていません。</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>構造</th><th>操作の回数</th><th>人の目安</th><th>結果</th></tr></thead>
+        <tbody>
+          <tr><td>アスピリン</td><td class="n">16</td><td class="n">約 1 分</td><td><span class="chip ok">SMILES 一致</span></td></tr>
+          <tr><td>タキサン骨格（6-8-6 の三環と C15 の橋、メチル5つ）</td><td class="n">15</td><td class="n">約 1 分</td><td><span class="chip ok">SMILES 一致</span></td></tr>
+          <tr><td>Boc-Ala-OH ＋ H-Gly-OMe → Boc-Ala-Gly-OMe（条件の文字・＋を含む）</td><td class="n">44</td><td class="n">約 3 分</td><td><span class="chip ok">反応 SMILES 一致</span></td></tr>
+        </tbody>
+      </table></div>
+      <h3>主要な構造の SMILES</h3>
+      <p>22種（アスピリン、カフェイン、ペニシリン G、モルヒネ、コレステロール、ストリキニーネ、タキソールなど。立体・電荷・橋かけ環を含む）で、エディタの構造 → SMILES・MOL・CDXML → 読み直し、と Clean Structure の後のどれでも、立体を含めて同じ構造になりました。</p>
+      <h3>見本を書式を切り替えて描き直せるか（M2）</h3>
+      <p>見本の Boc カップリング・3段のスキーム・条件検討の表を、ACS・脚注・研究室のメモの書式に切り替えて描き直し、反応 SMILES が変わらないことを E2E で確かめています。</p>
+      <h3>CDXML</h3>
+      <p>ChemDraw の代わりに、次の2つで書き出した CDXML を読み、期待どおりの構造になるかを確かめています。検討表つきの反応式を含む27ファイルすべて OK でした（表の罫線は矢頭の無い線、R1 は GenericNickname として書きます）。</p>
+      <ul class="plain">
+        <li><b>RDKit（Python 版）</b>: ChemDraw の開発元 Revvity の CDXML ライブラリを組み込んで読みます</li>
+        <li><b>Indigo</b>: 別の実装で読み、画像に描きます（下の図）</li>
+      </ul>
+      <figure class="wide">
+        <div class="plate"><img src="img/indigo-reaction.png" alt="Indigo が書き出した CDXML を読んで描いた反応スキーム" width="1143" height="390"></div>
+        <figcaption>このエディタが書き出した CDXML を Indigo が読んで描いたもの。反応物・＋・矢印・条件・生成物の並びがそのまま伝わっています。</figcaption>
+      </figure>
+      <div class="note"><p>ChemDraw 本体で開いての確認はまだです。確認の手順は README にまとめています。</p></div>
+    </section>
+
+    <section id="limits">
+      <h2><span class="num">16</span>既知の課題と対象外</h2>
+      <h3>既知の課題</h3>
+      <ul class="plain">
+        <li>Clean Structure は RDKit の2D座標を使うため、橋かけ環（タキサンの A 環など）が窮屈になります。椅子形は平らに戻ります</li>
+        <li>描いた反応式（スキームのデータにしていないもの）の解析は、矢印が左から右へ一列に並ぶ形にだけ対応しています。スキームのデータにすれば、折り返した図でも正しく書き出せます</li>
+        <li>プロジェクトは今のブラウザの中だけにあります。別の PC や人と共有するときは、一式の JSON か zip を渡します</li>
+        <li>二重結合の線の位置の自動判定が、鎖の中で ChemDraw と違う側になることがあります（二重結合ツールでクリックすると変えられます）</li>
+        <li>2本以上の結合を持つ原子には略号を付けられません（赤い枠で示します）</li>
+      </ul>
+      <h3>今回の対象外（将来の候補）</h3>
+      <p>NMR の実測データベースによる予測（今は加成則の目安だけ）、3D、CAS 番号・PubChem での照合、複数ページ、質量分析のフラグメント・pKa。</p>
+    </section>
+
+    <section id="beta">
+      <h2><span class="num">17</span>公開（無料ベータ）</h2>
+      <p>静的な Web サイトとして公開する準備（AWS の S3・CloudFront の Terraform と、GitHub Actions のデプロイ）ができています。公開するアカウント・ドメイン・感想の送り先が決まったら公開します。手順と決めることは <code>docs/hosting.md</code> にあります。上のバーの「ヘルプ」→「このツールについて」に、データがブラウザの外に出ないことと、感想の送り先を出します。</p>
+    </section>
+
+    <footer>ai-chem-editor の docs/manual/index.html。画面の写真は <code>MANUAL=1 npx playwright test e2e/manual-shots.spec.ts</code> で撮り直せます。</footer>
+  </main>
+</div>

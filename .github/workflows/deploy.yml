@@ -1,0 +1,72 @@
+name: Deploy
+
+# サイトの公開（docs/hosting.md）。main へのマージで自動で動く（2026-10-24 から）。
+# サイトに関係しない変更（資料・Terraform）だけのマージでは動かない。Variables を変えたときなどは、手で動かす（Run workflow）
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'docs/**'
+      - '**.md'
+      - 'infra/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      # 版は「package.json の版+コミットの頭7文字」（例: 0.1.0+9f8fb30）。画面の「このツールについて」と、感想のフォーム・使い方の統計に入る
+      - name: 版を決める
+        run: echo "APP_VERSION=$(node -p "require('./package.json').version")+${GITHUB_SHA::7}" >> "$GITHUB_ENV"
+      - run: npm run build
+        env:
+          VITE_FEEDBACK_URL: ${{ vars.VITE_FEEDBACK_URL }}
+          VITE_FEEDBACK_EMAIL: ${{ vars.VITE_FEEDBACK_EMAIL }}
+          # 使い方の統計（src/analytics.ts）は公開のビルドだけで動かす
+          VITE_ANALYTICS: '1'
+          VITE_APP_VERSION: ${{ env.APP_VERSION }}
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ap-northeast-1
+      # assets/ は名前に中身のハッシュが付くので長く持たせ、index.html は毎回確かめさせる
+      - name: S3 へ送る
+        run: |
+          aws s3 sync dist/assets "s3://${{ vars.S3_BUCKET }}/assets" --delete --cache-control "public,max-age=31536000,immutable" --exclude "*.wasm"
+          aws s3 cp dist/assets "s3://${{ vars.S3_BUCKET }}/assets" --recursive --exclude "*" --include "*.wasm" --content-type application/wasm --cache-control "public,max-age=31536000,immutable"
+          aws s3 sync dist "s3://${{ vars.S3_BUCKET }}" --delete --exclude "assets/*" --exclude "pdfjs/wasm/*.wasm" --cache-control "no-cache"
+          # pdf.js の画像の復号の wasm（PDF を開いたときだけ読む）。種類を付けないと、ブラウザが遅い読み方に落ちる
+          aws s3 cp dist/pdfjs/wasm "s3://${{ vars.S3_BUCKET }}/pdfjs/wasm" --recursive --exclude "*" --include "*.wasm" --content-type application/wasm --cache-control "no-cache"
+      - name: CloudFront のキャッシュを消す
+        run: aws cloudfront create-invalidation --distribution-id "${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}" --paths "/index.html" "/"
+      # 公開したサイトを確かめる（tools/smoke.mjs）。おかしければ、この Deploy を失敗にする。
+      # ヘッダー・JS と wasm・/e・ブラウザで開いて見本が動くか・版が今のものか。統計は止めてから開く
+      - name: ブラウザを入れる（公開したサイトの確かめ用）
+        run: npx playwright install --with-deps chromium
+      - name: 公開したサイトを確かめる
+        env:
+          SITE_URL: ${{ vars.SITE_URL }}
+        run: |
+          if [ -z "$SITE_URL" ]; then
+            echo "::error::リポジトリの Variables に SITE_URL（terraform output site_url の値）を入れてください"
+            exit 1
+          fi
+          node tools/smoke.mjs "$SITE_URL" "$APP_VERSION" dist/index.html

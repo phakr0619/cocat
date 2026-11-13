@@ -1,0 +1,126 @@
+{
+  "about": "言葉での編集の評価（M3-4 段3）。bases は直す前のスキーム（言葉からスキームの答えの形）。expect.kind: edit=正しく直す / ask=直さずに聞き返すか、使えない指示として止める。edit の steps・compounds・style に書いた所だけが変わり、ほかは直す前のままであること。\"*\" は問わない。構造を書き換える化合物（compounds に smiles を書いたもの）は、呼び名を合わせて直してもよい。reagents は試薬の欄に含まれるべき書き方、reagentsNot は含まれてはいけない書き方。SMILES は RDKit で確かめた（立体は CIP で確認）",
+  "bases": {
+    "dipeptide": {
+      "compounds": [
+        { "ref": "A", "name": "Boc-Ala-OH", "smiles": "CC(C)(C)OC(=O)N[C@@H](C)C(=O)O" },
+        { "ref": "B", "name": "H-Gly-OMe", "smiles": "NCC(=O)OC" },
+        { "ref": "C", "name": "5", "smiles": "CC(C)(C)OC(=O)N[C@@H](C)C(=O)NCC(=O)OC" },
+        { "ref": "D", "name": "7", "smiles": "N[C@@H](C)C(=O)NCC(=O)OC" }
+      ],
+      "steps": [
+        { "from": ["A", "B"], "to": ["C"], "reagents": [{ "text": "HATU", "equiv": 1.2 }, { "text": "DIPEA", "equiv": 3 }], "solvent": "DMF", "temp": "rt", "time": "2 h", "yield": 85 },
+        { "from": ["C"], "to": ["D"], "reagents": [{ "text": "TFA" }], "solvent": "CH2Cl2", "temp": "rt", "time": "1 h", "yield": 95 }
+      ]
+    }
+  },
+  "cases": [
+    {
+      "id": "replace-reagent",
+      "title": "試薬の置き換え",
+      "base": "dipeptide",
+      "text": "2 段目の TFA を 4 M HCl/dioxane に替えて",
+      "expect": { "kind": "edit", "steps": { "2": { "reagents": ["HCl"], "reagentsNot": ["TFA"], "solvent": "*" } } }
+    },
+    {
+      "id": "replace-keep-equiv",
+      "title": "置き換えで当量を残す",
+      "base": "dipeptide",
+      "text": "DIPEA を Et3N にして",
+      "expect": { "kind": "edit", "steps": { "1": { "reagents": ["HATU", "Et3N"], "reagentsNot": ["DIPEA"], "equiv": { "Et3N": 3, "HATU": 1.2 } } } }
+    },
+    {
+      "id": "conditions",
+      "title": "温度・時間・収率",
+      "base": "dipeptide",
+      "text": "縮合は 0 °C で 4 時間、収率は 92% だった",
+      "expect": { "kind": "edit", "steps": { "1": { "temp": "0", "time": "4", "yield": 92 } } }
+    },
+    {
+      "id": "add-reagent",
+      "title": "試薬を足す",
+      "base": "dipeptide",
+      "text": "1 段目に HOAt (0.1 equiv) を足して",
+      "expect": { "kind": "edit", "steps": { "1": { "reagents": ["HATU", "DIPEA", "HOAt"], "equiv": { "HOAt": 0.1 } } } }
+    },
+    {
+      "id": "remove-reagent",
+      "title": "試薬を外す",
+      "base": "dipeptide",
+      "text": "縮合の DIPEA は要らないので消して",
+      "expect": { "kind": "edit", "steps": { "1": { "reagents": ["HATU"], "reagentsNot": ["DIPEA"] } } }
+    },
+    {
+      "id": "renumber",
+      "title": "番号の振り直し",
+      "base": "dipeptide",
+      "text": "化合物番号を 1 から振り直して",
+      "expect": { "kind": "edit", "compounds": { "A": { "number": "1" }, "B": { "number": "2" }, "C": { "number": "3" }, "D": { "number": "4" } } }
+    },
+    {
+      "id": "style",
+      "title": "書式の切り替え",
+      "base": "dipeptide",
+      "text": "脚注の書式（Reagents and conditions）にして",
+      "expect": { "kind": "edit", "style": "footnote" }
+    },
+    {
+      "id": "nickname",
+      "title": "呼び名",
+      "base": "dipeptide",
+      "text": "7 の呼び名を「ジペプチドアミン」にして",
+      "expect": { "kind": "edit", "compounds": { "D": { "nickname": "ジペプチドアミン" } } }
+    },
+    {
+      "id": "english",
+      "title": "英語の指示",
+      "base": "dipeptide",
+      "text": "Change the solvent of the coupling to NMP and the yield to 78%.",
+      "expect": { "kind": "edit", "steps": { "1": { "solvent": "NMP", "yield": 78 } } }
+    },
+    {
+      "id": "structure-named",
+      "title": "構造: 番号で指した化合物だけ Boc → Cbz",
+      "base": "dipeptide",
+      "text": "5 の Boc を Cbz に替えて",
+      "expect": { "kind": "edit", "compounds": { "C": { "smiles": "O=C(OCc1ccccc1)N[C@@H](C)C(=O)NCC(=O)OC" } } }
+    },
+    {
+      "id": "structure-selected",
+      "title": "構造: 選んだ化合物を Boc → Fmoc",
+      "base": "dipeptide",
+      "select": ["A"],
+      "text": "選んだ化合物の Boc を Fmoc に",
+      "expect": { "kind": "edit", "compounds": { "A": { "smiles": "O=C(OCC1c2ccccc2-c2ccccc12)N[C@@H](C)C(=O)O" } } }
+    },
+    {
+      "id": "structure-whole",
+      "title": "構造: スキーム全体で Boc → Cbz（条件も）",
+      "base": "dipeptide",
+      "text": "スキーム全体で Boc を Cbz に替えて、脱保護の条件もそれに合わせて",
+      "expect": {
+        "kind": "edit",
+        "wholeScheme": true,
+        "compounds": {
+          "A": { "smiles": "O=C(OCc1ccccc1)N[C@@H](C)C(=O)O" },
+          "C": { "smiles": "O=C(OCc1ccccc1)N[C@@H](C)C(=O)NCC(=O)OC" }
+        },
+        "steps": { "2": { "reagents": ["Pd"], "reagentsNot": ["TFA"], "solvent": "*", "temp": "*", "time": "*", "yield": "*" } }
+      }
+    },
+    {
+      "id": "ask-structure-scope",
+      "title": "聞き返す: どの化合物か分からない Boc → Cbz",
+      "base": "dipeptide",
+      "text": "Boc を Cbz に替えて",
+      "expect": { "kind": "ask" }
+    },
+    {
+      "id": "ask-missing-step",
+      "title": "聞き返す: 無い段",
+      "base": "dipeptide",
+      "text": "3 段目の温度を 80 °C にして",
+      "expect": { "kind": "ask" }
+    }
+  ]
+}

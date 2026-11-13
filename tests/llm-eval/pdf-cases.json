@@ -1,0 +1,1805 @@
+{
+  "about": "PDF からスキームの評価の件。PDF は e2e/make-eval-pdfs.spec.ts で、このアプリで描いた図と架空の本文から作った A4 の 1 ページ（論文・出版社の図は使わない）。base は image-cases.json の件（正解はその件と同じ）、form は図の入れ方（png・svg・scan）、send は送り方（page＝ページ全体、crop＝図の範囲）。png はアプリの cropToImage の出力そのもの。name は画像の説明に使う名前。crop は PDF の座標（pt、左上が原点）",
+  "cases": [
+    {
+      "id": "amide-hatu-acs-200-png-page",
+      "base": "amide-hatu-acs-200",
+      "form": "png",
+      "send": "page",
+      "pdf": "amide-hatu-acs-200-png.pdf",
+      "png": "amide-hatu-acs-200-png-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 270186,
+      "name": "amide-hatu-acs-200-png.pdf p.1"
+    },
+    {
+      "id": "amide-hatu-acs-200-png-crop",
+      "base": "amide-hatu-acs-200",
+      "form": "png",
+      "send": "crop",
+      "pdf": "amide-hatu-acs-200-png.pdf",
+      "png": "amide-hatu-acs-200-png-crop.png",
+      "width": 2048,
+      "height": 873,
+      "bytes": 57965,
+      "name": "amide-hatu-acs-200-png.pdf p.1 (crop)",
+      "crop": {
+        "x": 117,
+        "y": 293.8,
+        "width": 361.5,
+        "height": 154.2
+      }
+    },
+    {
+      "id": "amide-hatu-acs-200-svg-page",
+      "base": "amide-hatu-acs-200",
+      "form": "svg",
+      "send": "page",
+      "pdf": "amide-hatu-acs-200-svg.pdf",
+      "png": "amide-hatu-acs-200-svg-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 261914,
+      "name": "amide-hatu-acs-200-svg.pdf p.1"
+    },
+    {
+      "id": "amide-hatu-acs-200-svg-crop",
+      "base": "amide-hatu-acs-200",
+      "form": "svg",
+      "send": "crop",
+      "pdf": "amide-hatu-acs-200-svg.pdf",
+      "png": "amide-hatu-acs-200-svg-crop.png",
+      "width": 2048,
+      "height": 872,
+      "bytes": 93810,
+      "name": "amide-hatu-acs-200-svg.pdf p.1 (crop)",
+      "crop": {
+        "x": 117,
+        "y": 293.8,
+        "width": 361.5,
+        "height": 154
+      }
+    },
+    {
+      "id": "amide-hatu-acs-200-scan-page",
+      "base": "amide-hatu-acs-200",
+      "form": "scan",
+      "send": "page",
+      "pdf": "amide-hatu-acs-200-scan.pdf",
+      "png": "amide-hatu-acs-200-scan-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 371754,
+      "name": "amide-hatu-acs-200-scan.pdf p.1"
+    },
+    {
+      "id": "amide-hatu-acs-200-scan-crop",
+      "base": "amide-hatu-acs-200",
+      "form": "scan",
+      "send": "crop",
+      "pdf": "amide-hatu-acs-200-scan.pdf",
+      "png": "amide-hatu-acs-200-scan-crop.png",
+      "width": 2048,
+      "height": 872,
+      "bytes": 54250,
+      "name": "amide-hatu-acs-200-scan.pdf p.1 (crop)",
+      "crop": {
+        "x": 117,
+        "y": 293.8,
+        "width": 361.5,
+        "height": 154
+      }
+    },
+    {
+      "id": "boc-removal-footnote-150-png-page",
+      "base": "boc-removal-footnote-150",
+      "form": "png",
+      "send": "page",
+      "pdf": "boc-removal-footnote-150-png.pdf",
+      "png": "boc-removal-footnote-150-png-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 248240,
+      "name": "boc-removal-footnote-150-png.pdf p.1"
+    },
+    {
+      "id": "boc-removal-footnote-150-png-crop",
+      "base": "boc-removal-footnote-150",
+      "form": "png",
+      "send": "crop",
+      "pdf": "boc-removal-footnote-150-png.pdf",
+      "png": "boc-removal-footnote-150-png-crop.png",
+      "width": 2048,
+      "height": 959,
+      "bytes": 47434,
+      "name": "boc-removal-footnote-150-png.pdf p.1 (crop)",
+      "crop": {
+        "x": 161.6,
+        "y": 293.8,
+        "width": 272.3,
+        "height": 127.5
+      }
+    },
+    {
+      "id": "boc-removal-footnote-150-svg-page",
+      "base": "boc-removal-footnote-150",
+      "form": "svg",
+      "send": "page",
+      "pdf": "boc-removal-footnote-150-svg.pdf",
+      "png": "boc-removal-footnote-150-svg-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 240738,
+      "name": "boc-removal-footnote-150-svg.pdf p.1"
+    },
+    {
+      "id": "boc-removal-footnote-150-svg-crop",
+      "base": "boc-removal-footnote-150",
+      "form": "svg",
+      "send": "crop",
+      "pdf": "boc-removal-footnote-150-svg.pdf",
+      "png": "boc-removal-footnote-150-svg-crop.png",
+      "width": 2048,
+      "height": 960,
+      "bytes": 87880,
+      "name": "boc-removal-footnote-150-svg.pdf p.1 (crop)",
+      "crop": {
+        "x": 161.6,
+        "y": 293.8,
+        "width": 272.3,
+        "height": 127.6
+      }
+    },
+    {
+      "id": "boc-removal-footnote-150-scan-page",
+      "base": "boc-removal-footnote-150",
+      "form": "scan",
+      "send": "page",
+      "pdf": "boc-removal-footnote-150-scan.pdf",
+      "png": "boc-removal-footnote-150-scan-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 346004,
+      "name": "boc-removal-footnote-150-scan.pdf p.1"
+    },
+    {
+      "id": "boc-removal-footnote-150-scan-crop",
+      "base": "boc-removal-footnote-150",
+      "form": "scan",
+      "send": "crop",
+      "pdf": "boc-removal-footnote-150-scan.pdf",
+      "png": "boc-removal-footnote-150-scan-crop.png",
+      "width": 2048,
+      "height": 960,
+      "bytes": 50058,
+      "name": "boc-removal-footnote-150-scan.pdf p.1 (crop)",
+      "crop": {
+        "x": 161.6,
+        "y": 293.8,
+        "width": 272.3,
+        "height": 127.6
+      }
+    },
+    {
+      "id": "suzuki-lab-150-png-page",
+      "base": "suzuki-lab-150",
+      "form": "png",
+      "send": "page",
+      "pdf": "suzuki-lab-150-png.pdf",
+      "png": "suzuki-lab-150-png-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 267586,
+      "name": "suzuki-lab-150-png.pdf p.1"
+    },
+    {
+      "id": "suzuki-lab-150-png-crop",
+      "base": "suzuki-lab-150",
+      "form": "png",
+      "send": "crop",
+      "pdf": "suzuki-lab-150-png.pdf",
+      "png": "suzuki-lab-150-png-crop.png",
+      "width": 2048,
+      "height": 430,
+      "bytes": 35056,
+      "name": "suzuki-lab-150-png.pdf p.1 (crop)",
+      "crop": {
+        "x": 94.5,
+        "y": 293.8,
+        "width": 406.5,
+        "height": 85.3
+      }
+    },
+    {
+      "id": "suzuki-lab-150-svg-page",
+      "base": "suzuki-lab-150",
+      "form": "svg",
+      "send": "page",
+      "pdf": "suzuki-lab-150-svg.pdf",
+      "png": "suzuki-lab-150-svg-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 258919,
+      "name": "suzuki-lab-150-svg.pdf p.1"
+    },
+    {
+      "id": "suzuki-lab-150-svg-crop",
+      "base": "suzuki-lab-150",
+      "form": "svg",
+      "send": "crop",
+      "pdf": "suzuki-lab-150-svg.pdf",
+      "png": "suzuki-lab-150-svg-crop.png",
+      "width": 2048,
+      "height": 429,
+      "bytes": 63843,
+      "name": "suzuki-lab-150-svg.pdf p.1 (crop)",
+      "crop": {
+        "x": 94.5,
+        "y": 293.8,
+        "width": 406.5,
+        "height": 85.1
+      }
+    },
+    {
+      "id": "suzuki-lab-150-scan-page",
+      "base": "suzuki-lab-150",
+      "form": "scan",
+      "send": "page",
+      "pdf": "suzuki-lab-150-scan.pdf",
+      "png": "suzuki-lab-150-scan-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 370018,
+      "name": "suzuki-lab-150-scan.pdf p.1"
+    },
+    {
+      "id": "suzuki-lab-150-scan-crop",
+      "base": "suzuki-lab-150",
+      "form": "scan",
+      "send": "crop",
+      "pdf": "suzuki-lab-150-scan.pdf",
+      "png": "suzuki-lab-150-scan-crop.png",
+      "width": 2048,
+      "height": 429,
+      "bytes": 41699,
+      "name": "suzuki-lab-150-scan.pdf p.1 (crop)",
+      "crop": {
+        "x": 94.5,
+        "y": 293.8,
+        "width": 406.5,
+        "height": 85.1
+      }
+    },
+    {
+      "id": "reductive-amination-acs-72-png-page",
+      "base": "reductive-amination-acs-72",
+      "form": "png",
+      "send": "page",
+      "pdf": "reductive-amination-acs-72-png.pdf",
+      "png": "reductive-amination-acs-72-png-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 236931,
+      "name": "reductive-amination-acs-72-png.pdf p.1"
+    },
+    {
+      "id": "reductive-amination-acs-72-png-crop",
+      "base": "reductive-amination-acs-72",
+      "form": "png",
+      "send": "crop",
+      "pdf": "reductive-amination-acs-72-png.pdf",
+      "png": "reductive-amination-acs-72-png-crop.png",
+      "width": 2048,
+      "height": 687,
+      "bytes": 28659,
+      "name": "reductive-amination-acs-72-png.pdf p.1 (crop)",
+      "crop": {
+        "x": 139.9,
+        "y": 293.8,
+        "width": 315.8,
+        "height": 105.9
+      }
+    },
+    {
+      "id": "reductive-amination-acs-72-svg-page",
+      "base": "reductive-amination-acs-72",
+      "form": "svg",
+      "send": "page",
+      "pdf": "reductive-amination-acs-72-svg.pdf",
+      "png": "reductive-amination-acs-72-svg-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 246856,
+      "name": "reductive-amination-acs-72-svg.pdf p.1"
+    },
+    {
+      "id": "reductive-amination-acs-72-svg-crop",
+      "base": "reductive-amination-acs-72",
+      "form": "svg",
+      "send": "crop",
+      "pdf": "reductive-amination-acs-72-svg.pdf",
+      "png": "reductive-amination-acs-72-svg-crop.png",
+      "width": 2048,
+      "height": 685,
+      "bytes": 70930,
+      "name": "reductive-amination-acs-72-svg.pdf p.1 (crop)",
+      "crop": {
+        "x": 139.9,
+        "y": 293.8,
+        "width": 315.8,
+        "height": 105.7
+      }
+    },
+    {
+      "id": "reductive-amination-acs-72-scan-page",
+      "base": "reductive-amination-acs-72",
+      "form": "scan",
+      "send": "page",
+      "pdf": "reductive-amination-acs-72-scan.pdf",
+      "png": "reductive-amination-acs-72-scan-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 344584,
+      "name": "reductive-amination-acs-72-scan.pdf p.1"
+    },
+    {
+      "id": "reductive-amination-acs-72-scan-crop",
+      "base": "reductive-amination-acs-72",
+      "form": "scan",
+      "send": "crop",
+      "pdf": "reductive-amination-acs-72-scan.pdf",
+      "png": "reductive-amination-acs-72-scan-crop.png",
+      "width": 2048,
+      "height": 685,
+      "bytes": 28587,
+      "name": "reductive-amination-acs-72-scan.pdf p.1 (crop)",
+      "crop": {
+        "x": 139.9,
+        "y": 293.8,
+        "width": 315.8,
+        "height": 105.7
+      }
+    },
+    {
+      "id": "ester-hydrolysis-acs-200-png-page",
+      "base": "ester-hydrolysis-acs-200",
+      "form": "png",
+      "send": "page",
+      "pdf": "ester-hydrolysis-acs-200-png.pdf",
+      "png": "ester-hydrolysis-acs-200-png-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 246291,
+      "name": "ester-hydrolysis-acs-200-png.pdf p.1"
+    },
+    {
+      "id": "ester-hydrolysis-acs-200-png-crop",
+      "base": "ester-hydrolysis-acs-200",
+      "form": "png",
+      "send": "crop",
+      "pdf": "ester-hydrolysis-acs-200-png.pdf",
+      "png": "ester-hydrolysis-acs-200-png-crop.png",
+      "width": 2048,
+      "height": 658,
+      "bytes": 42383,
+      "name": "ester-hydrolysis-acs-200-png.pdf p.1 (crop)",
+      "crop": {
+        "x": 161.6,
+        "y": 293.8,
+        "width": 272.3,
+        "height": 87.5
+      }
+    },
+    {
+      "id": "ester-hydrolysis-acs-200-svg-page",
+      "base": "ester-hydrolysis-acs-200",
+      "form": "svg",
+      "send": "page",
+      "pdf": "ester-hydrolysis-acs-200-svg.pdf",
+      "png": "ester-hydrolysis-acs-200-svg-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 240323,
+      "name": "ester-hydrolysis-acs-200-svg.pdf p.1"
+    },
+    {
+      "id": "ester-hydrolysis-acs-200-svg-crop",
+      "base": "ester-hydrolysis-acs-200",
+      "form": "svg",
+      "send": "crop",
+      "pdf": "ester-hydrolysis-acs-200-svg.pdf",
+      "png": "ester-hydrolysis-acs-200-svg-crop.png",
+      "width": 2048,
+      "height": 656,
+      "bytes": 76568,
+      "name": "ester-hydrolysis-acs-200-svg.pdf p.1 (crop)",
+      "crop": {
+        "x": 161.6,
+        "y": 293.8,
+        "width": 272.3,
+        "height": 87.3
+      }
+    },
+    {
+      "id": "ester-hydrolysis-acs-200-scan-page",
+      "base": "ester-hydrolysis-acs-200",
+      "form": "scan",
+      "send": "page",
+      "pdf": "ester-hydrolysis-acs-200-scan.pdf",
+      "png": "ester-hydrolysis-acs-200-scan-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 349154,
+      "name": "ester-hydrolysis-acs-200-scan.pdf p.1"
+    },
+    {
+      "id": "ester-hydrolysis-acs-200-scan-crop",
+      "base": "ester-hydrolysis-acs-200",
+      "form": "scan",
+      "send": "crop",
+      "pdf": "ester-hydrolysis-acs-200-scan.pdf",
+      "png": "ester-hydrolysis-acs-200-scan-crop.png",
+      "width": 2048,
+      "height": 656,
+      "bytes": 39290,
+      "name": "ester-hydrolysis-acs-200-scan.pdf p.1 (crop)",
+      "crop": {
+        "x": 161.6,
+        "y": 293.8,
+        "width": 272.3,
+        "height": 87.3
+      }
+    },
+    {
+      "id": "nitro-reduction-footnote-150-png-page",
+      "base": "nitro-reduction-footnote-150",
+      "form": "png",
+      "send": "page",
+      "pdf": "nitro-reduction-footnote-150-png.pdf",
+      "png": "nitro-reduction-footnote-150-png-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 255215,
+      "name": "nitro-reduction-footnote-150-png.pdf p.1"
+    },
+    {
+      "id": "nitro-reduction-footnote-150-png-crop",
+      "base": "nitro-reduction-footnote-150",
+      "form": "png",
+      "send": "crop",
+      "pdf": "nitro-reduction-footnote-150-png.pdf",
+      "png": "nitro-reduction-footnote-150-png-crop.png",
+      "width": 2031,
+      "height": 1012,
+      "bytes": 49886,
+      "name": "nitro-reduction-footnote-150-png.pdf p.1 (crop)",
+      "crop": {
+        "x": 175.9,
+        "y": 293.8,
+        "width": 243.8,
+        "height": 121.4
+      }
+    },
+    {
+      "id": "nitro-reduction-footnote-150-svg-page",
+      "base": "nitro-reduction-footnote-150",
+      "form": "svg",
+      "send": "page",
+      "pdf": "nitro-reduction-footnote-150-svg.pdf",
+      "png": "nitro-reduction-footnote-150-svg-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 246170,
+      "name": "nitro-reduction-footnote-150-svg.pdf p.1"
+    },
+    {
+      "id": "nitro-reduction-footnote-150-svg-crop",
+      "base": "nitro-reduction-footnote-150",
+      "form": "svg",
+      "send": "crop",
+      "pdf": "nitro-reduction-footnote-150-svg.pdf",
+      "png": "nitro-reduction-footnote-150-svg-crop.png",
+      "width": 2031,
+      "height": 1012,
+      "bytes": 106388,
+      "name": "nitro-reduction-footnote-150-svg.pdf p.1 (crop)",
+      "crop": {
+        "x": 175.9,
+        "y": 293.8,
+        "width": 243.8,
+        "height": 121.5
+      }
+    },
+    {
+      "id": "nitro-reduction-footnote-150-scan-page",
+      "base": "nitro-reduction-footnote-150",
+      "form": "scan",
+      "send": "page",
+      "pdf": "nitro-reduction-footnote-150-scan.pdf",
+      "png": "nitro-reduction-footnote-150-scan-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 353317,
+      "name": "nitro-reduction-footnote-150-scan.pdf p.1"
+    },
+    {
+      "id": "nitro-reduction-footnote-150-scan-crop",
+      "base": "nitro-reduction-footnote-150",
+      "form": "scan",
+      "send": "crop",
+      "pdf": "nitro-reduction-footnote-150-scan.pdf",
+      "png": "nitro-reduction-footnote-150-scan-crop.png",
+      "width": 2031,
+      "height": 1012,
+      "bytes": 53743,
+      "name": "nitro-reduction-footnote-150-scan.pdf p.1 (crop)",
+      "crop": {
+        "x": 175.9,
+        "y": 293.8,
+        "width": 243.8,
+        "height": 121.5
+      }
+    },
+    {
+      "id": "dmp-oxidation-lab-150-png-page",
+      "base": "dmp-oxidation-lab-150",
+      "form": "png",
+      "send": "page",
+      "pdf": "dmp-oxidation-lab-150-png.pdf",
+      "png": "dmp-oxidation-lab-150-png-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 236915,
+      "name": "dmp-oxidation-lab-150-png.pdf p.1"
+    },
+    {
+      "id": "dmp-oxidation-lab-150-png-crop",
+      "base": "dmp-oxidation-lab-150",
+      "form": "png",
+      "send": "crop",
+      "pdf": "dmp-oxidation-lab-150-png.pdf",
+      "png": "dmp-oxidation-lab-150-png-crop.png",
+      "width": 1769,
+      "height": 544,
+      "bytes": 22521,
+      "name": "dmp-oxidation-lab-150-png.pdf p.1 (crop)",
+      "crop": {
+        "x": 191.6,
+        "y": 293.8,
+        "width": 212.3,
+        "height": 65.3
+      }
+    },
+    {
+      "id": "dmp-oxidation-lab-150-svg-page",
+      "base": "dmp-oxidation-lab-150",
+      "form": "svg",
+      "send": "page",
+      "pdf": "dmp-oxidation-lab-150-svg.pdf",
+      "png": "dmp-oxidation-lab-150-svg-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 233472,
+      "name": "dmp-oxidation-lab-150-svg.pdf p.1"
+    },
+    {
+      "id": "dmp-oxidation-lab-150-svg-crop",
+      "base": "dmp-oxidation-lab-150",
+      "form": "svg",
+      "send": "crop",
+      "pdf": "dmp-oxidation-lab-150-svg.pdf",
+      "png": "dmp-oxidation-lab-150-svg-crop.png",
+      "width": 1769,
+      "height": 544,
+      "bytes": 45580,
+      "name": "dmp-oxidation-lab-150-svg.pdf p.1 (crop)",
+      "crop": {
+        "x": 191.6,
+        "y": 293.8,
+        "width": 212.3,
+        "height": 65.3
+      }
+    },
+    {
+      "id": "dmp-oxidation-lab-150-scan-page",
+      "base": "dmp-oxidation-lab-150",
+      "form": "scan",
+      "send": "page",
+      "pdf": "dmp-oxidation-lab-150-scan.pdf",
+      "png": "dmp-oxidation-lab-150-scan-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 332956,
+      "name": "dmp-oxidation-lab-150-scan.pdf p.1"
+    },
+    {
+      "id": "dmp-oxidation-lab-150-scan-crop",
+      "base": "dmp-oxidation-lab-150",
+      "form": "scan",
+      "send": "crop",
+      "pdf": "dmp-oxidation-lab-150-scan.pdf",
+      "png": "dmp-oxidation-lab-150-scan-crop.png",
+      "width": 1769,
+      "height": 544,
+      "bytes": 23589,
+      "name": "dmp-oxidation-lab-150-scan.pdf p.1 (crop)",
+      "crop": {
+        "x": 191.6,
+        "y": 293.8,
+        "width": 212.3,
+        "height": 65.3
+      }
+    },
+    {
+      "id": "grignard-acs-72-png-page",
+      "base": "grignard-acs-72",
+      "form": "png",
+      "send": "page",
+      "pdf": "grignard-acs-72-png.pdf",
+      "png": "grignard-acs-72-png-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 234152,
+      "name": "grignard-acs-72-png.pdf p.1"
+    },
+    {
+      "id": "grignard-acs-72-png-crop",
+      "base": "grignard-acs-72",
+      "form": "png",
+      "send": "crop",
+      "pdf": "grignard-acs-72-png.pdf",
+      "png": "grignard-acs-72-png-crop.png",
+      "width": 1813,
+      "height": 674,
+      "bytes": 24574,
+      "name": "grignard-acs-72-png.pdf p.1 (crop)",
+      "crop": {
+        "x": 189,
+        "y": 293.8,
+        "width": 217.5,
+        "height": 80.8
+      }
+    },
+    {
+      "id": "grignard-acs-72-svg-page",
+      "base": "grignard-acs-72",
+      "form": "svg",
+      "send": "page",
+      "pdf": "grignard-acs-72-svg.pdf",
+      "png": "grignard-acs-72-svg-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 240987,
+      "name": "grignard-acs-72-svg.pdf p.1"
+    },
+    {
+      "id": "grignard-acs-72-svg-crop",
+      "base": "grignard-acs-72",
+      "form": "svg",
+      "send": "crop",
+      "pdf": "grignard-acs-72-svg.pdf",
+      "png": "grignard-acs-72-svg-crop.png",
+      "width": 1813,
+      "height": 672,
+      "bytes": 68163,
+      "name": "grignard-acs-72-svg.pdf p.1 (crop)",
+      "crop": {
+        "x": 189,
+        "y": 293.8,
+        "width": 217.5,
+        "height": 80.7
+      }
+    },
+    {
+      "id": "grignard-acs-72-scan-page",
+      "base": "grignard-acs-72",
+      "form": "scan",
+      "send": "page",
+      "pdf": "grignard-acs-72-scan.pdf",
+      "png": "grignard-acs-72-scan-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 342264,
+      "name": "grignard-acs-72-scan.pdf p.1"
+    },
+    {
+      "id": "grignard-acs-72-scan-crop",
+      "base": "grignard-acs-72",
+      "form": "scan",
+      "send": "crop",
+      "pdf": "grignard-acs-72-scan.pdf",
+      "png": "grignard-acs-72-scan-crop.png",
+      "width": 1813,
+      "height": 672,
+      "bytes": 24475,
+      "name": "grignard-acs-72-scan.pdf p.1 (crop)",
+      "crop": {
+        "x": 189,
+        "y": 293.8,
+        "width": 217.5,
+        "height": 80.7
+      }
+    },
+    {
+      "id": "wittig-acs-200-png-page",
+      "base": "wittig-acs-200",
+      "form": "png",
+      "send": "page",
+      "pdf": "wittig-acs-200-png.pdf",
+      "png": "wittig-acs-200-png-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 230560,
+      "name": "wittig-acs-200-png.pdf p.1"
+    },
+    {
+      "id": "wittig-acs-200-png-crop",
+      "base": "wittig-acs-200",
+      "form": "png",
+      "send": "crop",
+      "pdf": "wittig-acs-200-png.pdf",
+      "png": "wittig-acs-200-png-crop.png",
+      "width": 1544,
+      "height": 621,
+      "bytes": 22718,
+      "name": "wittig-acs-200-png.pdf p.1 (crop)",
+      "crop": {
+        "x": 205.1,
+        "y": 293.8,
+        "width": 185.3,
+        "height": 74.5
+      }
+    },
+    {
+      "id": "wittig-acs-200-svg-page",
+      "base": "wittig-acs-200",
+      "form": "svg",
+      "send": "page",
+      "pdf": "wittig-acs-200-svg.pdf",
+      "png": "wittig-acs-200-svg-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 229062,
+      "name": "wittig-acs-200-svg.pdf p.1"
+    },
+    {
+      "id": "wittig-acs-200-svg-crop",
+      "base": "wittig-acs-200",
+      "form": "svg",
+      "send": "crop",
+      "pdf": "wittig-acs-200-svg.pdf",
+      "png": "wittig-acs-200-svg-crop.png",
+      "width": 1544,
+      "height": 621,
+      "bytes": 37222,
+      "name": "wittig-acs-200-svg.pdf p.1 (crop)",
+      "crop": {
+        "x": 205.1,
+        "y": 293.8,
+        "width": 185.3,
+        "height": 74.5
+      }
+    },
+    {
+      "id": "wittig-acs-200-scan-page",
+      "base": "wittig-acs-200",
+      "form": "scan",
+      "send": "page",
+      "pdf": "wittig-acs-200-scan.pdf",
+      "png": "wittig-acs-200-scan-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 323404,
+      "name": "wittig-acs-200-scan.pdf p.1"
+    },
+    {
+      "id": "wittig-acs-200-scan-crop",
+      "base": "wittig-acs-200",
+      "form": "scan",
+      "send": "crop",
+      "pdf": "wittig-acs-200-scan.pdf",
+      "png": "wittig-acs-200-scan-crop.png",
+      "width": 1544,
+      "height": 621,
+      "bytes": 21379,
+      "name": "wittig-acs-200-scan.pdf p.1 (crop)",
+      "crop": {
+        "x": 205.1,
+        "y": 293.8,
+        "width": 185.3,
+        "height": 74.5
+      }
+    },
+    {
+      "id": "conjugate-addition-footnote-150-png-page",
+      "base": "conjugate-addition-footnote-150",
+      "form": "png",
+      "send": "page",
+      "pdf": "conjugate-addition-footnote-150-png.pdf",
+      "png": "conjugate-addition-footnote-150-png-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 249826,
+      "name": "conjugate-addition-footnote-150-png.pdf p.1"
+    },
+    {
+      "id": "conjugate-addition-footnote-150-png-crop",
+      "base": "conjugate-addition-footnote-150",
+      "form": "png",
+      "send": "crop",
+      "pdf": "conjugate-addition-footnote-150-png.pdf",
+      "png": "conjugate-addition-footnote-150-png-crop.png",
+      "width": 2048,
+      "height": 944,
+      "bytes": 48360,
+      "name": "conjugate-addition-footnote-150-png.pdf p.1 (crop)",
+      "crop": {
+        "x": 159.4,
+        "y": 293.8,
+        "width": 276.8,
+        "height": 127.6
+      }
+    },
+    {
+      "id": "conjugate-addition-footnote-150-svg-page",
+      "base": "conjugate-addition-footnote-150",
+      "form": "svg",
+      "send": "page",
+      "pdf": "conjugate-addition-footnote-150-svg.pdf",
+      "png": "conjugate-addition-footnote-150-svg-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 241635,
+      "name": "conjugate-addition-footnote-150-svg.pdf p.1"
+    },
+    {
+      "id": "conjugate-addition-footnote-150-svg-crop",
+      "base": "conjugate-addition-footnote-150",
+      "form": "svg",
+      "send": "crop",
+      "pdf": "conjugate-addition-footnote-150-svg.pdf",
+      "png": "conjugate-addition-footnote-150-svg-crop.png",
+      "width": 2048,
+      "height": 941,
+      "bytes": 95870,
+      "name": "conjugate-addition-footnote-150-svg.pdf p.1 (crop)",
+      "crop": {
+        "x": 159.4,
+        "y": 293.8,
+        "width": 276.8,
+        "height": 127.2
+      }
+    },
+    {
+      "id": "conjugate-addition-footnote-150-scan-page",
+      "base": "conjugate-addition-footnote-150",
+      "form": "scan",
+      "send": "page",
+      "pdf": "conjugate-addition-footnote-150-scan.pdf",
+      "png": "conjugate-addition-footnote-150-scan-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 345993,
+      "name": "conjugate-addition-footnote-150-scan.pdf p.1"
+    },
+    {
+      "id": "conjugate-addition-footnote-150-scan-crop",
+      "base": "conjugate-addition-footnote-150",
+      "form": "scan",
+      "send": "crop",
+      "pdf": "conjugate-addition-footnote-150-scan.pdf",
+      "png": "conjugate-addition-footnote-150-scan-crop.png",
+      "width": 2048,
+      "height": 941,
+      "bytes": 48477,
+      "name": "conjugate-addition-footnote-150-scan.pdf p.1 (crop)",
+      "crop": {
+        "x": 159.4,
+        "y": 293.8,
+        "width": 276.8,
+        "height": 127.2
+      }
+    },
+    {
+      "id": "mitsunobu-lab-150-png-page",
+      "base": "mitsunobu-lab-150",
+      "form": "png",
+      "send": "page",
+      "pdf": "mitsunobu-lab-150-png.pdf",
+      "png": "mitsunobu-lab-150-png-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 260351,
+      "name": "mitsunobu-lab-150-png.pdf p.1"
+    },
+    {
+      "id": "mitsunobu-lab-150-png-crop",
+      "base": "mitsunobu-lab-150",
+      "form": "png",
+      "send": "crop",
+      "pdf": "mitsunobu-lab-150-png.pdf",
+      "png": "mitsunobu-lab-150-png-crop.png",
+      "width": 2048,
+      "height": 404,
+      "bytes": 33719,
+      "name": "mitsunobu-lab-150-png.pdf p.1 (crop)",
+      "crop": {
+        "x": 87.8,
+        "y": 293.8,
+        "width": 420,
+        "height": 82.9
+      }
+    },
+    {
+      "id": "mitsunobu-lab-150-svg-page",
+      "base": "mitsunobu-lab-150",
+      "form": "svg",
+      "send": "page",
+      "pdf": "mitsunobu-lab-150-svg.pdf",
+      "png": "mitsunobu-lab-150-svg-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 248526,
+      "name": "mitsunobu-lab-150-svg.pdf p.1"
+    },
+    {
+      "id": "mitsunobu-lab-150-svg-crop",
+      "base": "mitsunobu-lab-150",
+      "form": "svg",
+      "send": "crop",
+      "pdf": "mitsunobu-lab-150-svg.pdf",
+      "png": "mitsunobu-lab-150-svg-crop.png",
+      "width": 2048,
+      "height": 403,
+      "bytes": 55150,
+      "name": "mitsunobu-lab-150-svg.pdf p.1 (crop)",
+      "crop": {
+        "x": 87.8,
+        "y": 293.8,
+        "width": 420,
+        "height": 82.6
+      }
+    },
+    {
+      "id": "mitsunobu-lab-150-scan-page",
+      "base": "mitsunobu-lab-150",
+      "form": "scan",
+      "send": "page",
+      "pdf": "mitsunobu-lab-150-scan.pdf",
+      "png": "mitsunobu-lab-150-scan-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 361056,
+      "name": "mitsunobu-lab-150-scan.pdf p.1"
+    },
+    {
+      "id": "mitsunobu-lab-150-scan-crop",
+      "base": "mitsunobu-lab-150",
+      "form": "scan",
+      "send": "crop",
+      "pdf": "mitsunobu-lab-150-scan.pdf",
+      "png": "mitsunobu-lab-150-scan-crop.png",
+      "width": 2048,
+      "height": 403,
+      "bytes": 40959,
+      "name": "mitsunobu-lab-150-scan.pdf p.1 (crop)",
+      "crop": {
+        "x": 87.8,
+        "y": 293.8,
+        "width": 420,
+        "height": 82.6
+      }
+    },
+    {
+      "id": "benzylation-acs-72-png-page",
+      "base": "benzylation-acs-72",
+      "form": "png",
+      "send": "page",
+      "pdf": "benzylation-acs-72-png.pdf",
+      "png": "benzylation-acs-72-png-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 242957,
+      "name": "benzylation-acs-72-png.pdf p.1"
+    },
+    {
+      "id": "benzylation-acs-72-png-crop",
+      "base": "benzylation-acs-72",
+      "form": "png",
+      "send": "crop",
+      "pdf": "benzylation-acs-72-png.pdf",
+      "png": "benzylation-acs-72-png-crop.png",
+      "width": 2048,
+      "height": 473,
+      "bytes": 22860,
+      "name": "benzylation-acs-72-png.pdf p.1 (crop)",
+      "crop": {
+        "x": 94.5,
+        "y": 293.8,
+        "width": 406.5,
+        "height": 93.9
+      }
+    },
+    {
+      "id": "benzylation-acs-72-svg-page",
+      "base": "benzylation-acs-72",
+      "form": "svg",
+      "send": "page",
+      "pdf": "benzylation-acs-72-svg.pdf",
+      "png": "benzylation-acs-72-svg-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 258274,
+      "name": "benzylation-acs-72-svg.pdf p.1"
+    },
+    {
+      "id": "benzylation-acs-72-svg-crop",
+      "base": "benzylation-acs-72",
+      "form": "svg",
+      "send": "crop",
+      "pdf": "benzylation-acs-72-svg.pdf",
+      "png": "benzylation-acs-72-svg-crop.png",
+      "width": 2048,
+      "height": 469,
+      "bytes": 64870,
+      "name": "benzylation-acs-72-svg.pdf p.1 (crop)",
+      "crop": {
+        "x": 94.5,
+        "y": 293.8,
+        "width": 406.5,
+        "height": 93.2
+      }
+    },
+    {
+      "id": "benzylation-acs-72-scan-page",
+      "base": "benzylation-acs-72",
+      "form": "scan",
+      "send": "page",
+      "pdf": "benzylation-acs-72-scan.pdf",
+      "png": "benzylation-acs-72-scan-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 361052,
+      "name": "benzylation-acs-72-scan.pdf p.1"
+    },
+    {
+      "id": "benzylation-acs-72-scan-crop",
+      "base": "benzylation-acs-72",
+      "form": "scan",
+      "send": "crop",
+      "pdf": "benzylation-acs-72-scan.pdf",
+      "png": "benzylation-acs-72-scan-crop.png",
+      "width": 2048,
+      "height": 469,
+      "bytes": 23351,
+      "name": "benzylation-acs-72-scan.pdf p.1 (crop)",
+      "crop": {
+        "x": 94.5,
+        "y": 293.8,
+        "width": 406.5,
+        "height": 93.2
+      }
+    },
+    {
+      "id": "boc-protection-acs-200-png-page",
+      "base": "boc-protection-acs-200",
+      "form": "png",
+      "send": "page",
+      "pdf": "boc-protection-acs-200-png.pdf",
+      "png": "boc-protection-acs-200-png-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 251111,
+      "name": "boc-protection-acs-200-png.pdf p.1"
+    },
+    {
+      "id": "boc-protection-acs-200-png-crop",
+      "base": "boc-protection-acs-200",
+      "form": "png",
+      "send": "crop",
+      "pdf": "boc-protection-acs-200-png.pdf",
+      "png": "boc-protection-acs-200-png-crop.png",
+      "width": 2048,
+      "height": 961,
+      "bytes": 55530,
+      "name": "boc-protection-acs-200-png.pdf p.1 (crop)",
+      "crop": {
+        "x": 151.5,
+        "y": 293.8,
+        "width": 292.5,
+        "height": 137.3
+      }
+    },
+    {
+      "id": "boc-protection-acs-200-svg-page",
+      "base": "boc-protection-acs-200",
+      "form": "svg",
+      "send": "page",
+      "pdf": "boc-protection-acs-200-svg.pdf",
+      "png": "boc-protection-acs-200-svg-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 244576,
+      "name": "boc-protection-acs-200-svg.pdf p.1"
+    },
+    {
+      "id": "boc-protection-acs-200-svg-crop",
+      "base": "boc-protection-acs-200",
+      "form": "svg",
+      "send": "crop",
+      "pdf": "boc-protection-acs-200-svg.pdf",
+      "png": "boc-protection-acs-200-svg-crop.png",
+      "width": 2048,
+      "height": 960,
+      "bytes": 94017,
+      "name": "boc-protection-acs-200-svg.pdf p.1 (crop)",
+      "crop": {
+        "x": 151.5,
+        "y": 293.8,
+        "width": 292.5,
+        "height": 137.1
+      }
+    },
+    {
+      "id": "boc-protection-acs-200-scan-page",
+      "base": "boc-protection-acs-200",
+      "form": "scan",
+      "send": "page",
+      "pdf": "boc-protection-acs-200-scan.pdf",
+      "png": "boc-protection-acs-200-scan-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 353715,
+      "name": "boc-protection-acs-200-scan.pdf p.1"
+    },
+    {
+      "id": "boc-protection-acs-200-scan-crop",
+      "base": "boc-protection-acs-200",
+      "form": "scan",
+      "send": "crop",
+      "pdf": "boc-protection-acs-200-scan.pdf",
+      "png": "boc-protection-acs-200-scan-crop.png",
+      "width": 2048,
+      "height": 960,
+      "bytes": 51293,
+      "name": "boc-protection-acs-200-scan.pdf p.1 (crop)",
+      "crop": {
+        "x": 151.5,
+        "y": 293.8,
+        "width": 292.5,
+        "height": 137.1
+      }
+    },
+    {
+      "id": "three-steps-footnote-150-png-page",
+      "base": "three-steps-footnote-150",
+      "form": "png",
+      "send": "page",
+      "pdf": "three-steps-footnote-150-png.pdf",
+      "png": "three-steps-footnote-150-png-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 320852,
+      "name": "three-steps-footnote-150-png.pdf p.1"
+    },
+    {
+      "id": "three-steps-footnote-150-png-crop",
+      "base": "three-steps-footnote-150",
+      "form": "png",
+      "send": "crop",
+      "pdf": "three-steps-footnote-150-png.pdf",
+      "png": "three-steps-footnote-150-png-crop.png",
+      "width": 2048,
+      "height": 763,
+      "bytes": 66523,
+      "name": "three-steps-footnote-150-png.pdf p.1 (crop)",
+      "crop": {
+        "x": 51,
+        "y": 308.3,
+        "width": 493.5,
+        "height": 183.8
+      }
+    },
+    {
+      "id": "three-steps-footnote-150-svg-page",
+      "base": "three-steps-footnote-150",
+      "form": "svg",
+      "send": "page",
+      "pdf": "three-steps-footnote-150-svg.pdf",
+      "png": "three-steps-footnote-150-svg-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 301919,
+      "name": "three-steps-footnote-150-svg.pdf p.1"
+    },
+    {
+      "id": "three-steps-footnote-150-svg-crop",
+      "base": "three-steps-footnote-150",
+      "form": "svg",
+      "send": "crop",
+      "pdf": "three-steps-footnote-150-svg.pdf",
+      "png": "three-steps-footnote-150-svg-crop.png",
+      "width": 2048,
+      "height": 763,
+      "bytes": 101452,
+      "name": "three-steps-footnote-150-svg.pdf p.1 (crop)",
+      "crop": {
+        "x": 51,
+        "y": 308.3,
+        "width": 493.5,
+        "height": 183.8
+      }
+    },
+    {
+      "id": "three-steps-footnote-150-scan-page",
+      "base": "three-steps-footnote-150",
+      "form": "scan",
+      "send": "page",
+      "pdf": "three-steps-footnote-150-scan.pdf",
+      "png": "three-steps-footnote-150-scan-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 442810,
+      "name": "three-steps-footnote-150-scan.pdf p.1"
+    },
+    {
+      "id": "three-steps-footnote-150-scan-crop",
+      "base": "three-steps-footnote-150",
+      "form": "scan",
+      "send": "crop",
+      "pdf": "three-steps-footnote-150-scan.pdf",
+      "png": "three-steps-footnote-150-scan-crop.png",
+      "width": 2048,
+      "height": 763,
+      "bytes": 74185,
+      "name": "three-steps-footnote-150-scan.pdf p.1 (crop)",
+      "crop": {
+        "x": 51,
+        "y": 308.3,
+        "width": 493.5,
+        "height": 183.8
+      }
+    },
+    {
+      "id": "experimental-en-lab-150-png-page",
+      "base": "experimental-en-lab-150",
+      "form": "png",
+      "send": "page",
+      "pdf": "experimental-en-lab-150-png.pdf",
+      "png": "experimental-en-lab-150-png-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 255260,
+      "name": "experimental-en-lab-150-png.pdf p.1"
+    },
+    {
+      "id": "experimental-en-lab-150-png-crop",
+      "base": "experimental-en-lab-150",
+      "form": "png",
+      "send": "crop",
+      "pdf": "experimental-en-lab-150-png.pdf",
+      "png": "experimental-en-lab-150-png-crop.png",
+      "width": 1956,
+      "height": 780,
+      "bytes": 36973,
+      "name": "experimental-en-lab-150-png.pdf p.1 (crop)",
+      "crop": {
+        "x": 180.4,
+        "y": 293.8,
+        "width": 234.8,
+        "height": 93.6
+      }
+    },
+    {
+      "id": "experimental-en-lab-150-svg-page",
+      "base": "experimental-en-lab-150",
+      "form": "svg",
+      "send": "page",
+      "pdf": "experimental-en-lab-150-svg.pdf",
+      "png": "experimental-en-lab-150-svg-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 247435,
+      "name": "experimental-en-lab-150-svg.pdf p.1"
+    },
+    {
+      "id": "experimental-en-lab-150-svg-crop",
+      "base": "experimental-en-lab-150",
+      "form": "svg",
+      "send": "crop",
+      "pdf": "experimental-en-lab-150-svg.pdf",
+      "png": "experimental-en-lab-150-svg-crop.png",
+      "width": 1956,
+      "height": 777,
+      "bytes": 78905,
+      "name": "experimental-en-lab-150-svg.pdf p.1 (crop)",
+      "crop": {
+        "x": 180.4,
+        "y": 293.8,
+        "width": 234.8,
+        "height": 93.3
+      }
+    },
+    {
+      "id": "experimental-en-lab-150-scan-page",
+      "base": "experimental-en-lab-150",
+      "form": "scan",
+      "send": "page",
+      "pdf": "experimental-en-lab-150-scan.pdf",
+      "png": "experimental-en-lab-150-scan-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 355970,
+      "name": "experimental-en-lab-150-scan.pdf p.1"
+    },
+    {
+      "id": "experimental-en-lab-150-scan-crop",
+      "base": "experimental-en-lab-150",
+      "form": "scan",
+      "send": "crop",
+      "pdf": "experimental-en-lab-150-scan.pdf",
+      "png": "experimental-en-lab-150-scan-crop.png",
+      "width": 1956,
+      "height": 777,
+      "bytes": 36852,
+      "name": "experimental-en-lab-150-scan.pdf p.1 (crop)",
+      "crop": {
+        "x": 180.4,
+        "y": 293.8,
+        "width": 234.8,
+        "height": 93.3
+      }
+    },
+    {
+      "id": "click-acs-72-png-page",
+      "base": "click-acs-72",
+      "form": "png",
+      "send": "page",
+      "pdf": "click-acs-72-png.pdf",
+      "png": "click-acs-72-png-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 230927,
+      "name": "click-acs-72-png.pdf p.1"
+    },
+    {
+      "id": "click-acs-72-png-crop",
+      "base": "click-acs-72",
+      "form": "png",
+      "send": "crop",
+      "pdf": "click-acs-72-png.pdf",
+      "png": "click-acs-72-png-crop.png",
+      "width": 2048,
+      "height": 448,
+      "bytes": 21203,
+      "name": "click-acs-72-png.pdf p.1 (crop)",
+      "crop": {
+        "x": 101.6,
+        "y": 293.8,
+        "width": 392.3,
+        "height": 85.9
+      }
+    },
+    {
+      "id": "click-acs-72-svg-page",
+      "base": "click-acs-72",
+      "form": "svg",
+      "send": "page",
+      "pdf": "click-acs-72-svg.pdf",
+      "png": "click-acs-72-svg-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 239271,
+      "name": "click-acs-72-svg.pdf p.1"
+    },
+    {
+      "id": "click-acs-72-svg-crop",
+      "base": "click-acs-72",
+      "form": "svg",
+      "send": "crop",
+      "pdf": "click-acs-72-svg.pdf",
+      "png": "click-acs-72-svg-crop.png",
+      "width": 2048,
+      "height": 447,
+      "bytes": 52505,
+      "name": "click-acs-72-svg.pdf p.1 (crop)",
+      "crop": {
+        "x": 101.6,
+        "y": 293.8,
+        "width": 392.3,
+        "height": 85.7
+      }
+    },
+    {
+      "id": "click-acs-72-scan-page",
+      "base": "click-acs-72",
+      "form": "scan",
+      "send": "page",
+      "pdf": "click-acs-72-scan.pdf",
+      "png": "click-acs-72-scan-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 336745,
+      "name": "click-acs-72-scan.pdf p.1"
+    },
+    {
+      "id": "click-acs-72-scan-crop",
+      "base": "click-acs-72",
+      "form": "scan",
+      "send": "crop",
+      "pdf": "click-acs-72-scan.pdf",
+      "png": "click-acs-72-scan-crop.png",
+      "width": 2048,
+      "height": 447,
+      "bytes": 21114,
+      "name": "click-acs-72-scan.pdf p.1 (crop)",
+      "crop": {
+        "x": 101.6,
+        "y": 293.8,
+        "width": 392.3,
+        "height": 85.7
+      }
+    },
+    {
+      "id": "buchwald-acs-200-png-page",
+      "base": "buchwald-acs-200",
+      "form": "png",
+      "send": "page",
+      "pdf": "buchwald-acs-200-png.pdf",
+      "png": "buchwald-acs-200-png-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 263030,
+      "name": "buchwald-acs-200-png.pdf p.1"
+    },
+    {
+      "id": "buchwald-acs-200-png-crop",
+      "base": "buchwald-acs-200",
+      "form": "png",
+      "send": "crop",
+      "pdf": "buchwald-acs-200-png.pdf",
+      "png": "buchwald-acs-200-png-crop.png",
+      "width": 2048,
+      "height": 529,
+      "bytes": 41083,
+      "name": "buchwald-acs-200-png.pdf p.1 (crop)",
+      "crop": {
+        "x": 115.9,
+        "y": 293.8,
+        "width": 363.8,
+        "height": 94
+      }
+    },
+    {
+      "id": "buchwald-acs-200-svg-page",
+      "base": "buchwald-acs-200",
+      "form": "svg",
+      "send": "page",
+      "pdf": "buchwald-acs-200-svg.pdf",
+      "png": "buchwald-acs-200-svg-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 257143,
+      "name": "buchwald-acs-200-svg.pdf p.1"
+    },
+    {
+      "id": "buchwald-acs-200-svg-crop",
+      "base": "buchwald-acs-200",
+      "form": "svg",
+      "send": "crop",
+      "pdf": "buchwald-acs-200-svg.pdf",
+      "png": "buchwald-acs-200-svg-crop.png",
+      "width": 2048,
+      "height": 528,
+      "bytes": 68480,
+      "name": "buchwald-acs-200-svg.pdf p.1 (crop)",
+      "crop": {
+        "x": 115.9,
+        "y": 293.8,
+        "width": 363.8,
+        "height": 93.9
+      }
+    },
+    {
+      "id": "buchwald-acs-200-scan-page",
+      "base": "buchwald-acs-200",
+      "form": "scan",
+      "send": "page",
+      "pdf": "buchwald-acs-200-scan.pdf",
+      "png": "buchwald-acs-200-scan-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 366652,
+      "name": "buchwald-acs-200-scan.pdf p.1"
+    },
+    {
+      "id": "buchwald-acs-200-scan-crop",
+      "base": "buchwald-acs-200",
+      "form": "scan",
+      "send": "crop",
+      "pdf": "buchwald-acs-200-scan.pdf",
+      "png": "buchwald-acs-200-scan-crop.png",
+      "width": 2048,
+      "height": 528,
+      "bytes": 38177,
+      "name": "buchwald-acs-200-scan.pdf p.1 (crop)",
+      "crop": {
+        "x": 115.9,
+        "y": 293.8,
+        "width": 363.8,
+        "height": 93.9
+      }
+    },
+    {
+      "id": "three-steps-acs-72-png-page",
+      "base": "three-steps-acs-72",
+      "form": "png",
+      "send": "page",
+      "pdf": "three-steps-acs-72-png.pdf",
+      "png": "three-steps-acs-72-png-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 274415,
+      "name": "three-steps-acs-72-png.pdf p.1"
+    },
+    {
+      "id": "three-steps-acs-72-png-crop",
+      "base": "three-steps-acs-72",
+      "form": "png",
+      "send": "crop",
+      "pdf": "three-steps-acs-72-png.pdf",
+      "png": "three-steps-acs-72-png-crop.png",
+      "width": 2048,
+      "height": 778,
+      "bytes": 39896,
+      "name": "three-steps-acs-72-png.pdf p.1 (crop)",
+      "crop": {
+        "x": 85.9,
+        "y": 308.3,
+        "width": 423.8,
+        "height": 160.9
+      }
+    },
+    {
+      "id": "three-steps-acs-72-svg-page",
+      "base": "three-steps-acs-72",
+      "form": "svg",
+      "send": "page",
+      "pdf": "three-steps-acs-72-svg.pdf",
+      "png": "three-steps-acs-72-svg-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 294210,
+      "name": "three-steps-acs-72-svg.pdf p.1"
+    },
+    {
+      "id": "three-steps-acs-72-svg-crop",
+      "base": "three-steps-acs-72",
+      "form": "svg",
+      "send": "crop",
+      "pdf": "three-steps-acs-72-svg.pdf",
+      "png": "three-steps-acs-72-svg-crop.png",
+      "width": 2048,
+      "height": 777,
+      "bytes": 102554,
+      "name": "three-steps-acs-72-svg.pdf p.1 (crop)",
+      "crop": {
+        "x": 85.9,
+        "y": 308.3,
+        "width": 423.8,
+        "height": 160.7
+      }
+    },
+    {
+      "id": "three-steps-acs-72-scan-page",
+      "base": "three-steps-acs-72",
+      "form": "scan",
+      "send": "page",
+      "pdf": "three-steps-acs-72-scan.pdf",
+      "png": "three-steps-acs-72-scan-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 426917,
+      "name": "three-steps-acs-72-scan.pdf p.1"
+    },
+    {
+      "id": "three-steps-acs-72-scan-crop",
+      "base": "three-steps-acs-72",
+      "form": "scan",
+      "send": "crop",
+      "pdf": "three-steps-acs-72-scan.pdf",
+      "png": "three-steps-acs-72-scan-crop.png",
+      "width": 2048,
+      "height": 777,
+      "bytes": 40207,
+      "name": "three-steps-acs-72-scan.pdf p.1 (crop)",
+      "crop": {
+        "x": 85.9,
+        "y": 308.3,
+        "width": 423.8,
+        "height": 160.7
+      }
+    },
+    {
+      "id": "mitsunobu-footnote-150-png-page",
+      "base": "mitsunobu-footnote-150",
+      "form": "png",
+      "send": "page",
+      "pdf": "mitsunobu-footnote-150-png.pdf",
+      "png": "mitsunobu-footnote-150-png-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 271356,
+      "name": "mitsunobu-footnote-150-png.pdf p.1"
+    },
+    {
+      "id": "mitsunobu-footnote-150-png-crop",
+      "base": "mitsunobu-footnote-150",
+      "form": "png",
+      "send": "crop",
+      "pdf": "mitsunobu-footnote-150-png.pdf",
+      "png": "mitsunobu-footnote-150-png-crop.png",
+      "width": 2048,
+      "height": 705,
+      "bytes": 51200,
+      "name": "mitsunobu-footnote-150-png.pdf p.1 (crop)",
+      "crop": {
+        "x": 102,
+        "y": 293.8,
+        "width": 391.5,
+        "height": 134.8
+      }
+    },
+    {
+      "id": "mitsunobu-footnote-150-svg-page",
+      "base": "mitsunobu-footnote-150",
+      "form": "svg",
+      "send": "page",
+      "pdf": "mitsunobu-footnote-150-svg.pdf",
+      "png": "mitsunobu-footnote-150-svg-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 257708,
+      "name": "mitsunobu-footnote-150-svg.pdf p.1"
+    },
+    {
+      "id": "mitsunobu-footnote-150-svg-crop",
+      "base": "mitsunobu-footnote-150",
+      "form": "svg",
+      "send": "crop",
+      "pdf": "mitsunobu-footnote-150-svg.pdf",
+      "png": "mitsunobu-footnote-150-svg-crop.png",
+      "width": 2048,
+      "height": 703,
+      "bytes": 91204,
+      "name": "mitsunobu-footnote-150-svg.pdf p.1 (crop)",
+      "crop": {
+        "x": 102,
+        "y": 293.8,
+        "width": 391.5,
+        "height": 134.4
+      }
+    },
+    {
+      "id": "mitsunobu-footnote-150-scan-page",
+      "base": "mitsunobu-footnote-150",
+      "form": "scan",
+      "send": "page",
+      "pdf": "mitsunobu-footnote-150-scan.pdf",
+      "png": "mitsunobu-footnote-150-scan-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 367941,
+      "name": "mitsunobu-footnote-150-scan.pdf p.1"
+    },
+    {
+      "id": "mitsunobu-footnote-150-scan-crop",
+      "base": "mitsunobu-footnote-150",
+      "form": "scan",
+      "send": "crop",
+      "pdf": "mitsunobu-footnote-150-scan.pdf",
+      "png": "mitsunobu-footnote-150-scan-crop.png",
+      "width": 2048,
+      "height": 703,
+      "bytes": 55861,
+      "name": "mitsunobu-footnote-150-scan.pdf p.1 (crop)",
+      "crop": {
+        "x": 102,
+        "y": 293.8,
+        "width": 391.5,
+        "height": 134.4
+      }
+    },
+    {
+      "id": "boc-protection-acs-72-png-page",
+      "base": "boc-protection-acs-72",
+      "form": "png",
+      "send": "page",
+      "pdf": "boc-protection-acs-72-png.pdf",
+      "png": "boc-protection-acs-72-png-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 234533,
+      "name": "boc-protection-acs-72-png.pdf p.1"
+    },
+    {
+      "id": "boc-protection-acs-72-png-crop",
+      "base": "boc-protection-acs-72",
+      "form": "png",
+      "send": "crop",
+      "pdf": "boc-protection-acs-72-png.pdf",
+      "png": "boc-protection-acs-72-png-crop.png",
+      "width": 2048,
+      "height": 958,
+      "bytes": 38442,
+      "name": "boc-protection-acs-72-png.pdf p.1 (crop)",
+      "crop": {
+        "x": 151.5,
+        "y": 293.8,
+        "width": 292.5,
+        "height": 136.8
+      }
+    },
+    {
+      "id": "boc-protection-acs-72-svg-page",
+      "base": "boc-protection-acs-72",
+      "form": "svg",
+      "send": "page",
+      "pdf": "boc-protection-acs-72-svg.pdf",
+      "png": "boc-protection-acs-72-svg-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 247389,
+      "name": "boc-protection-acs-72-svg.pdf p.1"
+    },
+    {
+      "id": "boc-protection-acs-72-svg-crop",
+      "base": "boc-protection-acs-72",
+      "form": "svg",
+      "send": "crop",
+      "pdf": "boc-protection-acs-72-svg.pdf",
+      "png": "boc-protection-acs-72-svg-crop.png",
+      "width": 2048,
+      "height": 960,
+      "bytes": 94017,
+      "name": "boc-protection-acs-72-svg.pdf p.1 (crop)",
+      "crop": {
+        "x": 151.5,
+        "y": 293.8,
+        "width": 292.5,
+        "height": 137.1
+      }
+    },
+    {
+      "id": "boc-protection-acs-72-scan-page",
+      "base": "boc-protection-acs-72",
+      "form": "scan",
+      "send": "page",
+      "pdf": "boc-protection-acs-72-scan.pdf",
+      "png": "boc-protection-acs-72-scan-page.png",
+      "width": 1450,
+      "height": 2048,
+      "bytes": 348219,
+      "name": "boc-protection-acs-72-scan.pdf p.1"
+    },
+    {
+      "id": "boc-protection-acs-72-scan-crop",
+      "base": "boc-protection-acs-72",
+      "form": "scan",
+      "send": "crop",
+      "pdf": "boc-protection-acs-72-scan.pdf",
+      "png": "boc-protection-acs-72-scan-crop.png",
+      "width": 2048,
+      "height": 960,
+      "bytes": 38734,
+      "name": "boc-protection-acs-72-scan.pdf p.1 (crop)",
+      "crop": {
+        "x": 151.5,
+        "y": 293.8,
+        "width": 292.5,
+        "height": 137.1
+      }
+    }
+  ]
+}

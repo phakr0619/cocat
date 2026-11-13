@@ -1,0 +1,194 @@
+{
+  "about": "スキームから実験項の文章を書く評価。bases は書く前のスキーム（言葉からスキームの答えの形）に、段ごとの最初の基質の量（scales）を足したもの。expect.placeholders は使うべき差し込みの印、expectIssues は出るべき要確認の種類、allowIssues は出てもよい種類、forbid は（[[…]] の書き足す所の外に）書いてはいけない言葉（頼んでいない後処理・精製・分析値の作り話）、contains は差し込んだ後の文に含まれるべき書き方（指示に書いた後処理）、needNotice は書き足す所か質問で知らせるべきこと（その言葉を含む書き足す所か質問があること）",
+  "bases": {
+    "amide": {
+      "compounds": [
+        { "ref": "A", "name": "Boc-Ala-OH", "smiles": "CC(C)(C)OC(=O)N[C@@H](C)C(=O)O" },
+        { "ref": "B", "name": "H-Gly-OMe", "smiles": "NCC(=O)OC" },
+        { "ref": "C", "name": "5", "smiles": "CC(C)(C)OC(=O)N[C@@H](C)C(=O)NCC(=O)OC" }
+      ],
+      "steps": [
+        { "from": ["A", "B"], "to": ["C"], "reagents": [{ "text": "HATU", "equiv": 1.2 }, { "text": "DIPEA", "equiv": 3 }], "solvent": "DMF", "temp": "rt", "time": "2 h", "yield": 85 }
+      ],
+      "scales": [{ "value": 189.21, "unit": "mg" }]
+    },
+    "amide-noscale": {
+      "compounds": [
+        { "ref": "A", "name": "Boc-Ala-OH", "smiles": "CC(C)(C)OC(=O)N[C@@H](C)C(=O)O" },
+        { "ref": "B", "name": "H-Gly-OMe", "smiles": "NCC(=O)OC" },
+        { "ref": "C", "name": "5", "smiles": "CC(C)(C)OC(=O)N[C@@H](C)C(=O)NCC(=O)OC" }
+      ],
+      "steps": [
+        { "from": ["A", "B"], "to": ["C"], "reagents": [{ "text": "HATU", "equiv": 1.2 }, { "text": "DIPEA", "equiv": 3 }], "solvent": "DMF", "temp": "rt", "time": "2 h", "yield": 85 }
+      ],
+      "scales": []
+    },
+    "two-step": {
+      "compounds": [
+        { "ref": "A", "name": "Boc-Ala-OH", "smiles": "CC(C)(C)OC(=O)N[C@@H](C)C(=O)O" },
+        { "ref": "B", "name": "H-Gly-OMe", "smiles": "NCC(=O)OC" },
+        { "ref": "C", "name": "5", "smiles": "CC(C)(C)OC(=O)N[C@@H](C)C(=O)NCC(=O)OC" },
+        { "ref": "D", "name": "7", "smiles": "N[C@@H](C)C(=O)NCC(=O)OC" }
+      ],
+      "steps": [
+        { "from": ["A", "B"], "to": ["C"], "reagents": [{ "text": "HATU", "equiv": 1.2 }, { "text": "DIPEA", "equiv": 3 }], "solvent": "DMF", "temp": "rt", "time": "2 h", "yield": 85 },
+        { "from": ["C"], "to": ["D"], "reagents": [{ "text": "TFA", "equiv": 10 }], "solvent": "CH2Cl2", "temp": "0 °C to rt", "time": "1 h", "yield": 95 }
+      ],
+      "scales": [{ "value": 189.21, "unit": "mg" }, { "value": 0.8, "unit": "mmol" }]
+    },
+    "suzuki": {
+      "compounds": [
+        { "ref": "A", "name": "4-bromoanisole", "smiles": "COc1ccc(Br)cc1" },
+        { "ref": "B", "name": "phenylboronic acid", "smiles": "OB(O)c1ccccc1" },
+        { "ref": "C", "name": "12", "smiles": "COc1ccc(-c2ccccc2)cc1" }
+      ],
+      "steps": [
+        { "from": ["A", "B"], "to": ["C"], "reagents": [{ "text": "Pd(dppf)Cl2", "equiv": 0.05 }, { "text": "K2CO3", "equiv": 2 }], "solvent": "1,4-dioxane/H2O", "temp": "90 °C", "time": "12 h", "yield": 78 }
+      ],
+      "scales": [{ "value": 1, "unit": "mmol" }]
+    },
+    "deprotect-quant": {
+      "compounds": [
+        { "ref": "A", "name": "5", "smiles": "CC(C)(C)OC(=O)N[C@@H](C)C(=O)NCC(=O)OC" },
+        { "ref": "B", "name": "7", "smiles": "N[C@@H](C)C(=O)NCC(=O)OC" }
+      ],
+      "steps": [
+        { "from": ["A"], "to": ["B"], "reagents": [{ "text": "TFA", "equiv": 10 }], "solvent": "CH2Cl2", "temp": "rt", "time": "1 h", "yield": "quant." }
+      ],
+      "scales": [{ "value": 260.29, "unit": "mg" }]
+    }
+  },
+  "cases": [
+    {
+      "id": "amide-en",
+      "title": "縮合・英語・指示なし（後処理は書き足す所に）",
+      "base": "amide",
+      "text": "",
+      "language": "en",
+      "expect": {
+        "placeholders": ["C1", "C2", "C3", "s1.R1", "s1.R2", "s1.C1.mg", "s1.C1.mmol", "s1.R1.equiv", "s1.R2.equiv", "s1.solvent", "s1.temp", "s1.time", "s1.yield", "s1.C3.mg"],
+        "forbid": ["chromatograph", "column", "Na2SO4", "MgSO4", "brine", "argon", "nitrogen", "white solid"]
+      }
+    },
+    {
+      "id": "amide-ja",
+      "title": "縮合・日本語・指示なし",
+      "base": "amide",
+      "text": "",
+      "language": "ja",
+      "expect": {
+        "placeholders": ["C1", "C2", "C3", "s1.R1", "s1.R2", "s1.C1.mg", "s1.C1.mmol", "s1.R1.equiv", "s1.R2.equiv", "s1.solvent", "s1.temp", "s1.time", "s1.yield", "s1.C3.mg"],
+        "forbid": ["カラム", "Na2SO4", "MgSO4", "硫酸ナトリウム", "食塩水", "アルゴン", "窒素", "白色"]
+      }
+    },
+    {
+      "id": "amide-workup",
+      "title": "縮合・指示に後処理と精製を書いた（数字も含む）",
+      "base": "amide",
+      "text": "後処理: EtOAc で薄め、1 M HCl・飽和 NaHCO3 水・飽和食塩水で順に洗い、Na2SO4 で乾燥して濃縮。シリカゲルカラム（hexane/EtOAc 1:1）で精製し、白色固体を得た。",
+      "language": "en",
+      "expect": {
+        "placeholders": ["C1", "C2", "C3", "s1.R1", "s1.R2", "s1.C1.mg", "s1.R1.equiv", "s1.R2.equiv", "s1.solvent", "s1.yield", "s1.C3.mg"],
+        "contains": ["1 M HCl", "NaHCO3", "Na2SO4", "1:1"]
+      }
+    },
+    {
+      "id": "amide-noscale",
+      "title": "量が未入力（要確認で量を入れてもらう）",
+      "base": "amide-noscale",
+      "text": "",
+      "language": "en",
+      "expect": {
+        "placeholders": ["C1", "C2", "C3", "s1.R1", "s1.R2", "s1.C1.mg", "s1.R1.equiv", "s1.yield"],
+        "expectIssues": ["missing"],
+        "forbid": ["chromatograph", "Na2SO4", "MgSO4"]
+      }
+    },
+    {
+      "id": "two-step",
+      "title": "2 段（段ごとの段落、2 段目は mmol で量を入れた）",
+      "base": "two-step",
+      "text": "",
+      "language": "en",
+      "expect": {
+        "placeholders": ["C1", "C2", "C3", "C4", "s1.R1", "s1.R2", "s2.R1", "s1.C1.mg", "s1.yield", "s2.C3.mmol", "s2.R1.equiv", "s2.solvent", "s2.temp", "s2.yield", "s2.C4.mg"],
+        "forbid": ["chromatograph", "Na2SO4", "MgSO4"]
+      }
+    },
+    {
+      "id": "suzuki-unknown-mw",
+      "title": "辞書に無い触媒（分子量が分からない）",
+      "base": "suzuki",
+      "text": "Write it in the style of J. Org. Chem.",
+      "language": "en",
+      "expect": {
+        "placeholders": ["C1", "C2", "C3", "s1.R1", "s1.R2", "s1.C1.mg", "s1.R1.equiv", "s1.R1.mg", "s1.R2.mg", "s1.solvent", "s1.temp", "s1.time", "s1.yield"],
+        "expectIssues": ["missing"],
+        "forbid": ["degass", "argon", "nitrogen", "chromatograph", "Na2SO4", "MgSO4"]
+      }
+    },
+    {
+      "id": "deprotect-quant",
+      "title": "収率が quant.（得た量は出せない）",
+      "base": "deprotect-quant",
+      "text": "",
+      "language": "en",
+      "expect": {
+        "placeholders": ["C1", "C2", "s1.R1", "s1.C1.mg", "s1.R1.equiv", "s1.solvent", "s1.yield"],
+        "allowIssues": ["missing"],
+        "forbid": ["chromatograph", "Na2SO4", "MgSO4"]
+      }
+    },
+    {
+      "id": "nmr-request",
+      "title": "スキームに無い NMR を頼む（作らずに知らせる）",
+      "base": "amide",
+      "text": "1H NMR と HRMS のデータも付けて",
+      "language": "en",
+      "expect": {
+        "placeholders": ["C1", "C2", "C3", "s1.R1", "s1.R2", "s1.C1.mg", "s1.yield"],
+        "forbid": ["δ", "ppm", "MHz", "calcd", "found"],
+        "needNotice": ["NMR"]
+      }
+    },
+    {
+      "id": "spoken-en",
+      "title": "後処理の指示が話し言葉（音声入力）",
+      "base": "amide",
+      "text": "反応液を重曹水で洗って、硫酸ナトリウムで乾燥。濃縮後、カラム精製。ヘキサク3対1。",
+      "language": "en",
+      "ideal": "The reaction mixture was washed with saturated aqueous NaHCO3, dried over Na2SO4 and concentrated under reduced pressure. The residue was purified by silica gel column chromatography (hexane/EtOAc 3:1).",
+      "expect": {
+        "placeholders": ["C1", "C2", "C3", "s1.R1", "s1.R2", "s1.C1.mg", "s1.R1.equiv", "s1.R2.equiv", "s1.solvent", "s1.yield", "s1.C3.mg"],
+        "contains": ["NaHCO3", "Na2SO4", "hexane/EtOAc", "3:1"],
+        "forbid": ["ヘキサク", "重曹"]
+      }
+    },
+    {
+      "id": "spoken-kanji",
+      "title": "話し言葉で、数字が漢数字（音声入力）",
+      "base": "amide",
+      "text": "酢エチで抽出して、食塩水で洗って、芒硝で乾燥。エバポして、ヘキサク三対一でカラム。",
+      "language": "en",
+      "ideal": "The mixture was extracted with EtOAc, and the organic layer was washed with brine, dried over Na2SO4 and concentrated under reduced pressure. The residue was purified by silica gel column chromatography (hexane/EtOAc 3:1).",
+      "expect": {
+        "placeholders": ["C1", "C2", "C3", "s1.R1", "s1.R2", "s1.C1.mg", "s1.R1.equiv", "s1.R2.equiv", "s1.solvent", "s1.yield", "s1.C3.mg"],
+        "contains": ["EtOAc", "brine", "Na2SO4", "3:1"],
+        "forbid": ["芒硝", "エバポ"]
+      }
+    },
+    {
+      "id": "spoken-ja",
+      "title": "話し言葉の指示から、日本語の実験項",
+      "base": "amide",
+      "text": "反応液を重曹水で洗って、硫酸ナトリウムで乾燥。濃縮後、カラム精製。ヘキサク3対1。",
+      "language": "ja",
+      "ideal": "反応液を飽和炭酸水素ナトリウム水溶液で洗浄し、硫酸ナトリウムで乾燥後、減圧濃縮した。残渣をシリカゲルカラムクロマトグラフィー（hexane/EtOAc 3:1）で精製した。",
+      "expect": {
+        "placeholders": ["C1", "C2", "C3", "s1.R1", "s1.R2", "s1.C1.mg", "s1.R1.equiv", "s1.R2.equiv", "s1.solvent", "s1.yield", "s1.C3.mg"],
+        "contains": ["3:1"],
+        "forbid": ["ヘキサク", "芒硝", "エバポ"]
+      }
+    }
+  ]
+}

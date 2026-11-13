@@ -1,0 +1,4 @@
+# 独自ドメインを付けるときだけ、terraform.tfvars に写して値を入れる（terraform.tfvars はコミットしない）。
+# アカウントの ID は account.auto.tfvars にある
+# domain_name    = "editor.example.com"
+# hosted_zone_id = "Z0123456789ABCDEFGHIJ"

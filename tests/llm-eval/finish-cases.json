@@ -1,0 +1,128 @@
+{
+  "about": "仕上げの一括の指示の評価。base は直す前の文書で、スキームを上から順に並べたもの（言葉からスキームの答えの形と、書式）。2 つのスキームは化合物 D（7）を共有する。scope は画面で選ぶ範囲（all: すべて / active: active 番目のスキームだけ）。expect.kind: finish=正しく仕上げる / cannot=何も変えずに、できないこととして知らせる。finish の style は範囲のスキームの書式（base: 書式の id か current=今の書式、options: 直す項目、loose: true なら options に書いた項目だけを見る）。steps は「スキーム.段」（スキームは範囲の中の番号。\"*\" はすべての段）の書き方で、reagents は試薬の書き方の並び（当量はいつも変わらないこと）。\"*\" は問わない。numbers は化合物番号。書いていない所は直す前のままであること。mustWarn は、頼まれた中身の変更を知らせる（できないこと・使えなかった指示・質問のどれか）こと",
+  "bases": {
+    "two-schemes": {
+      "schemes": [
+        {
+          "styleId": "lab",
+          "plan": {
+            "compounds": [
+              { "ref": "A", "name": "Boc-Ala-OH", "smiles": "CC(C)(C)OC(=O)N[C@@H](C)C(=O)O" },
+              { "ref": "B", "name": "H-Gly-OMe", "smiles": "NCC(=O)OC" },
+              { "ref": "C", "name": "5", "smiles": "CC(C)(C)OC(=O)N[C@@H](C)C(=O)NCC(=O)OC" },
+              { "ref": "D", "name": "7", "smiles": "N[C@@H](C)C(=O)NCC(=O)OC" }
+            ],
+            "steps": [
+              { "from": ["A", "B"], "to": ["C"], "reagents": [{ "text": "HATU", "equiv": 1.2 }, { "text": "TEA", "equiv": 3 }], "solvent": "DMF", "temp": "室温", "time": "2 時間", "yield": 85 },
+              { "from": ["C"], "to": ["D"], "reagents": [{ "text": "TFA" }], "solvent": "CH2Cl2", "temp": "室温", "time": "1 時間", "yield": 95 }
+            ]
+          }
+        },
+        {
+          "styleId": "acs",
+          "plan": {
+            "compounds": [
+              { "ref": "D", "name": "7", "smiles": "N[C@@H](C)C(=O)NCC(=O)OC" },
+              { "ref": "E", "name": "Cbz-Phe-OH", "smiles": "O=C(O)[C@@H](Cc1ccccc1)NC(=O)OCc1ccccc1" },
+              { "ref": "F", "name": "12", "smiles": "O=C(OCc1ccccc1)N[C@@H](Cc1ccccc1)C(=O)N[C@@H](C)C(=O)NCC(=O)OC" }
+            ],
+            "steps": [
+              { "from": ["D", "E"], "to": ["F"], "reagents": [{ "text": "EDC·HCl", "equiv": 1.5 }, { "text": "HOBt", "equiv": 1.5 }], "solvent": "DMF", "temp": "室温", "time": "16 時間", "yield": 78 }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "cases": [
+    {
+      "id": "acs-submission",
+      "title": "ACS の書式に揃えて投稿用に",
+      "base": "two-schemes",
+      "scope": "all",
+      "text": "ACS の書式に揃えて投稿用に",
+      "expect": { "kind": "finish", "style": { "base": "acs" }, "steps": { "*": { "reagents": "*", "temp": "*", "time": "*" } } }
+    },
+    {
+      "id": "footnote-renumber",
+      "title": "番号を振り直して脚注の書式に、当量は equiv",
+      "base": "two-schemes",
+      "scope": "all",
+      "text": "番号を 1 から振り直して脚注の書式に。当量は equiv で",
+      "expect": { "kind": "finish", "style": { "base": "footnote" }, "numbers": { "A": "1", "B": "2", "C": "3", "D": "4", "E": "5", "F": "6" } }
+    },
+    {
+      "id": "equiv-format",
+      "title": "当量の書き方だけ直す",
+      "base": "two-schemes",
+      "scope": "all",
+      "text": "当量は「(1.2 equiv)」のように括弧付きで書いて",
+      "expect": { "kind": "finish", "style": { "base": "current", "options": { "equivFormat": "({n} equiv)" } } }
+    },
+    {
+      "id": "roman-footnote",
+      "title": "段の記号を i, ii, iii にして脚注に",
+      "base": "two-schemes",
+      "scope": "all",
+      "text": "条件は脚注にまとめて、段の記号は i, ii, iii にして",
+      "expect": { "kind": "finish", "style": { "base": "current", "options": { "conditions": "footnote", "stepMarks": "roman" }, "loose": true } }
+    },
+    {
+      "id": "notation",
+      "title": "条件の書き方を英語の略記に",
+      "base": "two-schemes",
+      "scope": "all",
+      "text": "条件の書き方を英語の略記に（室温は rt、時間は h）",
+      "expect": {
+        "kind": "finish",
+        "steps": { "1.1": { "temp": "rt", "time": "2 h" }, "1.2": { "temp": "rt", "time": "1 h" }, "2.1": { "temp": "rt", "time": "16 h" } }
+      }
+    },
+    {
+      "id": "rename-reagent",
+      "title": "試薬の書き方を直す（TEA → Et3N）",
+      "base": "two-schemes",
+      "scope": "all",
+      "text": "TEA は Et3N と書いて",
+      "expect": { "kind": "finish", "steps": { "1.1": { "reagents": ["HATU", "Et3N"] } } }
+    },
+    {
+      "id": "cannot-font",
+      "title": "書式に無いこと（フォント・線の太さ）",
+      "base": "two-schemes",
+      "scope": "all",
+      "text": "フォントを Arial 10 pt に、結合の線の太さを 0.6 pt にして",
+      "expect": { "kind": "cannot" }
+    },
+    {
+      "id": "content-change",
+      "title": "中身の変更が混ざった指示（TFA を HCl に）",
+      "base": "two-schemes",
+      "scope": "all",
+      "text": "投稿用に ACS の書式にして、ついでに 2 段目の TFA を HCl に替えて",
+      "expect": {
+        "kind": "finish",
+        "style": { "base": "acs" },
+        "steps": { "*": { "reagents": "*", "temp": "*", "time": "*" }, "1.2": { "reagents": ["TFA"], "temp": "*", "time": "*" } },
+        "mustWarn": true
+      }
+    },
+    {
+      "id": "scope-active",
+      "title": "選んでいるスキームだけ番号を振り直す",
+      "base": "two-schemes",
+      "scope": "active",
+      "active": 1,
+      "text": "化合物番号を 1 から振り直して",
+      "expect": { "kind": "finish", "numbers": { "A": "1", "B": "2", "C": "3", "D": "4" } }
+    },
+    {
+      "id": "prefix",
+      "title": "番号に S を付ける（S1, S2…）",
+      "base": "two-schemes",
+      "scope": "all",
+      "text": "化合物番号を S1, S2, … の形で振り直して",
+      "expect": { "kind": "finish", "numbers": { "A": "S1", "B": "S2", "C": "S3", "D": "S4", "E": "S5", "F": "S6" } }
+    }
+  ]
+}

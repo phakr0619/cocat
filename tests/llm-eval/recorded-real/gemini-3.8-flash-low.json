@@ -1,0 +1,1735 @@
+{
+  "model": "gemini-3.8-flash",
+  "thinking": "low",
+  "recordedAt": "2026-11-08T16-39-23",
+  "raw": {
+    "bjoc-21-38-s2": [
+      {
+        "figures": [
+          {
+            "box_2d": [
+              136,
+              206,
+              395,
+              793
+            ],
+            "label": "Scheme 2",
+            "kind": "reaction-scheme"
+          },
+          {
+            "box_2d": [
+              462,
+              208,
+              720,
+              790
+            ],
+            "label": "Scheme 3",
+            "kind": "reaction-scheme"
+          }
+        ]
+      },
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "(R)-2",
+            "smiles": "C[C@H]1CO1",
+            "cip": "R"
+          },
+          {
+            "ref": "B",
+            "name": "3",
+            "smiles": "C=CC[Mg]Br"
+          },
+          {
+            "ref": "C",
+            "name": "(R)-4",
+            "smiles": "C=CCC[C@@H](C)O",
+            "cip": "R"
+          },
+          {
+            "ref": "D",
+            "name": "(S)-4'",
+            "smiles": "C=CC[C@H](C)CO",
+            "cip": "S"
+          },
+          {
+            "ref": "E",
+            "name": "(R)-5",
+            "smiles": "C=CCC[C@@H](C)OS(=O)(=O)c1ccc(C)cc1",
+            "cip": "R"
+          },
+          {
+            "ref": "F",
+            "name": "DEM",
+            "smiles": "CCOC(=O)CC(=O)OCC"
+          },
+          {
+            "ref": "G",
+            "name": "(S)-6",
+            "smiles": "CCOC(=O)C(C(=O)OCC)[C@@H](C)CCC=C",
+            "cip": "S"
+          },
+          {
+            "ref": "H",
+            "name": "(S)-7",
+            "smiles": "C=CCC[C@H](C)C(C(=O)O)C(=O)O",
+            "cip": "S"
+          },
+          {
+            "ref": "I",
+            "name": "(S)-8",
+            "smiles": "C=CCC[C@H](C)CC(=O)O",
+            "cip": "S"
+          },
+          {
+            "ref": "J",
+            "name": "(S)-9",
+            "smiles": "C=CCC[C@H](C)CCO",
+            "cip": "S"
+          },
+          {
+            "ref": "K",
+            "name": "(S)-10",
+            "smiles": "C=CCC[C@H](C)CCOS(=O)(=O)c1ccc(C)cc1",
+            "cip": "S"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C",
+              "D"
+            ],
+            "reagents": [
+              {
+                "text": "CuI",
+                "smiles": "[Cu]I"
+              }
+            ],
+            "solvent": "Et2O",
+            "temp": "-30 °C",
+            "time": "6 h",
+            "yield": 58
+          },
+          {
+            "from": [
+              "C"
+            ],
+            "to": [
+              "E"
+            ],
+            "reagents": [
+              {
+                "text": "p-TsCl",
+                "smiles": "Cc1ccc(S(=O)(=O)Cl)cc1"
+              },
+              {
+                "text": "Et3N",
+                "smiles": "CCN(CC)CC"
+              },
+              {
+                "text": "DMAP",
+                "smiles": "CN(C)c1ccncc1"
+              }
+            ],
+            "solvent": "DCM",
+            "temp": "0 °C to rt",
+            "time": "8 h",
+            "yield": 88
+          },
+          {
+            "from": [
+              "E",
+              "F"
+            ],
+            "to": [
+              "G"
+            ],
+            "reagents": [
+              {
+                "text": "NaH",
+                "smiles": "[NaH]"
+              },
+              {
+                "text": "NaI",
+                "smiles": "[Na+].[I-]"
+              }
+            ],
+            "solvent": "DMF",
+            "temp": "0–60 °C",
+            "time": "8 h",
+            "yield": 85
+          },
+          {
+            "from": [
+              "G"
+            ],
+            "to": [
+              "H"
+            ],
+            "reagents": [
+              {
+                "text": "NaOH",
+                "smiles": "[Na+].[OH-]"
+              }
+            ],
+            "solvent": "MeOH, H2O",
+            "temp": "rt",
+            "time": "8 h",
+            "yield": 96
+          },
+          {
+            "from": [
+              "H"
+            ],
+            "to": [
+              "I"
+            ],
+            "reagents": [],
+            "solvent": "DMSO, H2O",
+            "temp": "120 °C",
+            "time": "40 min",
+            "yield": 78
+          },
+          {
+            "from": [
+              "I"
+            ],
+            "to": [
+              "J"
+            ],
+            "reagents": [
+              {
+                "text": "NH3·BH3",
+                "smiles": "NB"
+              },
+              {
+                "text": "TiCl4",
+                "smiles": "Cl[Ti](Cl)(Cl)Cl"
+              }
+            ],
+            "solvent": "Et2O",
+            "temp": "0 °C to rt",
+            "time": "4 h",
+            "yield": 71
+          },
+          {
+            "from": [
+              "J"
+            ],
+            "to": [
+              "K"
+            ],
+            "reagents": [
+              {
+                "text": "p-TsCl",
+                "smiles": "Cc1ccc(S(=O)(=O)Cl)cc1"
+              },
+              {
+                "text": "Et3N",
+                "smiles": "CCN(CC)CC"
+              },
+              {
+                "text": "DMAP",
+                "smiles": "CN(C)c1ccncc1"
+              }
+            ],
+            "solvent": "DCM",
+            "temp": "0 °C to rt",
+            "time": "8 h",
+            "yield": 79
+          }
+        ],
+        "questions": []
+      },
+      {
+        "compounds": [
+          {
+            "label": "(R)-2",
+            "names": [
+              "(R)-2-methyloxirane"
+            ],
+            "page": "SI p.4",
+            "quote": "(R)-2-methyloxirane ((R)-2, 3.00 g, 51.65 mmol)"
+          },
+          {
+            "label": "3",
+            "names": [
+              "allylmagnesium bromide"
+            ],
+            "page": "SI p.4",
+            "quote": "allylmagnesium bromide (3, 77.5 mL, 1.0 M in THF, 77.50 mmol)"
+          },
+          {
+            "label": "(R)-4",
+            "names": [
+              "(R)-Hex-5-en-2-ol",
+              "(R)-hex-5-en-2-ol"
+            ],
+            "page": "SI p.4",
+            "quote": "(R)-Hex-5-en-2-ol ((R)-4) (CAS 17397-29-4)"
+          },
+          {
+            "label": "(S)-4'",
+            "names": [
+              "(S)-2-methylpent-4-en-1-ol"
+            ],
+            "page": "SI p.4",
+            "quote": "mixture of (R)-hex-5-en-2-ol ((R)-4) and (S)-2-methylpent-4-en-1-ol ((S)-4’) (4.83 g, ratio 8:1"
+          },
+          {
+            "label": "(R)-5",
+            "names": [
+              "(R)-Hex-5-en-2-yl 4-methylbenzenesulfonate",
+              "(R)-hex-5-en-2-yl 4-methylbenzenesulfonate"
+            ],
+            "page": "SI p.5",
+            "quote": "(R)-Hex-5-en-2-yl 4-methylbenzenesulfonate ((R)-5) (CAS 2715086-71-6)"
+          },
+          {
+            "label": "DEM",
+            "names": [
+              "diethyl malonate"
+            ],
+            "page": "SI p.6",
+            "quote": "diethyl malonate (4.39 g, 27.40 mmol) in dry DMF (125 mL)"
+          },
+          {
+            "label": "(S)-6",
+            "names": [
+              "Diethyl (S)-2-(hex-5-en-2-yl)malonate",
+              "diethyl (S)-2-(hex-5-en-2-yl)malonate"
+            ],
+            "page": "SI p.6",
+            "quote": "Diethyl (S)-2-(hex-5-en-2-yl)malonate ((S)-6) (new compound)"
+          },
+          {
+            "label": "(S)-7",
+            "names": [
+              "(S)-2-(Hex-5-en-2-yl)malonic acid",
+              "(S)-2-(hex-5-en-2-yl)malonic acid"
+            ],
+            "page": "SI p.7",
+            "quote": "(S)-2-(Hex-5-en-2-yl)malonic acid ((S)-7) (new compound)"
+          },
+          {
+            "label": "(S)-8",
+            "names": [
+              "(S)-3-Methylhept-6-enoic acid",
+              "(S)-2-(hex-5-en-2-yl) malonic acid"
+            ],
+            "page": "SI p.7",
+            "quote": "(S)-3-Methylhept-6-enoic acid ((S)-8) (CAS 116370-22-0)"
+          },
+          {
+            "label": "(S)-9",
+            "names": [
+              "(S)-3-Methylhept-6-en-1-ol",
+              "(S)-3-methylhept-6-en-1-ol"
+            ],
+            "page": "SI p.8",
+            "quote": "(S)-3-Methylhept-6-en-1-ol ((S)-9) (CAS 84717-45-3)"
+          },
+          {
+            "label": "(S)-10",
+            "names": [
+              "(S)-3-Methylhept-6-en-1-yl 4-methylbenzenesulfonate",
+              "(S)-3-methylhept-6-en-1-yl 4-methylbenzenesulfonate"
+            ],
+            "page": "SI p.9",
+            "quote": "(S)-3-Methylhept-6-en-1-yl 4-methylbenzenesulfonate ((S)-10) (CAS 1147880-47-4)"
+          }
+        ],
+        "steps": [
+          {
+            "to": [
+              "(R)-4",
+              "(S)-4'"
+            ],
+            "from": [
+              "(R)-2",
+              "3"
+            ],
+            "reagents": [
+              {
+                "text": "CuI",
+                "equiv": 0.1
+              }
+            ],
+            "solvent": "dry Et2O",
+            "temp": "−30 °C",
+            "time": "6 h",
+            "page": "SI p.4",
+            "quote": "The reaction mixture was maintained for 6 h at −30 °C, followed by quenching with saturated NH4Cl aqueous solution (50 mL)."
+          },
+          {
+            "to": [
+              "(R)-5"
+            ],
+            "from": [
+              "(R)-4"
+            ],
+            "reagents": [
+              {
+                "text": "p-TsCl",
+                "equiv": 1.1
+              },
+              {
+                "text": "DMAP",
+                "equiv": 0.5
+              },
+              {
+                "text": "Et3N",
+                "equiv": 2.01
+              }
+            ],
+            "solvent": "DCM",
+            "temp": "room temperature",
+            "time": "8 h",
+            "yield": 88,
+            "page": "SI p.5",
+            "quote": "afford (R)-hex-5-en-2-yl 4-methylbenzenesulfonate ((R)-5, 6.33 g, 88% yield) as a pale yellow oil."
+          },
+          {
+            "to": [
+              "(S)-6"
+            ],
+            "from": [
+              "(R)-5",
+              "DEM"
+            ],
+            "reagents": [
+              {
+                "text": "NaH",
+                "equiv": 1.1
+              },
+              {
+                "text": "NaI",
+                "equiv": 1
+              }
+            ],
+            "solvent": "dry DMF",
+            "temp": "60 °C",
+            "time": "8 h",
+            "yield": 85,
+            "page": "SI p.6",
+            "quote": "afford diethyl (S)-2-(hex-5-en-2-yl)malonate ((S)-6, 3.02 g, 85% yield) as a colorless oil."
+          },
+          {
+            "to": [
+              "(S)-7"
+            ],
+            "from": [
+              "(S)-6"
+            ],
+            "reagents": [
+              {
+                "text": "NaOH",
+                "equiv": 3.33
+              }
+            ],
+            "solvent": "methanol / water",
+            "temp": "room temperature",
+            "time": "8 h",
+            "yield": 96,
+            "page": "SI p.7",
+            "quote": "(S)-2-(hex-5-en-2-yl)malonic acid ((S)-7, 1.54 g, 96% yield)."
+          },
+          {
+            "to": [
+              "(S)-8"
+            ],
+            "from": [
+              "(S)-7"
+            ],
+            "reagents": [
+              {
+                "text": "H2O"
+              }
+            ],
+            "solvent": "DMSO",
+            "temp": "120 °C",
+            "time": "40 min",
+            "yield": 78,
+            "page": "SI p.7",
+            "quote": "afford (S)-2-(hex-5-en-2-yl) malonic acid ((S)-8, 1.10 g, 78% yield) as a pale yellow liquid."
+          },
+          {
+            "to": [
+              "(S)-9"
+            ],
+            "from": [
+              "(S)-8"
+            ],
+            "reagents": [
+              {
+                "text": "TiCl4",
+                "equiv": 0.1
+              },
+              {
+                "text": "NH3·BH3",
+                "equiv": 2
+              }
+            ],
+            "solvent": "Et2O",
+            "temp": "room temperature",
+            "time": "4 h",
+            "yield": 71,
+            "page": "SI p.8",
+            "quote": "afford (S)-3-methylhept-6-en-1-ol ((S)-9, 0.58 g, 71% yield) as a pale yellow liquid."
+          },
+          {
+            "to": [
+              "(S)-10"
+            ],
+            "from": [
+              "(S)-9"
+            ],
+            "reagents": [
+              {
+                "text": "p-TsCl",
+                "equiv": 1.1
+              }
+            ],
+            "yield": 79,
+            "page": "SI p.9",
+            "quote": "afforded (S)-3-methylhept-6-en-1-yl 4-methylbenzenesulfonate ((S)-10, 0.96 g, 79% yield) as a pale yellow oil."
+          }
+        ]
+      }
+    ],
+    "bjoc-21-38-s4": [
+      {
+        "figures": [
+          {
+            "box_2d": [
+              140,
+              112,
+              468,
+              887
+            ],
+            "kind": "reaction-scheme"
+          }
+        ]
+      },
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "(S)-10",
+            "smiles": "C=CCC[C@@H](C)CCOTs",
+            "confidence": "high",
+            "cip": "S"
+          },
+          {
+            "ref": "B",
+            "name": "(R)-11",
+            "smiles": "CC[C@@H](C)CBr",
+            "confidence": "high",
+            "cip": "R"
+          },
+          {
+            "ref": "C",
+            "name": "(5R,9R)-12",
+            "smiles": "C=CCC[C@H](C)CCC[C@@H](C)CC",
+            "confidence": "high",
+            "cip": "R,R"
+          },
+          {
+            "ref": "D",
+            "name": "(4R,8R)-1",
+            "smiles": "CCC[C@@H](C)CCC[C@@H](C)CC=O",
+            "confidence": "high",
+            "cip": "R,R"
+          },
+          {
+            "ref": "E",
+            "name": "(S)-11",
+            "smiles": "CC[C@H](C)CBr",
+            "confidence": "high",
+            "cip": "S"
+          },
+          {
+            "ref": "F",
+            "name": "(5R,9S)-12",
+            "smiles": "C=CCC[C@H](C)CCC[C@H](C)CC",
+            "confidence": "high",
+            "cip": "R,S"
+          },
+          {
+            "ref": "G",
+            "name": "(4R,8S)-1",
+            "smiles": "CC[C@H](C)CCC[C@H](C)CCC=O",
+            "confidence": "high",
+            "cip": "R,S"
+          },
+          {
+            "ref": "H",
+            "name": "(R)-10",
+            "smiles": "C=CCC[C@H](C)CCOTs",
+            "confidence": "high",
+            "cip": "R"
+          },
+          {
+            "ref": "I",
+            "name": "(4S,8R)-1",
+            "smiles": "CC[C@@H](C)CCC[C@H](C)CCC=O",
+            "confidence": "high",
+            "cip": "S,R"
+          },
+          {
+            "ref": "J",
+            "name": "(5S,9S)-12",
+            "smiles": "C=CCC[C@H](C)CCC[C@H](C)CC",
+            "confidence": "high",
+            "cip": "S,S"
+          },
+          {
+            "ref": "K",
+            "name": "(4S,8S)-1",
+            "smiles": "CC[C@H](C)CCC[C@H](C)CCC=O",
+            "confidence": "high",
+            "cip": "S,S"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [
+              {
+                "text": "Mg"
+              },
+              {
+                "text": "I2"
+              },
+              {
+                "text": "Li2CuCl4"
+              }
+            ],
+            "solvent": "THF",
+            "temp": "-70 °C to rt",
+            "time": "8 h",
+            "yield": 80
+          },
+          {
+            "from": [
+              "C"
+            ],
+            "to": [
+              "D"
+            ],
+            "reagents": [
+              {
+                "text": "RuCl3"
+              },
+              {
+                "text": "NaIO4"
+              }
+            ],
+            "solvent": "MeCN, H2O",
+            "temp": "rt",
+            "time": "1.5 h",
+            "yield": 88
+          },
+          {
+            "from": [
+              "A",
+              "E"
+            ],
+            "to": [
+              "F"
+            ],
+            "reagents": [
+              {
+                "text": "Mg"
+              },
+              {
+                "text": "I2"
+              },
+              {
+                "text": "Li2CuCl4"
+              }
+            ],
+            "solvent": "THF",
+            "temp": "-70 °C to rt",
+            "time": "8 h",
+            "yield": 75
+          },
+          {
+            "from": [
+              "F"
+            ],
+            "to": [
+              "G"
+            ],
+            "reagents": [
+              {
+                "text": "RuCl3"
+              },
+              {
+                "text": "NaIO4"
+              }
+            ],
+            "solvent": "MeCN, H2O",
+            "temp": "rt",
+            "time": "1.5 h",
+            "yield": 89
+          },
+          {
+            "from": [
+              "H",
+              "B"
+            ],
+            "to": [
+              "I"
+            ],
+            "reagents": [
+              {
+                "text": "Mg"
+              },
+              {
+                "text": "I2"
+              },
+              {
+                "text": "Li2CuCl4"
+              },
+              {
+                "text": "RuCl3"
+              },
+              {
+                "text": "NaIO4"
+              }
+            ],
+            "solvent": "THF, MeCN, H2O",
+            "temp": "rt",
+            "time": "1.5 h",
+            "yield": 71
+          },
+          {
+            "from": [
+              "H",
+              "E"
+            ],
+            "to": [
+              "J"
+            ],
+            "reagents": [
+              {
+                "text": "Mg"
+              },
+              {
+                "text": "I2"
+              },
+              {
+                "text": "Li2CuCl4"
+              }
+            ],
+            "solvent": "THF",
+            "temp": "-70 °C to rt",
+            "time": "8 h",
+            "yield": 82
+          },
+          {
+            "from": [
+              "J"
+            ],
+            "to": [
+              "K"
+            ],
+            "reagents": [
+              {
+                "text": "RuCl3"
+              },
+              {
+                "text": "NaIO4"
+              }
+            ],
+            "solvent": "MeCN, H2O",
+            "temp": "rt",
+            "time": "1.5 h",
+            "yield": 92
+          }
+        ],
+        "questions": []
+      },
+      {
+        "compounds": [
+          {
+            "label": "(S)-10",
+            "names": [
+              "(S)-3-Methylhept-6-en-1-yl 4-methylbenzenesulfonate"
+            ],
+            "page": "SI p.9",
+            "quote": "(S)-3-Methylhept-6-en-1-yl 4-methylbenzenesulfonate ((S)-10)"
+          },
+          {
+            "label": "(R)-11",
+            "names": [
+              "(R)-1-bromo-2-methylbutane"
+            ],
+            "page": "SI p.13",
+            "quote": "(R)-1-bromo-2-methylbutane ((R)-11"
+          },
+          {
+            "label": "(5R,9R)-12",
+            "names": [
+              "(5R,9R)-5,9-Dimethylundec-1-ene"
+            ],
+            "page": "SI p.13",
+            "quote": "(5R,9R)-5,9-Dimethylundec-1-ene ((5R,9R)-12)"
+          },
+          {
+            "label": "(4R,8R)-1",
+            "names": [
+              "(4R,8R)-4,8-Dimethyldecanal"
+            ],
+            "page": "SI p.14",
+            "quote": "(4R,8R)-4,8-Dimethyldecanal ((4R,8R)-1)"
+          },
+          {
+            "label": "(S)-11",
+            "names": [
+              "(S)-1-bromo-2-methylbutane"
+            ],
+            "page": "SI p.15",
+            "quote": "(S)-1-bromo-2-methylbutane ((S)-11"
+          },
+          {
+            "label": "(5R,9S)-12",
+            "names": [
+              "(5R,9S)-5,9-Dimethylundec-1-ene"
+            ],
+            "page": "SI p.15",
+            "quote": "(5R,9S)-5,9-Dimethylundec-1-ene ((5R,9S)-12)"
+          },
+          {
+            "label": "(4R,8S)-1",
+            "names": [
+              "(4R,8S)-4,8-Dimethyldecanal"
+            ],
+            "page": "SI p.16",
+            "quote": "(4R,8S)-4,8-Dimethyldecanal ((4R,8S)-1)"
+          },
+          {
+            "label": "(R)-10",
+            "names": [
+              "(R)-3-Methylhept-6-en-1-yl 4-methylbenzenesulfonate"
+            ],
+            "page": "SI p.13",
+            "quote": "(R)-3-Methylhept-6-en-1-yl 4-methylbenzenesulfonate ((R)-10)"
+          },
+          {
+            "label": "(4S,8R)-1",
+            "names": [
+              "(4S,8R)-4,8-Dimethyldecanal"
+            ],
+            "page": "SI p.16",
+            "quote": "(4S,8R)-4,8-Dimethyldecanal ((4S,8R)-1)"
+          },
+          {
+            "label": "(5S,9S)-12",
+            "names": [
+              "(5S,9S)-5,9-Dimethylundec-1-ene"
+            ],
+            "page": "SI p.16",
+            "quote": "(5S,9S)-5,9-Dimethylundec-1-ene (5S,9S-12)"
+          },
+          {
+            "label": "(4S,8S)-1",
+            "names": [
+              "(4S,8S)-4,8-Dimethyldecanal"
+            ],
+            "page": "SI p.18",
+            "quote": "(4S,8S)-4,8-Dimethyldecanal ((4S,8S)-1)"
+          }
+        ],
+        "steps": [
+          {
+            "to": [
+              "(5R,9R)-12"
+            ],
+            "from": [
+              "(S)-10",
+              "(R)-11"
+            ],
+            "reagents": [
+              {
+                "text": "Mg"
+              },
+              {
+                "text": "I2"
+              },
+              {
+                "text": "Li2CuCl4",
+                "equiv": 0.3
+              }
+            ],
+            "solvent": "dry THF",
+            "temp": "-70 °C to room temperature",
+            "time": "8 h",
+            "yield": 80,
+            "page": "SI p.13",
+            "quote": "After allowing the reaction mixture to warm to room temperature and stir for 8 h, the reaction was quenched with water (20 mL)... to afford (5R,9R)-5,9-dimethylundec-1-ene ((5R,9R)-12, 0.24 g, 80% yield)"
+          },
+          {
+            "to": [
+              "(4R,8R)-1"
+            ],
+            "from": [
+              "(5R,9R)-12"
+            ],
+            "reagents": [
+              {
+                "text": "NaIO4",
+                "equiv": 2
+              },
+              {
+                "text": "RuCl3",
+                "equiv": 0.0375
+              }
+            ],
+            "solvent": "CH3CN/H2O 6:1",
+            "temp": "room temperature",
+            "time": "1.5 h",
+            "yield": 88,
+            "page": "SI p.14",
+            "quote": "chiral olefine (5R,9R)-12 (30.0 mg, 0.16 mmol) and RuCl3 (1.3 mg, 0.006 mmol) were added and the mixture stirred for 1.5 h... (4R,8R)-4,8-dimethyldecanal ((4R,8R)-1, 26.0 mg, 88% yield)"
+          },
+          {
+            "to": [
+              "(5R,9S)-12"
+            ],
+            "from": [
+              "(S)-10",
+              "(S)-11"
+            ],
+            "yield": 75,
+            "page": "SI p.15",
+            "quote": "the coupling of chiral tosylate (S)-10 (0.47 g, 1.67 mmol) with (S)-(2-methylbutyl)magnesium bromide derived from Mg (0.24 g，10.0 mmol) and (S)-1-bromo-2-methylbutane ((S)-11, 1.00 g ， 6.67 mmol) afforded ((5R,9S)-5,9-dimethylundec-1-ene ((5R,9S)-12, 0.23 g, 75% yield)"
+          },
+          {
+            "to": [
+              "(4R,8S)-1"
+            ],
+            "from": [
+              "(5R,9S)-12"
+            ],
+            "reagents": [
+              {
+                "text": "NaIO4",
+                "equiv": 2
+              },
+              {
+                "text": "RuCl3",
+                "equiv": 0.035
+              }
+            ],
+            "yield": 89,
+            "page": "SI p.16",
+            "quote": "oxidation of (5R,9S)-5,9-dimethylundec-1-ene ((5R,9S)-12, 182.0 mg, 1.0 mmol) with NaIO4 (432.0 mg, 2.0 mmol) and RuCl3 (7.0 mg, 0.035 mmol) afforded (4R,8S)-4,8-dimethyldecanal ((4R,8S)-1, 164.0 mg, 89% yield)"
+          },
+          {
+            "to": [
+              "(4S,8R)-1"
+            ],
+            "from": [
+              "(R)-10",
+              "(R)-11"
+            ],
+            "reagents": [
+              {
+                "text": "Mg"
+              },
+              {
+                "text": "NaIO4",
+                "equiv": 2
+              },
+              {
+                "text": "RuCl3",
+                "equiv": 0.035
+              }
+            ],
+            "yield": 71,
+            "page": "SI p.16",
+            "quote": "oxidation of (5S,9R)-5,9-dimethylundec-1-ene (92.0 mg，0.5 mmol) with NaIO4 (216.0 mg, 1.0 mmol) and RuCl3 (4.0 mg, 0.0175 mmol) afforded (4R,8S)-4,8-dimethyldecanal ((4S,8R)-1, 87.0 mg, 71% yield two steps)"
+          },
+          {
+            "to": [
+              "(5S,9S)-12"
+            ],
+            "from": [
+              "(R)-10",
+              "(S)-11"
+            ],
+            "reagents": [
+              {
+                "text": "Mg"
+              }
+            ],
+            "yield": 82,
+            "page": "SI p.16",
+            "quote": "coupling of chiral tosylate (R)-10 (0.47 g, 1.67 mmol) with (S)-(2-methylbutyl)magnesium bromide derived from Mg (0.24 g ， 10.0 mmol) and (S)-1-bromo-2-methylbutane ((S)-11, 1.00 g，6.67 mmol) afforded (5S,9R)-5,9-dimethylundec-1-ene ((5S,9S)-12, 0.25 g, 82% yield)"
+          },
+          {
+            "to": [
+              "(4S,8S)-1"
+            ],
+            "from": [
+              "(5S,9S)-12"
+            ],
+            "reagents": [
+              {
+                "text": "NaIO4",
+                "equiv": 2
+              },
+              {
+                "text": "RuCl3",
+                "equiv": 0.035
+              }
+            ],
+            "yield": 92,
+            "page": "SI p.18",
+            "quote": "oxidation of (5S,9S)-5,9-dimethylundec-1-ene ((5S,9S)-12, 92.0 mg, 0.5 mmol) with NaIO4 (216.0 mg,1.0 mmol), and RuCl3 (4.0 mg, 0.0175 mmol) afforded (4S,8S)-4,8-dimethyldecanal ((4S,8S)-1, 85.0 mg, 92% yield)"
+          }
+        ]
+      }
+    ],
+    "bjoc-21-47-s3": [
+      {
+        "figures": [
+          {
+            "box_2d": [
+              360,
+              114,
+              546,
+              885
+            ],
+            "kind": "reaction-scheme"
+          },
+          {
+            "box_2d": [
+              623,
+              151,
+              868,
+              847
+            ],
+            "label": "reaction-scheme",
+            "kind": "reaction-scheme"
+          }
+        ]
+      },
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "(±)-simonsol C (5)",
+            "confidence": "medium"
+          },
+          {
+            "ref": "B",
+            "name": "15",
+            "confidence": "medium"
+          },
+          {
+            "ref": "C",
+            "name": "16",
+            "confidence": "low"
+          },
+          {
+            "ref": "D",
+            "name": "11",
+            "smiles": "C=CCc1ccc(O)c(-c2cc(CC=C)ccc2O)c1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "B"
+            ],
+            "to": [
+              "A"
+            ],
+            "reagents": [
+              {
+                "text": "Zn"
+              },
+              {
+                "text": "oxy-Michael addition"
+              }
+            ]
+          },
+          {
+            "from": [
+              "C"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [
+              {
+                "text": "acidic dearomatization"
+              }
+            ]
+          },
+          {
+            "from": [
+              "D"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [
+              {
+                "text": "alkylation"
+              }
+            ]
+          }
+        ],
+        "questions": [
+          "Retrosynthetic scheme: arrows are drawn in the retrosynthetic direction (open arrows, A <= B <= C <= D). The steps have been recorded from right to left following synthetic direction (11 -> 16 -> 15 -> (±)-simonsol C (5)).",
+          "Compound 16 contains generic groups R1 = t-Bu, Et or Me; R2 = MOM; X = Br or I and multiple disconnected/wavy bonds, so SMILES is omitted.",
+          "Compound 15 and 5 have unspecified stereocenters (wavy bonds) and complex polycyclic spiro connectivity."
+        ]
+      },
+      {
+        "compounds": [],
+        "steps": [
+          {
+            "to": [
+              "(±)-simonsol C (5)"
+            ],
+            "from": [
+              "15"
+            ],
+            "reagents": [
+              {
+                "text": "Zinc powder",
+                "equiv": 10
+              },
+              {
+                "text": "acetic acid"
+              }
+            ],
+            "solvent": "methanol",
+            "temp": "room temperature for 0.5 h, then reflux",
+            "time": "1.5 h",
+            "yield": 70,
+            "page": "SI p.9",
+            "quote": "Synthesis of compound (±)-simonsol C: Zinc powder (53 mg, 0.82 mmol, 10.0 equiv) and acetic acid (1 drop) were added to a solution of compound 15 (43 mg, 0.08 mmol, 1.0 equiv) in methanol (1 mL). After stirring at room temperature for 0.5 h, the reaction mixture was refluxed for 1 h"
+          }
+        ]
+      }
+    ],
+    "bjoc-21-47-s4": [
+      {
+        "figures": [
+          {
+            "box_2d": [
+              492,
+              108,
+              874,
+              889
+            ],
+            "label": "Scheme 4",
+            "kind": "reaction-scheme"
+          }
+        ]
+      },
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "19",
+            "smiles": "C=CCc1ccc(OCOC)c(-c2cc(CC=C)ccc2OC(CO)Cc2ccc(Br)cc2)c1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "20",
+            "smiles": "C=CCc1ccc(OCOC)c(-c2cc(CC=C)ccc2OC(CO)Cc2ccc(O)cc2)c1",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "14",
+            "smiles": "C=CCc1ccc(OCOC)c(-c2cc(CC=C)cc3c2OC(CO)CC32C=CC(=O)C=C2)c1",
+            "confidence": "high"
+          },
+          {
+            "ref": "D",
+            "name": "15",
+            "smiles": "C=CCc1ccc(O)c(-c2cc(CC=C)cc3c2OC(CI)CC32C=CC(=O)C=C2)c1",
+            "confidence": "high"
+          },
+          {
+            "ref": "E",
+            "name": "(±)-simonsol C (5)",
+            "smiles": "C=C[C@@H]1C=CC(=O)C[C@@H]2Oc3c(-c4cc(CC=C)ccc4O)cc(CC=C)cc3[C@@]12[H]",
+            "confidence": "high",
+            "cip": "R,S,S"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [
+              {
+                "text": "Cu(acac)2"
+              },
+              {
+                "text": "LiOH·H2O"
+              },
+              {
+                "text": "ligand 1"
+              }
+            ],
+            "solvent": "DMSO/H2O 4:1",
+            "temp": "80 °C",
+            "yield": 85
+          },
+          {
+            "from": [
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [
+              {
+                "text": "PIDA",
+                "equiv": 2
+              }
+            ],
+            "solvent": "TFE",
+            "temp": "-30 °C",
+            "yield": 58
+          },
+          {
+            "from": [
+              "C"
+            ],
+            "to": [
+              "D"
+            ],
+            "reagents": [
+              {
+                "text": "I2"
+              },
+              {
+                "text": "PPh3"
+              },
+              {
+                "text": "imidazole"
+              }
+            ],
+            "solvent": "DCM",
+            "temp": "rt",
+            "yield": 75
+          },
+          {
+            "from": [
+              "D"
+            ],
+            "to": [
+              "E"
+            ],
+            "reagents": [
+              {
+                "text": "Zn"
+              },
+              {
+                "text": "AcOH"
+              }
+            ],
+            "solvent": "MeOH",
+            "temp": "65 °C",
+            "yield": 70
+          }
+        ],
+        "questions": []
+      },
+      {
+        "compounds": [],
+        "steps": [
+          {
+            "to": [
+              "20"
+            ],
+            "from": [
+              "19"
+            ],
+            "reagents": [
+              {
+                "text": "LiOH·H2O",
+                "equiv": 2.2
+              },
+              {
+                "text": "Cu(acac)2",
+                "equiv": 0.1
+              },
+              {
+                "text": "ligand L1",
+                "equiv": 0.1
+              }
+            ],
+            "solvent": "DMSO/H2O 4:1",
+            "temp": "80 °C",
+            "time": "24 h",
+            "yield": 85,
+            "page": "SI p.8",
+            "quote": "Compound 19 (58 mg, 1.1 mmol, 1 equiv), LiOH·H2O (0.10 g, 2.4 mmol, 2.2 equiv), Cu(acac)2 (29 mg, 0.1 mmol, 0.1 equiv) and ligand L1 (36 mg, 0.1 mmol, 0.1 equiv) were placed into a Schlenk tube (10 mL) with a magnetic stirring bar. The reaction vessel was evacuated and backfilled with argon three times, and DMSO/H2O 4:1 (3.7 mL) was added afterwards. The reaction mixture was heated at 80 °C for 24 h under vigorous stirring"
+          },
+          {
+            "to": [
+              "14"
+            ],
+            "from": [
+              "20"
+            ],
+            "reagents": [
+              {
+                "text": "PIDA",
+                "equiv": 1.2
+              }
+            ],
+            "solvent": "TFE",
+            "temp": "-30 °C",
+            "time": "0.5 h",
+            "yield": 58,
+            "page": "SI p.9",
+            "quote": "A solution of compound 20 (430 mg, 0.935 mmol, 1.0 equiv) in 14 mL of TFE was cooled to −30 °C and stirred for 5 minutes. Then, a solution of PIDA (278 mg, 1.12 mmol, 1.2 equiv) in TFE was added to the flask and stirring continued for 0.5 h at −30 °C"
+          },
+          {
+            "to": [
+              "15"
+            ],
+            "from": [
+              "14"
+            ],
+            "reagents": [
+              {
+                "text": "imidazole",
+                "equiv": 2
+              },
+              {
+                "text": "PPh3",
+                "equiv": 2
+              },
+              {
+                "text": "iodine",
+                "equiv": 2
+              }
+            ],
+            "solvent": "DCM",
+            "temp": "room temperature",
+            "time": "overnight",
+            "yield": 75,
+            "page": "SI p.9",
+            "quote": "After stirring a solution of imidazole (30 mg, 0.44 mmol, 2.0 equiv) and PPh3 (115 mg, 0.44 mmol, 2.0 equiv) in DCM (1 mL) at room temperature for 0.5 h, iodine (112 mg, 0.44 mmol, 2 equiv) was added and the resulted solution was stirred at room temperature for 0.5 h. Then, compound 14 (100 mg, 0.22 mmol, 1.0 equiv) in 1 mL DCM was added dropwise and stirring was continued overnight"
+          },
+          {
+            "to": [
+              "(±)-simonsol C (5)"
+            ],
+            "from": [
+              "15"
+            ],
+            "reagents": [
+              {
+                "text": "Zinc powder",
+                "equiv": 10
+              },
+              {
+                "text": "acetic acid"
+              }
+            ],
+            "solvent": "methanol",
+            "temp": "reflux",
+            "time": "1 h",
+            "yield": 70,
+            "page": "SI p.9",
+            "quote": "Zinc powder (53 mg, 0.82 mmol, 10.0 equiv) and acetic acid (1 drop) were added to a solution of compound 15 (43 mg, 0.08 mmol, 1.0 equiv) in methanol (1 mL). After stirring at room temperature for 0.5 h, the reaction mixture was refluxed for 1 h"
+          }
+        ]
+      }
+    ],
+    "bjoc-21-14-s2": [
+      {
+        "figures": [
+          {
+            "box_2d": [
+              134,
+              114,
+              696,
+              882
+            ],
+            "kind": "reaction-scheme"
+          }
+        ]
+      },
+      {
+        "compounds": [
+          {
+            "ref": "A1",
+            "name": "15",
+            "smiles": "C#Cc1cccc(O)c1C=O",
+            "confidence": "high"
+          },
+          {
+            "ref": "A2",
+            "name": "8",
+            "smiles": "C#Cc1cccc(O)c1C1OCCO1",
+            "confidence": "high"
+          },
+          {
+            "ref": "A3",
+            "name": "9",
+            "smiles": "C1C2c3ccccc3N1CC2",
+            "confidence": "high"
+          },
+          {
+            "ref": "A4",
+            "name": "PhCHO",
+            "smiles": "O=Cc1ccccc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "A5",
+            "name": "10",
+            "smiles": "Oc1cccc(C#CC2CN3CC2c2ccccc2N3Cc2ccccc2)c1C1OCCO1",
+            "confidence": "high"
+          },
+          {
+            "ref": "A6",
+            "name": "16",
+            "smiles": "O=Cc1c(O)cccc1C#CC1CN(Cc2ccccc2)CC2c3ccccc3N12",
+            "confidence": "high"
+          },
+          {
+            "ref": "A7",
+            "name": "acetone cyanohydrin",
+            "smiles": "CC(C)(O)C#N",
+            "confidence": "high"
+          },
+          {
+            "ref": "A8",
+            "name": "PMP-NH2",
+            "smiles": "COc1ccc(N)cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "A9",
+            "name": "17",
+            "smiles": "COc1ccc(NC(C#N)c2c(O)cccc2C#CC2CN(Cc3ccccc3)CC3c4ccccc4N23)cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "A10",
+            "name": "11",
+            "smiles": "COc1ccc(Nc2c(N)oc3cccc(C#CC4CN(Cc5ccccc5)CC5c6ccccc6N45)c23)cc1",
+            "confidence": "medium"
+          },
+          {
+            "ref": "A11",
+            "name": "12",
+            "confidence": "low"
+          },
+          {
+            "ref": "A12",
+            "name": "18",
+            "confidence": "low"
+          },
+          {
+            "ref": "A13",
+            "name": "14",
+            "smiles": "COc1ccc(N2C(C#N)=Cc3c(O)cccc3C=C2C2CN(Cc3ccccc3)CC3c4ccccc4N23)cc1",
+            "confidence": "medium"
+          },
+          {
+            "ref": "A14",
+            "name": "saframycin A (1)",
+            "smiles": "COc1c(C)c(=O)c2c(c1=O)[C@H]1[C@@H]3C(=O)c4c(C)c(OC)c(=O)c(c4C[C@@H]3N(C)[C@H](C#N)[C@H]1N2C(=O)C(=O)NC)[C@@H]1C",
+            "confidence": "low"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A1"
+            ],
+            "to": [
+              "A2"
+            ],
+            "reagents": [
+              {
+                "text": "3 steps"
+              }
+            ],
+            "yield": 49
+          },
+          {
+            "from": [
+              "A2",
+              "A3",
+              "A4"
+            ],
+            "to": [
+              "A5"
+            ],
+            "reagents": [
+              {
+                "text": "CuI",
+                "equiv": 0.2
+              },
+              {
+                "text": "PPh3",
+                "equiv": 0.5
+              },
+              {
+                "text": "MS4A"
+              }
+            ],
+            "solvent": "toluene",
+            "temp": "80 °C",
+            "yield": 92
+          },
+          {
+            "from": [
+              "A5"
+            ],
+            "to": [
+              "A6"
+            ],
+            "reagents": [
+              {
+                "text": "TFA"
+              }
+            ],
+            "solvent": "THF/H2O",
+            "yield": 72
+          },
+          {
+            "from": [
+              "A6",
+              "A7",
+              "A8"
+            ],
+            "to": [
+              "A9"
+            ],
+            "reagents": [
+              {
+                "text": "Et3N",
+                "equiv": 0.1
+              }
+            ],
+            "solvent": "CH2Cl2",
+            "temp": "15 °C",
+            "yield": 73
+          },
+          {
+            "from": [
+              "A9"
+            ],
+            "to": [
+              "A10"
+            ],
+            "reagents": []
+          },
+          {
+            "from": [
+              "A10"
+            ],
+            "to": [
+              "A11"
+            ],
+            "reagents": [
+              {
+                "text": "AuCl(PPh3)",
+                "equiv": 0.4
+              },
+              {
+                "text": "AgNTf2",
+                "equiv": 0.5
+              },
+              {
+                "text": "Et3N",
+                "equiv": 33
+              }
+            ],
+            "solvent": "ClCH2CH2Cl",
+            "temp": "65 °C",
+            "time": "20 h",
+            "yield": 60
+          },
+          {
+            "from": [
+              "A11"
+            ],
+            "to": [
+              "A12"
+            ],
+            "reagents": []
+          },
+          {
+            "from": [
+              "A12"
+            ],
+            "to": [
+              "A13"
+            ],
+            "reagents": []
+          }
+        ],
+        "questions": []
+      },
+      {
+        "compounds": [
+          {
+            "label": "9",
+            "names": [
+              "1,2,3,4-tetrahydroisoquinoline"
+            ],
+            "page": "SI p.9",
+            "quote": "benzaldehyde (117 μL, 1.15 mmol, 1.0 eq.) and 1,2,3,4-tetrahydroisoquinoline 9 (145 μL, 1.15 mmol, 1.0 equiv)"
+          }
+        ],
+        "steps": [
+          {
+            "to": [
+              "10"
+            ],
+            "from": [
+              "8",
+              "9",
+              "PhCHO"
+            ],
+            "reagents": [
+              {
+                "text": "MS 4Å"
+              },
+              {
+                "text": "CuI",
+                "equiv": 0.2
+              },
+              {
+                "text": "triphenylphosphine",
+                "equiv": 0.5
+              },
+              {
+                "text": "benzaldehyde",
+                "equiv": 1
+              },
+              {
+                "text": "1,2,3,4-tetrahydroisoquinoline 9",
+                "equiv": 1
+              }
+            ],
+            "solvent": "toluene",
+            "temp": "80 °C",
+            "time": "24 h",
+            "yield": 92,
+            "page": "SI p.9",
+            "quote": "After stirring at 80 °C for 24 h, the reaction mixture was cooled to room temperature and then quenched by adding SiliaMetS® TAAcONa"
+          },
+          {
+            "to": [
+              "16"
+            ],
+            "from": [
+              "10"
+            ],
+            "reagents": [
+              {
+                "text": "water"
+              },
+              {
+                "text": "trifluoroacetic acid (TFA)",
+                "equiv": 75
+              }
+            ],
+            "solvent": "THF",
+            "temp": "20 °C",
+            "time": "20 h",
+            "yield": 72,
+            "page": "SI p.10",
+            "quote": "stirred at 20 °C for 20 h. The resulting reaction mixture was basified with aqueous NaOH solution and saturated aqueous solution of NaHCO3 to pH 8."
+          },
+          {
+            "to": [
+              "18"
+            ],
+            "from": [
+              "11"
+            ],
+            "reagents": [
+              {
+                "text": "AuCl(PPh3)",
+                "equiv": 1.1
+              },
+              {
+                "text": "AgNTf2",
+                "equiv": 1.1
+              },
+              {
+                "text": "Et3N",
+                "equiv": 33
+              }
+            ],
+            "solvent": "ClCH2CH2Cl",
+            "temp": "65 °C",
+            "time": "90 min",
+            "yield": 55,
+            "page": "SI p.11",
+            "quote": "After stirring at 65 °C for 90 min, the resulting mixture was concentrated in vacuo."
+          },
+          {
+            "to": [
+              "14"
+            ],
+            "from": [
+              "11"
+            ],
+            "reagents": [
+              {
+                "text": "AuCl(PPh3)",
+                "equiv": 0.5
+              },
+              {
+                "text": "AgNTf2",
+                "equiv": 0.6
+              },
+              {
+                "text": "Et3N",
+                "equiv": 34
+              }
+            ],
+            "solvent": "ClCH2CH2Cl",
+            "temp": "65 °C",
+            "time": "20 h",
+            "yield": 60,
+            "page": "SI p.12",
+            "quote": "After stirring at 65 °C for 20 h, the resulting reaction mixture was filtered. The filtrate was concentrated in vacuo and the crude residue was purified by PTLC (CH2Cl2) to afford product 14 (9.53 mg, 19.2 μmol, 60%)"
+          }
+        ]
+      }
+    ]
+  }
+}

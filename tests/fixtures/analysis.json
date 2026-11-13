@@ -1,0 +1,313 @@
+{
+ "aspirin": {
+  "smiles": "CC(=O)Oc1ccccc1C(=O)O",
+  "formula": "C9H8O4",
+  "mw": 180.15899999999996,
+  "exactMass": 180.042258736,
+  "logP": 1.3101,
+  "tpsa": 63.60000000000001,
+  "hbd": 1,
+  "hba": 3,
+  "stereo": []
+ },
+ "caffeine": {
+  "smiles": "CN1C=NC2=C1C(=O)N(C(=O)N2C)C",
+  "formula": "C8H10N4O2",
+  "mw": 194.194,
+  "exactMass": 194.08037556,
+  "logP": -1.0293,
+  "tpsa": 61.82,
+  "hbd": 0,
+  "hba": 3,
+  "stereo": []
+ },
+ "ibuprofen": {
+  "smiles": "CC(C)Cc1ccc(cc1)C(C)C(=O)O",
+  "formula": "C13H18O2",
+  "mw": 206.28499999999997,
+  "exactMass": 206.130679816,
+  "logP": 3.073200000000001,
+  "tpsa": 37.3,
+  "hbd": 1,
+  "hba": 1,
+  "stereo": [
+   "?"
+  ]
+ },
+ "paracetamol": {
+  "smiles": "CC(=O)Nc1ccc(O)cc1",
+  "formula": "C8H9NO2",
+  "mw": 151.165,
+  "exactMass": 151.063328528,
+  "logP": 1.3505999999999998,
+  "tpsa": 49.33,
+  "hbd": 2,
+  "hba": 2,
+  "stereo": []
+ },
+ "penicillinG": {
+  "smiles": "CC1([C@@H](N2[C@H](S1)[C@@H](C2=O)NC(=O)CC3=CC=CC=C3)C(=O)O)C",
+  "formula": "C16H18N2O4S",
+  "mw": 334.39700000000005,
+  "exactMass": 334.09872805599997,
+  "logP": 0.8607999999999993,
+  "tpsa": 86.71000000000001,
+  "hbd": 2,
+  "hba": 4,
+  "stereo": [
+   "R",
+   "R",
+   "S"
+  ]
+ },
+ "morphine": {
+  "smiles": "CN1CC[C@]23[C@@H]4[C@H]1CC5=C2C(=C(C=C5)O)O[C@H]3[C@H](C=C4)O",
+  "formula": "C17H19NO3",
+  "mw": 285.343,
+  "exactMass": 285.136493468,
+  "logP": 1.1981,
+  "tpsa": 52.93000000000001,
+  "hbd": 2,
+  "hba": 4,
+  "stereo": [
+   "R",
+   "R",
+   "R",
+   "S",
+   "S"
+  ]
+ },
+ "cholesterol": {
+  "smiles": "C[C@H](CCCC(C)C)[C@H]1CC[C@@H]2[C@@]1(CC[C@H]3[C@H]2CC=C4[C@@]3(CC[C@@H](C4)O)C)C",
+  "formula": "C27H46O",
+  "mw": 386.66400000000016,
+  "exactMass": 386.35486609199995,
+  "logP": 7.38870000000001,
+  "tpsa": 20.23,
+  "hbd": 1,
+  "hba": 1,
+  "stereo": [
+   "R",
+   "R",
+   "R",
+   "R",
+   "S",
+   "S",
+   "S",
+   "S"
+  ]
+ },
+ "glucose": {
+  "smiles": "OC[C@H]1O[C@@H](O)[C@H](O)[C@@H](O)[C@@H]1O",
+  "formula": "C6H12O6",
+  "mw": 180.156,
+  "exactMass": 180.063388104,
+  "logP": -3.2214000000000005,
+  "tpsa": 110.38000000000001,
+  "hbd": 5,
+  "hba": 6,
+  "stereo": [
+   "R",
+   "R",
+   "R",
+   "S",
+   "S"
+  ]
+ },
+ "proline": {
+  "smiles": "OC(=O)[C@@H]1CCCN1",
+  "formula": "C5H9NO2",
+  "mw": 115.13200000000002,
+  "exactMass": 115.063328528,
+  "logP": -0.177,
+  "tpsa": 49.33,
+  "hbd": 2,
+  "hba": 2,
+  "stereo": [
+   "S"
+  ]
+ },
+ "phenylalanine": {
+  "smiles": "N[C@@H](Cc1ccccc1)C(=O)O",
+  "formula": "C9H11NO2",
+  "mw": 165.19199999999995,
+  "exactMass": 165.078978592,
+  "logP": 0.641,
+  "tpsa": 63.32000000000001,
+  "hbd": 2,
+  "hba": 2,
+  "stereo": [
+   "S"
+  ]
+ },
+ "nicotine": {
+  "smiles": "CN1CCC[C@H]1c1cccnc1",
+  "formula": "C10H14N2",
+  "mw": 162.236,
+  "exactMass": 162.115698448,
+  "logP": 1.8483,
+  "tpsa": 16.130000000000003,
+  "hbd": 0,
+  "hba": 2,
+  "stereo": [
+   "S"
+  ]
+ },
+ "serotonin": {
+  "smiles": "NCCc1c[nH]c2ccc(O)cc12",
+  "formula": "C10H12N2O",
+  "mw": 176.21899999999997,
+  "exactMass": 176.094963004,
+  "logP": 1.3747,
+  "tpsa": 62.040000000000006,
+  "hbd": 3,
+  "hba": 2,
+  "stereo": []
+ },
+ "testosterone": {
+  "smiles": "C[C@]12CC[C@H]3[C@@H](CCC4=CC(=O)CC[C@]34C)[C@@H]1CC[C@@H]2O",
+  "formula": "C19H28O2",
+  "mw": 288.431,
+  "exactMass": 288.208930136,
+  "logP": 3.879200000000003,
+  "tpsa": 37.3,
+  "hbd": 1,
+  "hba": 2,
+  "stereo": [
+   "R",
+   "R",
+   "S",
+   "S",
+   "S",
+   "S"
+  ]
+ },
+ "quinine": {
+  "smiles": "COc1ccc2nccc([C@@H](O)[C@@H]3C[C@@H]4CCN3C[C@@H]4C=C)c2c1",
+  "formula": "C20H24N2O2",
+  "mw": 324.4240000000001,
+  "exactMass": 324.183778008,
+  "logP": 3.1732000000000014,
+  "tpsa": 45.59,
+  "hbd": 1,
+  "hba": 4,
+  "stereo": [
+   "?",
+   "R",
+   "R",
+   "S",
+   "S"
+  ]
+ },
+ "strychnine": {
+  "smiles": "O=C1C[C@H]2OCC=C3CN4CC[C@]56[C@@H]4C[C@@H]3[C@@H]2[C@@H]6N1c1ccccc15",
+  "formula": "C21H22N2O2",
+  "mw": 334.41900000000004,
+  "exactMass": 334.168127944,
+  "logP": 2.0924999999999994,
+  "tpsa": 32.78,
+  "hbd": 0,
+  "hba": 3,
+  "stereo": [
+   "R",
+   "R",
+   "R",
+   "R",
+   "S",
+   "S"
+  ]
+ },
+ "indole": {
+  "smiles": "c1ccc2[nH]ccc2c1",
+  "formula": "C8H7N",
+  "mw": 117.15099999999997,
+  "exactMass": 117.057849224,
+  "logP": 2.1678999999999995,
+  "tpsa": 15.79,
+  "hbd": 1,
+  "hba": 0,
+  "stereo": []
+ },
+ "sodiumAcetate": {
+  "smiles": "CC(=O)[O-].[Na+]",
+  "formula": "C2H3NaO2",
+  "mw": 82.034,
+  "exactMass": 82.00307361600001,
+  "logP": -4.2398,
+  "tpsa": 40.129999999999995,
+  "hbd": 0,
+  "hba": 2,
+  "stereo": []
+ },
+ "stilbeneE": {
+  "smiles": "C(=C/c1ccccc1)\\c1ccccc1",
+  "formula": "C14H12",
+  "mw": 180.24999999999997,
+  "exactMass": 180.093900384,
+  "logP": 3.857000000000003,
+  "tpsa": 0.0,
+  "hbd": 0,
+  "hba": 0,
+  "stereo": []
+ },
+ "menthol": {
+  "smiles": "CC(C)[C@@H]1CC[C@@H](C)C[C@H]1O",
+  "formula": "C10H20O",
+  "mw": 156.269,
+  "exactMass": 156.15141526,
+  "logP": 2.439500000000001,
+  "tpsa": 20.23,
+  "hbd": 1,
+  "hba": 1,
+  "stereo": [
+   "R",
+   "R",
+   "S"
+  ]
+ },
+ "adenine": {
+  "smiles": "Nc1ncnc2[nH]cnc12",
+  "formula": "C5H5N5",
+  "mw": 135.13,
+  "exactMass": 135.05449516,
+  "logP": -0.0648999999999999,
+  "tpsa": 80.48,
+  "hbd": 2,
+  "hba": 4,
+  "stereo": []
+ },
+ "fmocGly": {
+  "smiles": "O=C(O)CNC(=O)OCC1c2ccccc2-c2ccccc21",
+  "formula": "C17H15NO4",
+  "mw": 297.31,
+  "exactMass": 297.10010796,
+  "logP": 2.6097,
+  "tpsa": 75.63000000000001,
+  "hbd": 2,
+  "hba": 3,
+  "stereo": []
+ },
+ "taxol": {
+  "smiles": "CC1=C2[C@@]([C@]([C@H]([C@@H]3[C@]4([C@H](OC4)C[C@@H]([C@]3(C(=O)[C@@H]2OC(=O)C)C)O)OC(=O)C)OC(=O)c5ccccc5)(C[C@@H]1OC(=O)[C@H](O)[C@@H](NC(=O)c6ccccc6)c7ccccc7)O)(C)C",
+  "formula": "C47H51NO14",
+  "mw": 853.9180000000003,
+  "exactMass": 853.3309553119999,
+  "logP": 3.7357000000000022,
+  "tpsa": 221.28999999999996,
+  "hbd": 4,
+  "hba": 14,
+  "stereo": [
+   "R",
+   "R",
+   "R",
+   "R",
+   "S",
+   "S",
+   "S",
+   "S",
+   "S",
+   "S",
+   "S"
+  ]
+ }
+}

@@ -1,0 +1,168 @@
+{
+  "about": "画像からスキームの評価の件。画像はすべて、このアプリで描いたスキームを PNG に書き出したもの（e2e/make-eval-images.spec.ts で作る。論文・出版社の図は使わない）。正解は base の件（cases.json）と同じ。難しさは書式（style）と解像度（dpi）と番号の有無で変える。extraReagents は、正解の一覧には無いが図には描く試薬（1 段目の先頭に足す）",
+  "cases": [
+    {
+      "id": "amide-hatu-acs-200",
+      "base": "amide-hatu",
+      "style": "acs",
+      "dpi": 200,
+      "numbered": true,
+      "variant": "ACS・200 dpi・番号つき"
+    },
+    {
+      "id": "boc-removal-footnote-150",
+      "base": "boc-removal",
+      "style": "footnote",
+      "dpi": 150,
+      "numbered": true,
+      "variant": "脚注・150 dpi・番号つき"
+    },
+    {
+      "id": "suzuki-lab-150",
+      "base": "suzuki",
+      "style": "lab",
+      "dpi": 150,
+      "numbered": false,
+      "variant": "研究室のメモ・150 dpi・番号なし"
+    },
+    {
+      "id": "reductive-amination-acs-72",
+      "base": "reductive-amination",
+      "style": "acs",
+      "dpi": 72,
+      "numbered": true,
+      "variant": "ACS・72 dpi（文字が小さい）・番号つき"
+    },
+    {
+      "id": "ester-hydrolysis-acs-200",
+      "base": "ester-hydrolysis",
+      "style": "acs",
+      "dpi": 200,
+      "numbered": true,
+      "variant": "ACS・200 dpi・番号つき"
+    },
+    {
+      "id": "nitro-reduction-footnote-150",
+      "base": "nitro-reduction",
+      "style": "footnote",
+      "dpi": 150,
+      "numbered": true,
+      "variant": "脚注・150 dpi・番号つき"
+    },
+    {
+      "id": "dmp-oxidation-lab-150",
+      "base": "dmp-oxidation",
+      "style": "lab",
+      "dpi": 150,
+      "numbered": false,
+      "variant": "研究室のメモ・150 dpi・番号なし"
+    },
+    {
+      "id": "grignard-acs-72",
+      "base": "grignard",
+      "style": "acs",
+      "dpi": 72,
+      "numbered": true,
+      "variant": "ACS・72 dpi（文字が小さい）・番号つき"
+    },
+    {
+      "id": "wittig-acs-200",
+      "base": "wittig",
+      "style": "acs",
+      "dpi": 200,
+      "numbered": true,
+      "variant": "ACS・200 dpi・番号つき"
+    },
+    {
+      "id": "conjugate-addition-footnote-150",
+      "base": "conjugate-addition",
+      "style": "footnote",
+      "dpi": 150,
+      "numbered": true,
+      "variant": "脚注・150 dpi・番号つき"
+    },
+    {
+      "id": "mitsunobu-lab-150",
+      "base": "mitsunobu",
+      "style": "lab",
+      "dpi": 150,
+      "numbered": false,
+      "variant": "研究室のメモ・150 dpi・番号なし"
+    },
+    {
+      "id": "benzylation-acs-72",
+      "base": "benzylation",
+      "style": "acs",
+      "dpi": 72,
+      "numbered": true,
+      "variant": "ACS・72 dpi（文字が小さい）・番号つき"
+    },
+    {
+      "id": "boc-protection-acs-200",
+      "base": "boc-protection",
+      "style": "acs",
+      "dpi": 200,
+      "numbered": true,
+      "variant": "ACS・200 dpi・番号つき"
+    },
+    {
+      "id": "three-steps-footnote-150",
+      "base": "three-steps",
+      "style": "footnote",
+      "dpi": 150,
+      "numbered": true,
+      "variant": "脚注・150 dpi・番号つき"
+    },
+    {
+      "id": "experimental-en-lab-150",
+      "base": "experimental-en",
+      "style": "lab",
+      "dpi": 150,
+      "numbered": false,
+      "variant": "研究室のメモ・150 dpi・番号なし",
+      "extraReagents": [
+        "AcCl"
+      ]
+    },
+    {
+      "id": "click-acs-72",
+      "base": "click",
+      "style": "acs",
+      "dpi": 72,
+      "numbered": true,
+      "variant": "ACS・72 dpi（文字が小さい）・番号つき"
+    },
+    {
+      "id": "buchwald-acs-200",
+      "base": "buchwald",
+      "style": "acs",
+      "dpi": 200,
+      "numbered": true,
+      "variant": "ACS・200 dpi・番号つき"
+    },
+    {
+      "id": "three-steps-acs-72",
+      "base": "three-steps",
+      "style": "acs",
+      "dpi": 72,
+      "numbered": true,
+      "variant": "ACS・72 dpi（文字が小さい）・番号つき"
+    },
+    {
+      "id": "mitsunobu-footnote-150",
+      "base": "mitsunobu",
+      "style": "footnote",
+      "dpi": 150,
+      "numbered": true,
+      "variant": "脚注・150 dpi・番号つき"
+    },
+    {
+      "id": "boc-protection-acs-72",
+      "base": "boc-protection",
+      "style": "acs",
+      "dpi": 72,
+      "numbered": true,
+      "variant": "ACS・72 dpi（文字が小さい）・番号つき"
+    }
+  ]
+}

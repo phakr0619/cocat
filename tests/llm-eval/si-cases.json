@@ -1,0 +1,350 @@
+{
+  "about": "M6 段3 の評価の、作った SI。base は pdf-cases.json の件（図は段2 と同じ png・crop、①は段2 の記録を流し直す）。番号の無い図（lab）は、番号で段落を探せないので入れない。products は図の生成物の番号ごとの系統名（name、手元の OPSIN で正解の構造に戻ることを確かめる）と、置換の位置などを変えた名前（wrong、「名前の食い違い」の版で使う）と、SI の手順に書く条件。conflict は「食い違い」の版で変える項目と、SI に書く値（収率は {yield} を差し替え、温度は find を replace に置き換える）。図（①）にその値が無い件は食い違いを見つけようがないので null",
+  "cases": [
+    {
+      "base": "amide-hatu-acs-200",
+      "products": [
+        {
+          "label": "3",
+          "smiles": "CC(C)(C)OC(=O)N[C@@H](C)C(=O)NCC(=O)OC",
+          "name": "methyl 2-[[(2S)-2-[(tert-butoxycarbonyl)amino]propanoyl]amino]acetate",
+          "wrong": "methyl 3-[[(2S)-2-[(tert-butoxycarbonyl)amino]propanoyl]amino]propanoate",
+          "procedure": "To a solution of 1 (1.89 g, 10.0 mmol) and 2 (1.38 g, 11.0 mmol) in DMF (40 mL) were added HATU (4.56 g, 12.0 mmol, 1.2 equiv) and DIPEA (5.2 mL, 30 mmol, 3 equiv). The mixture was stirred at room temperature for 2 h, diluted with EtOAc and washed with brine.",
+          "result": "Purification by column chromatography gave 3 (2.21 g, {yield}%) as a white solid.",
+          "yield": 85,
+          "time": "2 h",
+          "temp": "rt"
+        }
+      ],
+      "conflict": {
+        "label": "3",
+        "field": "yield",
+        "value": 72
+      }
+    },
+    {
+      "base": "benzylation-acs-72",
+      "products": [
+        {
+          "label": "3",
+          "smiles": "O=Cc1ccc(OCc2ccccc2)cc1",
+          "name": "4-(benzyloxy)benzaldehyde",
+          "wrong": "3-(benzyloxy)benzaldehyde",
+          "procedure": "A mixture of 1 (1.22 g, 10.0 mmol), 2 (1.31 mL, 11.0 mmol) and K2CO3 (2.76 g, 20.0 mmol) in DMF (30 mL) was stirred at 60 °C for 4 h. After cooling, water was added and the product was extracted with Et2O.",
+          "result": "Recrystallization gave 3 (1.91 g, {yield}%) as colorless needles.",
+          "yield": 90,
+          "time": "4 h",
+          "temp": "60 °C"
+        }
+      ],
+      "conflict": {
+        "label": "3",
+        "field": "yield",
+        "value": 78
+      }
+    },
+    {
+      "base": "boc-protection-acs-200",
+      "products": [
+        {
+          "label": "2",
+          "smiles": "CC(C)(C)OC(=O)N[C@@H](Cc1ccccc1)C(=O)OC",
+          "name": "methyl (2S)-2-[(tert-butoxycarbonyl)amino]-3-phenylpropanoate",
+          "wrong": "methyl 3-[(tert-butoxycarbonyl)amino]-3-phenylpropanoate",
+          "procedure": "To a solution of 1 (1.79 g, 10.0 mmol) and Et3N (2.8 mL, 20 mmol) in CH2Cl2 (30 mL) at 0 °C was added Boc2O (2.40 g, 11.0 mmol). The mixture was warmed to room temperature and stirred for 12 h.",
+          "result": "The residue was purified by flash chromatography to give 2 (2.57 g, {yield}%) as a colorless oil.",
+          "yield": 92,
+          "time": "12 h",
+          "temp": "0 °C to rt"
+        }
+      ],
+      "conflict": null
+    },
+    {
+      "base": "boc-protection-acs-72",
+      "products": [
+        {
+          "label": "2",
+          "smiles": "CC(C)(C)OC(=O)N[C@@H](Cc1ccccc1)C(=O)OC",
+          "name": "methyl (2S)-2-[(tert-butoxycarbonyl)amino]-3-phenylpropanoate",
+          "wrong": "methyl 3-[(tert-butoxycarbonyl)amino]-3-phenylpropanoate",
+          "procedure": "To a solution of 1 (1.79 g, 10.0 mmol) and Et3N (2.8 mL, 20 mmol) in CH2Cl2 (30 mL) at 0 °C was added Boc2O (2.40 g, 11.0 mmol). The mixture was warmed to room temperature and stirred for 12 h.",
+          "result": "The residue was purified by flash chromatography to give 2 (2.57 g, {yield}%) as a colorless oil.",
+          "yield": 92,
+          "time": "12 h",
+          "temp": "0 °C to rt"
+        }
+      ],
+      "conflict": null
+    },
+    {
+      "base": "boc-removal-footnote-150",
+      "products": [
+        {
+          "label": "2",
+          "smiles": "OCC1CCNCC1",
+          "name": "piperidin-4-ylmethanol",
+          "wrong": "piperidin-3-ylmethanol",
+          "procedure": "Compound 1 (2.15 g, 10.0 mmol) was dissolved in CH2Cl2 (20 mL) and TFA (10 mL) was added at 0 °C. The solution was stirred at room temperature for 1 h and concentrated.",
+          "result": "The residue was passed through a basic resin to give 2 (1.09 g, {yield}%) as a pale yellow oil.",
+          "yield": 95,
+          "time": "1 h",
+          "temp": "0 °C to rt"
+        }
+      ],
+      "conflict": null
+    },
+    {
+      "base": "buchwald-acs-200",
+      "products": [
+        {
+          "label": "3",
+          "smiles": "Cc1ccc(N2CCOCC2)cc1",
+          "name": "4-(4-methylphenyl)morpholine",
+          "wrong": "4-(3-methylphenyl)morpholine",
+          "procedure": "An oven-dried tube was charged with Pd2(dba)3 (92 mg, 0.10 mmol), XPhos (190 mg, 0.40 mmol) and NaOtBu (1.35 g, 14.0 mmol). Toluene (20 mL), 1 (1.27 g, 10.0 mmol) and 2 (1.05 mL, 12.0 mmol) were added and the mixture was heated at 100 °C for 16 h.",
+          "result": "Filtration through Celite and chromatography gave 3 (1.56 g, {yield}%) as a white solid.",
+          "yield": 88,
+          "time": "16 h",
+          "temp": "100 °C",
+          "solvent": "toluene"
+        }
+      ],
+      "conflict": {
+        "label": "3",
+        "field": "temp",
+        "value": "60 °C",
+        "find": "heated at 100 °C",
+        "replace": "heated at 60 °C"
+      }
+    },
+    {
+      "base": "click-acs-72",
+      "products": [
+        {
+          "label": "3",
+          "smiles": "c1ccc(Cn2cc(-c3ccccc3)nn2)cc1",
+          "name": "1-benzyl-4-phenyl-1H-1,2,3-triazole",
+          "wrong": "1-benzyl-5-phenyl-1H-1,2,3-triazole",
+          "procedure": "To a solution of 1 (1.33 g, 10.0 mmol) and 2 (1.12 g, 11.0 mmol) in t-BuOH/H2O (1:1, 40 mL) were added CuSO4·5H2O (125 mg, 0.50 mmol) and sodium ascorbate (396 mg, 2.0 mmol). The mixture was stirred at room temperature for 18 h.",
+          "result": "The precipitate was collected by filtration to give 3 (2.12 g, {yield}%) as a white solid.",
+          "yield": 90,
+          "time": "18 h",
+          "temp": "rt"
+        }
+      ],
+      "conflict": null
+    },
+    {
+      "base": "conjugate-addition-footnote-150",
+      "products": [
+        {
+          "label": "3",
+          "smiles": "Cn1cccc1C1CCCC(=O)C1",
+          "name": "3-(1-methyl-1H-pyrrol-2-yl)cyclohexan-1-one",
+          "wrong": "4-(1-methyl-1H-pyrrol-2-yl)cyclohexan-1-one",
+          "procedure": "To a solution of 1 (0.96 g, 10.0 mmol) and 2 (1.62 g, 20.0 mmol) in CH2Cl2 (20 mL) at −20 °C was added the imidazolidinone catalyst (0.20 equiv) and TFA (0.20 equiv). The mixture was stirred at −20 °C for 24 h.",
+          "result": "Chromatography gave 3 (1.38 g, {yield}%) as a yellow oil.",
+          "yield": 78,
+          "time": "24 h",
+          "temp": "−20 °C"
+        }
+      ],
+      "conflict": null
+    },
+    {
+      "base": "ester-hydrolysis-acs-200",
+      "products": [
+        {
+          "label": "2",
+          "smiles": "OC(=O)c1ccc([N+](=O)[O-])cc1",
+          "name": "4-nitrobenzoic acid",
+          "wrong": "3-nitrobenzoic acid",
+          "procedure": "A solution of 1 (1.81 g, 10.0 mmol) and LiOH (0.48 g, 20.0 mmol) in THF/H2O (3:1, 40 mL) was stirred at room temperature for 3 h, then acidified with 1 M HCl.",
+          "result": "The precipitate was collected to give 2 (1.59 g, {yield}%) as a pale yellow solid.",
+          "yield": 95,
+          "time": "3 h",
+          "temp": "rt"
+        }
+      ],
+      "conflict": {
+        "label": "2",
+        "field": "yield",
+        "value": 82
+      }
+    },
+    {
+      "base": "grignard-acs-72",
+      "products": [
+        {
+          "label": "2",
+          "smiles": "CC(O)c1ccccc1",
+          "name": "1-phenylethan-1-ol",
+          "wrong": "2-phenylethan-1-ol",
+          "procedure": "To a solution of 1 (1.06 g, 10.0 mmol) in THF (30 mL) at 0 °C was added MeMgBr (3.0 M in Et2O, 4.0 mL, 12.0 mmol) dropwise. The mixture was stirred at 0 °C for 30 min and quenched with saturated aqueous NH4Cl.",
+          "result": "Distillation gave 2 (1.07 g, {yield}%) as a colorless liquid.",
+          "yield": 88,
+          "time": "30 min",
+          "temp": "0 °C"
+        }
+      ],
+      "conflict": {
+        "label": "2",
+        "field": "yield",
+        "value": 70
+      }
+    },
+    {
+      "base": "mitsunobu-footnote-150",
+      "products": [
+        {
+          "label": "3",
+          "smiles": "C[C@H](OC(=O)c1ccc([N+](=O)[O-])cc1)c1ccccc1",
+          "name": "(1S)-1-phenylethyl 4-nitrobenzoate",
+          "wrong": "(1S)-1-phenylethyl 3-nitrobenzoate",
+          "procedure": "To a solution of 1 (1.22 g, 10.0 mmol), 2 (2.00 g, 12.0 mmol) and PPh3 (3.15 g, 12.0 mmol) in THF (40 mL) at 0 °C was added DIAD (2.4 mL, 12.0 mmol) dropwise. The mixture was stirred at room temperature for 6 h.",
+          "result": "Chromatography gave 3 (2.06 g, {yield}%) as a white solid.",
+          "yield": 76,
+          "time": "6 h",
+          "temp": "0 °C to rt"
+        }
+      ],
+      "conflict": null
+    },
+    {
+      "base": "nitro-reduction-footnote-150",
+      "products": [
+        {
+          "label": "2",
+          "smiles": "COc1ccc(N)cc1",
+          "name": "4-methoxyaniline",
+          "wrong": "3-methoxyaniline",
+          "procedure": "A suspension of 1 (1.53 g, 10.0 mmol) and 10% Pd/C (150 mg) in MeOH (30 mL) was stirred under H2 (1 atm) at room temperature for 5 h and filtered through Celite.",
+          "result": "Concentration gave 2 (1.17 g, {yield}%) as a brown solid.",
+          "yield": 95,
+          "time": "5 h",
+          "temp": "rt"
+        }
+      ],
+      "conflict": {
+        "label": "2",
+        "field": "temp",
+        "value": "70 °C",
+        "find": "at room temperature",
+        "replace": "at 70 °C"
+      }
+    },
+    {
+      "base": "reductive-amination-acs-72",
+      "products": [
+        {
+          "label": "3",
+          "smiles": "C(c1ccccc1)N1CCOCC1",
+          "name": "4-benzylmorpholine",
+          "wrong": "2-benzylmorpholine",
+          "procedure": "To a solution of 1 (1.06 g, 10.0 mmol) and 2 (0.96 mL, 11.0 mmol) in 1,2-dichloroethane (40 mL) was added NaBH(OAc)3 (2.97 g, 14.0 mmol). The mixture was stirred at room temperature for 8 h and quenched with saturated aqueous NaHCO3.",
+          "result": "Chromatography gave 3 (1.56 g, {yield}%) as a colorless oil.",
+          "yield": 88,
+          "time": "8 h",
+          "temp": "rt"
+        }
+      ],
+      "conflict": null
+    },
+    {
+      "base": "three-steps-acs-72",
+      "products": [
+        {
+          "label": "2",
+          "smiles": "COC(=O)c1ccc(Br)cc1",
+          "name": "methyl 4-bromobenzoate",
+          "wrong": "methyl 3-bromobenzoate",
+          "procedure": "A solution of 1 (2.01 g, 10.0 mmol) in MeOH (40 mL) containing concentrated H2SO4 (0.5 mL) was heated at reflux for 12 h.",
+          "result": "Workup gave 2 (2.04 g, {yield}%) as a white solid.",
+          "yield": 95,
+          "time": "12 h",
+          "temp": "reflux"
+        },
+        {
+          "label": "4",
+          "smiles": "COC(=O)c1ccc(-c2cccnc2)cc1",
+          "name": "methyl 4-(pyridin-3-yl)benzoate",
+          "wrong": "methyl 3-(pyridin-3-yl)benzoate",
+          "procedure": "A mixture of 2 (2.15 g, 10.0 mmol), 3 (1.48 g, 12.0 mmol), Pd(dppf)Cl2 (366 mg, 0.50 mmol) and Na2CO3 (2.12 g, 20.0 mmol) in dioxane/H2O (4:1, 50 mL) was heated at 90 °C for 8 h.",
+          "result": "Chromatography gave 4 (1.75 g, {yield}%) as an off-white solid.",
+          "yield": 82,
+          "time": "8 h",
+          "temp": "90 °C"
+        },
+        {
+          "label": "5",
+          "smiles": "OCc1ccc(-c2cccnc2)cc1",
+          "name": "[4-(pyridin-3-yl)phenyl]methanol",
+          "wrong": "[3-(pyridin-3-yl)phenyl]methanol",
+          "procedure": "To a suspension of LiAlH4 (0.57 g, 15.0 mmol) in THF (30 mL) at 0 °C was added a solution of 4 (2.13 g, 10.0 mmol) in THF (10 mL). The mixture was stirred at 0 °C for 1 h and quenched by the Fieser method.",
+          "result": "Filtration and concentration gave 5 (1.68 g, {yield}%) as a white solid.",
+          "yield": 91,
+          "time": "1 h",
+          "temp": "0 °C"
+        }
+      ],
+      "conflict": null
+    },
+    {
+      "base": "three-steps-footnote-150",
+      "products": [
+        {
+          "label": "2",
+          "smiles": "COC(=O)c1ccc(Br)cc1",
+          "name": "methyl 4-bromobenzoate",
+          "wrong": "methyl 3-bromobenzoate",
+          "procedure": "A solution of 1 (2.01 g, 10.0 mmol) in MeOH (40 mL) containing concentrated H2SO4 (0.5 mL) was heated at reflux for 12 h.",
+          "result": "Workup gave 2 (2.04 g, {yield}%) as a white solid.",
+          "yield": 95,
+          "time": "12 h",
+          "temp": "reflux"
+        },
+        {
+          "label": "4",
+          "smiles": "COC(=O)c1ccc(-c2cccnc2)cc1",
+          "name": "methyl 4-(pyridin-3-yl)benzoate",
+          "wrong": "methyl 3-(pyridin-3-yl)benzoate",
+          "procedure": "A mixture of 2 (2.15 g, 10.0 mmol), 3 (1.48 g, 12.0 mmol), Pd(dppf)Cl2 (366 mg, 0.50 mmol) and Na2CO3 (2.12 g, 20.0 mmol) in dioxane/H2O (4:1, 50 mL) was heated at 90 °C for 8 h.",
+          "result": "Chromatography gave 4 (1.75 g, {yield}%) as an off-white solid.",
+          "yield": 82,
+          "time": "8 h",
+          "temp": "90 °C"
+        },
+        {
+          "label": "5",
+          "smiles": "OCc1ccc(-c2cccnc2)cc1",
+          "name": "[4-(pyridin-3-yl)phenyl]methanol",
+          "wrong": "[3-(pyridin-3-yl)phenyl]methanol",
+          "procedure": "To a suspension of LiAlH4 (0.57 g, 15.0 mmol) in THF (30 mL) at 0 °C was added a solution of 4 (2.13 g, 10.0 mmol) in THF (10 mL). The mixture was stirred at 0 °C for 1 h and quenched by the Fieser method.",
+          "result": "Filtration and concentration gave 5 (1.68 g, {yield}%) as a white solid.",
+          "yield": 91,
+          "time": "1 h",
+          "temp": "0 °C"
+        }
+      ],
+      "conflict": null
+    },
+    {
+      "base": "wittig-acs-200",
+      "products": [
+        {
+          "label": "2",
+          "smiles": "C=C1CCCCC1",
+          "name": "methylidenecyclohexane",
+          "wrong": "1-methylcyclohex-1-ene",
+          "procedure": "To a suspension of methyltriphenylphosphonium bromide (4.29 g, 12.0 mmol) in THF (40 mL) at 0 °C was added n-BuLi (2.5 M, 4.8 mL, 12.0 mmol). After 30 min, 1 (0.98 g, 10.0 mmol) was added and the mixture was stirred at room temperature for 3 h.",
+          "result": "Careful distillation gave 2 (0.71 g, {yield}%) as a colorless liquid.",
+          "yield": 74,
+          "time": "3 h",
+          "temp": "0 °C to rt"
+        }
+      ],
+      "conflict": null
+    }
+  ]
+}

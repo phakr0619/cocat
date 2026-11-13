@@ -1,0 +1,110 @@
+{
+ "note": "構造 → 名前の評価の件。name は正解の一例（OPSIN で smiles と同じ構造になることを tests/opsin.test.ts で確かめる）。採点は名前の文字ではなく、名前から戻した構造が smiles と同じか（立体を含む InChIKey）で行う",
+ "cases": [
+  {
+   "id": "n01",
+   "smiles": "O=Cc1ccc(Br)cc1F",
+   "name": "4-bromo-2-fluorobenzaldehyde"
+  },
+  {
+   "id": "n02",
+   "smiles": "COC(=O)/C=C/c1ccccc1",
+   "name": "methyl (2E)-3-phenylprop-2-enoate"
+  },
+  {
+   "id": "n03",
+   "smiles": "OC/C=C\\CCC",
+   "name": "(2Z)-hex-2-en-1-ol"
+  },
+  {
+   "id": "n04",
+   "smiles": "CC(C)(C)OC(=O)N[C@@H](Cc1ccccc1)CO",
+   "name": "tert-butyl N-[(2S)-1-hydroxy-3-phenylpropan-2-yl]carbamate"
+  },
+  {
+   "id": "n05",
+   "smiles": "C[C@H]1CCCC[C@H]1O",
+   "name": "(1R,2S)-2-methylcyclohexan-1-ol"
+  },
+  {
+   "id": "n06",
+   "smiles": "Clc1ccc(cn1)[N+](=O)[O-]",
+   "name": "2-chloro-5-nitropyridine"
+  },
+  {
+   "id": "n07",
+   "smiles": "CCOC(=O)C1CCCCC1=O",
+   "name": "ethyl 2-oxocyclohexane-1-carboxylate"
+  },
+  {
+   "id": "n08",
+   "smiles": "C=CCN(C)Cc1ccccc1",
+   "name": "N-benzyl-N-methylprop-2-en-1-amine"
+  },
+  {
+   "id": "n09",
+   "smiles": "C[C@H](C(=O)O)c1ccc2cc(OC)ccc2c1",
+   "name": "(2S)-2-(6-methoxynaphthalen-2-yl)propanoic acid"
+  },
+  {
+   "id": "n10",
+   "smiles": "O=Cc1c[nH]c2ccccc12",
+   "name": "1H-indole-3-carbaldehyde"
+  },
+  {
+   "id": "n11",
+   "smiles": "Cn1ccc(Br)n1",
+   "name": "3-bromo-1-methyl-1H-pyrazole"
+  },
+  {
+   "id": "n12",
+   "smiles": "CC1(C)OB(c2ccc(Br)cc2)OC1(C)C",
+   "name": "2-(4-bromophenyl)-4,4,5,5-tetramethyl-1,3,2-dioxaborolane"
+  },
+  {
+   "id": "n13",
+   "smiles": "C#CCO[Si](C)(C)C(C)(C)C",
+   "name": "tert-butyl(dimethyl)(prop-2-yn-1-yloxy)silane"
+  },
+  {
+   "id": "n14",
+   "smiles": "O=C1N[C@H](Cc2ccccc2)CO1",
+   "name": "(4R)-4-benzyl-1,3-oxazolidin-2-one"
+  },
+  {
+   "id": "n15",
+   "smiles": "COC(=O)c1ccc(/C=C/[N+](=O)[O-])cc1",
+   "name": "methyl 4-[(E)-2-nitroethenyl]benzoate"
+  },
+  {
+   "id": "n16",
+   "smiles": "Cc1ccc(s1)C(=O)O",
+   "name": "5-methylthiophene-2-carboxylic acid"
+  },
+  {
+   "id": "n17",
+   "smiles": "C[C@@H](O)[C@H](C)C(=O)O",
+   "name": "(2S,3R)-3-hydroxy-2-methylbutanoic acid"
+  },
+  {
+   "id": "n18",
+   "smiles": "OC[C@@H]1CO1",
+   "name": "[(2R)-oxiran-2-yl]methanol"
+  },
+  {
+   "id": "n19",
+   "smiles": "O=C1CCC2(CC1)OCCO2",
+   "name": "1,4-dioxaspiro[4.5]decan-8-one"
+  },
+  {
+   "id": "n20",
+   "smiles": "CC(C)(C)OC(=O)N1CCN(CC1)c1ccc(N)cc1",
+   "name": "tert-butyl 4-(4-aminophenyl)piperazine-1-carboxylate"
+  },
+  {
+   "id": "n21",
+   "smiles": "O[C@H]1CCCC[C@@H]1NCc1ccccc1",
+   "name": "(1S,2S)-2-(benzylamino)cyclohexan-1-ol"
+  }
+ ]
+}

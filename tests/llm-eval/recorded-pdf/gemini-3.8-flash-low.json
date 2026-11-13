@@ -1,0 +1,5425 @@
+{
+  "model": "gemini-3.8-flash",
+  "thinking": "low",
+  "recordedAt": "2026-11-07T11-03-59",
+  "outcomes": {
+    "amide-hatu-acs-200-png-page": "correct",
+    "amide-hatu-acs-200-png-crop": "correct",
+    "amide-hatu-acs-200-svg-page": "correct",
+    "amide-hatu-acs-200-svg-crop": "correct",
+    "amide-hatu-acs-200-scan-page": "correct",
+    "amide-hatu-acs-200-scan-crop": "correct",
+    "boc-removal-footnote-150-png-page": "correct",
+    "boc-removal-footnote-150-png-crop": "correct",
+    "boc-removal-footnote-150-svg-page": "correct",
+    "boc-removal-footnote-150-svg-crop": "correct",
+    "boc-removal-footnote-150-scan-page": "correct",
+    "boc-removal-footnote-150-scan-crop": "correct",
+    "suzuki-lab-150-png-page": "correct",
+    "suzuki-lab-150-png-crop": "correct",
+    "suzuki-lab-150-svg-page": "correct",
+    "suzuki-lab-150-svg-crop": "correct",
+    "suzuki-lab-150-scan-page": "correct",
+    "suzuki-lab-150-scan-crop": "correct",
+    "reductive-amination-acs-72-png-page": "correct",
+    "reductive-amination-acs-72-png-crop": "correct",
+    "reductive-amination-acs-72-svg-page": "correct",
+    "reductive-amination-acs-72-svg-crop": "correct",
+    "reductive-amination-acs-72-scan-page": "correct",
+    "reductive-amination-acs-72-scan-crop": "correct",
+    "ester-hydrolysis-acs-200-png-page": "correct",
+    "ester-hydrolysis-acs-200-png-crop": "correct",
+    "ester-hydrolysis-acs-200-svg-page": "correct",
+    "ester-hydrolysis-acs-200-svg-crop": "correct",
+    "ester-hydrolysis-acs-200-scan-page": "correct",
+    "ester-hydrolysis-acs-200-scan-crop": "correct",
+    "nitro-reduction-footnote-150-png-page": "correct",
+    "nitro-reduction-footnote-150-png-crop": "correct",
+    "nitro-reduction-footnote-150-svg-page": "correct",
+    "nitro-reduction-footnote-150-svg-crop": "correct",
+    "nitro-reduction-footnote-150-scan-page": "correct",
+    "nitro-reduction-footnote-150-scan-crop": "correct",
+    "dmp-oxidation-lab-150-png-page": "correct",
+    "dmp-oxidation-lab-150-png-crop": "correct",
+    "dmp-oxidation-lab-150-svg-page": "correct",
+    "dmp-oxidation-lab-150-svg-crop": "correct",
+    "dmp-oxidation-lab-150-scan-page": "correct",
+    "dmp-oxidation-lab-150-scan-crop": "correct",
+    "grignard-acs-72-png-page": "correct",
+    "grignard-acs-72-png-crop": "correct",
+    "grignard-acs-72-svg-page": "correct",
+    "grignard-acs-72-svg-crop": "correct",
+    "grignard-acs-72-scan-page": "correct",
+    "grignard-acs-72-scan-crop": "correct",
+    "wittig-acs-200-png-page": "correct",
+    "wittig-acs-200-png-crop": "correct",
+    "wittig-acs-200-svg-page": "correct",
+    "wittig-acs-200-svg-crop": "correct",
+    "wittig-acs-200-scan-page": "correct",
+    "wittig-acs-200-scan-crop": "correct",
+    "conjugate-addition-footnote-150-png-page": "correct",
+    "conjugate-addition-footnote-150-png-crop": "correct",
+    "conjugate-addition-footnote-150-svg-page": "correct",
+    "conjugate-addition-footnote-150-svg-crop": "correct",
+    "conjugate-addition-footnote-150-scan-page": "correct",
+    "conjugate-addition-footnote-150-scan-crop": "correct",
+    "mitsunobu-lab-150-png-page": "flagged",
+    "mitsunobu-lab-150-png-crop": "flagged",
+    "mitsunobu-lab-150-svg-page": "flagged",
+    "mitsunobu-lab-150-svg-crop": "flagged",
+    "mitsunobu-lab-150-scan-page": "flagged",
+    "mitsunobu-lab-150-scan-crop": "correct",
+    "benzylation-acs-72-png-page": "correct",
+    "benzylation-acs-72-png-crop": "correct",
+    "benzylation-acs-72-svg-page": "correct",
+    "benzylation-acs-72-svg-crop": "correct",
+    "benzylation-acs-72-scan-page": "correct",
+    "benzylation-acs-72-scan-crop": "correct",
+    "boc-protection-acs-200-png-page": "correct",
+    "boc-protection-acs-200-png-crop": "correct",
+    "boc-protection-acs-200-svg-page": "correct",
+    "boc-protection-acs-200-svg-crop": "correct",
+    "boc-protection-acs-200-scan-page": "flagged",
+    "boc-protection-acs-200-scan-crop": "correct",
+    "three-steps-footnote-150-png-page": "correct",
+    "three-steps-footnote-150-png-crop": "correct",
+    "three-steps-footnote-150-svg-page": "correct",
+    "three-steps-footnote-150-svg-crop": "correct",
+    "three-steps-footnote-150-scan-page": "correct",
+    "three-steps-footnote-150-scan-crop": "correct",
+    "experimental-en-lab-150-png-page": "correct",
+    "experimental-en-lab-150-png-crop": "correct",
+    "experimental-en-lab-150-svg-page": "silent-wrong",
+    "experimental-en-lab-150-svg-crop": "correct",
+    "experimental-en-lab-150-scan-page": "silent-wrong",
+    "experimental-en-lab-150-scan-crop": "correct",
+    "click-acs-72-png-page": "correct",
+    "click-acs-72-png-crop": "flagged",
+    "click-acs-72-svg-page": "correct",
+    "click-acs-72-svg-crop": "correct",
+    "click-acs-72-scan-page": "correct",
+    "click-acs-72-scan-crop": "correct",
+    "buchwald-acs-200-png-page": "correct",
+    "buchwald-acs-200-png-crop": "correct",
+    "buchwald-acs-200-svg-page": "correct",
+    "buchwald-acs-200-svg-crop": "correct",
+    "buchwald-acs-200-scan-page": "correct",
+    "buchwald-acs-200-scan-crop": "correct",
+    "three-steps-acs-72-png-page": "silent-wrong",
+    "three-steps-acs-72-png-crop": "correct",
+    "three-steps-acs-72-svg-page": "correct",
+    "three-steps-acs-72-svg-crop": "correct",
+    "three-steps-acs-72-scan-page": "correct",
+    "three-steps-acs-72-scan-crop": "correct",
+    "mitsunobu-footnote-150-png-page": "correct",
+    "mitsunobu-footnote-150-png-crop": "flagged",
+    "mitsunobu-footnote-150-svg-page": "flagged",
+    "mitsunobu-footnote-150-svg-crop": "correct",
+    "mitsunobu-footnote-150-scan-page": "correct",
+    "mitsunobu-footnote-150-scan-crop": "correct",
+    "boc-protection-acs-72-png-page": "correct",
+    "boc-protection-acs-72-png-crop": "correct",
+    "boc-protection-acs-72-svg-page": "correct",
+    "boc-protection-acs-72-svg-crop": "correct",
+    "boc-protection-acs-72-scan-page": "flagged",
+    "boc-protection-acs-72-scan-crop": "correct"
+  },
+  "raw": {
+    "amide-hatu-acs-200-png-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "CC(C)(C)OC(=O)N[C@@H](C)C(=O)O",
+            "confidence": "high",
+            "cip": "S"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "COC(=O)CN",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "COC(=O)CNC(=O)[C@@H](C)NC(=O)OC(C)(C)C",
+            "confidence": "high",
+            "cip": "S"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [
+              {
+                "text": "HATU",
+                "smiles": "COP1(=NP(=NP(=N1)(OC)OC)(OC)OC)OC"
+              },
+              {
+                "text": "DIPEA",
+                "smiles": "CCN(C(C)C)C(C)C"
+              }
+            ],
+            "solvent": "DMF",
+            "yield": 85
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "amide-hatu-acs-200-png-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "C[C@@H](C(=O)O)NC(=O)OC(C)(C)C",
+            "cip": "S"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "COC(=O)CN"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "COC(=O)CNC(=O)[C@@H](C)NC(=O)OC(C)(C)C",
+            "cip": "S"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [
+              {
+                "text": "HATU"
+              },
+              {
+                "text": "DIPEA"
+              }
+            ],
+            "solvent": "DMF",
+            "yield": 85
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "amide-hatu-acs-200-svg-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "CC(C)(C)OC(=O)N[C@@H](C)C(=O)O",
+            "cip": "S"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "COC(=O)CN"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "COC(=O)CNC(=O)[C@@H](C)NC(=O)OC(C)(C)C",
+            "cip": "S"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [
+              {
+                "text": "HATU",
+                "smiles": "CN(C)C(=[N+](C)C)On1nnc2cccnc12.[F-].[P+5](F)(F)(F)(F)(F)"
+              },
+              {
+                "text": "DIPEA",
+                "smiles": "CCN(C(C)C)C(C)C"
+              }
+            ],
+            "solvent": "DMF",
+            "yield": 85
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "amide-hatu-acs-200-svg-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "C[C@@H](C(=O)O)NC(=O)OC(C)(C)C",
+            "confidence": "high",
+            "cip": "S"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "COC(=O)CN",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "COC(=O)CNC(=O)[C@H](C)NC(=O)OC(C)(C)C",
+            "confidence": "high",
+            "cip": "S"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [
+              {
+                "text": "HATU"
+              },
+              {
+                "text": "DIPEA"
+              }
+            ],
+            "solvent": "DMF",
+            "yield": 85
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "amide-hatu-acs-200-scan-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "C[C@@H](C(=O)O)NC(=O)OC(C)(C)C",
+            "confidence": "high",
+            "cip": "S"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "COC(=O)CN",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "COC(=O)CNC(=O)[C@@H](C)NC(=O)OC(C)(C)C",
+            "confidence": "high",
+            "cip": "S"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [
+              {
+                "text": "HATU"
+              },
+              {
+                "text": "DIPEA"
+              }
+            ],
+            "solvent": "DMF",
+            "yield": 85
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "amide-hatu-acs-200-scan-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "C[C@@H](C(=O)O)NC(=O)OC(C)(C)C",
+            "cip": "S"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "COC(=O)CN"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "COC(=O)CNC(=O)[C@H](C)NC(=O)OC(C)(C)C",
+            "cip": "S"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [
+              {
+                "text": "HATU"
+              },
+              {
+                "text": "DIPEA"
+              }
+            ],
+            "solvent": "DMF",
+            "yield": 85
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "boc-removal-footnote-150-png-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "CC(C)(C)OC(=O)N1CCC(CO)CC1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "OCC1CCNCC1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [
+              {
+                "text": "TFA",
+                "smiles": "FC(F)(F)C(=O)O"
+              }
+            ]
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "boc-removal-footnote-150-png-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "CC(C)(C)OC(=O)N1CCC(CO)CC1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "OCC1CCNCC1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [
+              {
+                "text": "TFA",
+                "smiles": "FC(F)(F)C(=O)O"
+              }
+            ]
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "boc-removal-footnote-150-svg-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "CC(C)(C)OC(=O)N1CCC(CO)CC1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "OCC1CCNCC1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [
+              {
+                "text": "TFA",
+                "smiles": "FC(F)(F)C(=O)O"
+              }
+            ]
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "boc-removal-footnote-150-svg-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "CC(C)(C)OC(=O)N1CCC(CO)CC1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "OCC1CCNCC1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [
+              {
+                "text": "TFA",
+                "smiles": "FC(F)(F)C(=O)O"
+              }
+            ]
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "boc-removal-footnote-150-scan-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "CC(C)(C)OC(=O)N1CCC(CO)CC1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "OCC1CCNCC1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [
+              {
+                "text": "TFA",
+                "smiles": "FC(F)(F)C(=O)O"
+              }
+            ]
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "boc-removal-footnote-150-scan-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "CC(C)(C)OC(=O)N1CCC(CO)CC1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "OCC1CCNCC1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [
+              {
+                "text": "TFA",
+                "smiles": "FC(F)(F)C(=O)O"
+              }
+            ]
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "suzuki-lab-150-png-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1-bromo-4-methoxybenzene",
+            "smiles": "COc1ccc(Br)cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "phenylboronic acid",
+            "smiles": "OB(O)c1ccccc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "4-methoxybiphenyl",
+            "smiles": "COc1ccc(-c2ccccc2)cc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [
+              {
+                "text": "Pd(PPh3)4",
+                "smiles": "[Pd]([P](c1ccccc1)(c2ccccc2)c3ccccc3)([P](c4ccccc4)(c5ccccc5)c6ccccc6)([P](c7ccccc7)(c8ccccc8)c9ccccc9)[P](c%10ccccc%10)(c%11ccccc%11)c%12ccccc%12"
+              },
+              {
+                "text": "K2CO3",
+                "smiles": "[K+].[K+].[O-]C(=O)[O-]"
+              }
+            ],
+            "temp": "80 °C",
+            "yield": 92
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "suzuki-lab-150-png-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "smiles": "COc1ccc(Br)cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "smiles": "OB(O)c1ccccc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "smiles": "COc1ccc(-c2ccccc2)cc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [
+              {
+                "text": "Pd(PPh3)4",
+                "smiles": "[Pd](P(c1ccccc1)(c2ccccc2)c3ccccc3)(P(c4ccccc4)(c5ccccc5)c6ccccc6)(P(c7ccccc7)(c8ccccc8)c9ccccc9)P(c%10ccccc%10)(c%11ccccc%11)c%12ccccc%12"
+              },
+              {
+                "text": "K2CO3",
+                "smiles": "[K+].[K+].[O-]C(=O)[O-]"
+              }
+            ],
+            "temp": "80 °C",
+            "yield": 92
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "suzuki-lab-150-svg-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "4-bromoanisole",
+            "smiles": "COc1ccc(Br)cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "phenylboronic acid",
+            "smiles": "OB(O)c1ccccc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "4-methoxybiphenyl",
+            "smiles": "COc1ccc(-c2ccccc2)cc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [
+              {
+                "text": "Pd(PPh3)4",
+                "smiles": "[Pd]([P](c1ccccc1)(c2ccccc2)c3ccccc3)([P](c4ccccc4)(c5ccccc5)c6ccccc6)([P](c7ccccc7)(c8ccccc8)c9ccccc9)[P](c%10ccccc%10)(c%11ccccc%11)c%12ccccc%12"
+              },
+              {
+                "text": "K2CO3",
+                "smiles": "[K+].[K+].[O-]C(=O)[O-]"
+              }
+            ],
+            "temp": "80 °C",
+            "yield": 92
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "suzuki-lab-150-svg-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "smiles": "COc1ccc(Br)cc1"
+          },
+          {
+            "ref": "B",
+            "smiles": "OB(O)c1ccccc1"
+          },
+          {
+            "ref": "C",
+            "smiles": "COc1ccc(-c2ccccc2)cc1"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [
+              {
+                "text": "Pd(PPh3)4"
+              },
+              {
+                "text": "K2CO3"
+              }
+            ],
+            "temp": "80 °C",
+            "yield": 92
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "suzuki-lab-150-scan-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "smiles": "COc1ccc(Br)cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "smiles": "OB(O)c1ccccc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "smiles": "COc1ccc(-c2ccccc2)cc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [
+              {
+                "text": "Pd(PPh3)4",
+                "smiles": "[Pd](P(c1ccccc1)(c2ccccc2)c3ccccc3)(P(c4ccccc4)(c5ccccc5)c6ccccc6)(P(c7ccccc7)(c8ccccc8)c9ccccc9)P(c%10ccccc%10)(c%11ccccc%11)c%12ccccc%12"
+              },
+              {
+                "text": "K2CO3",
+                "smiles": "[K+].[K+].[O-]C(=O)[O-]"
+              }
+            ],
+            "temp": "80 °C",
+            "yield": 92
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "suzuki-lab-150-scan-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "smiles": "COc1ccc(Br)cc1"
+          },
+          {
+            "ref": "B",
+            "smiles": "OB(O)c1ccccc1"
+          },
+          {
+            "ref": "C",
+            "smiles": "COc1ccc(-c2ccccc2)cc1"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [
+              {
+                "text": "Pd(PPh3)4",
+                "smiles": "[Pd](P(c1ccccc1)(c2ccccc2)c3ccccc3)(P(c4ccccc4)(c5ccccc5)c6ccccc6)(P(c7ccccc7)(c8ccccc8)c9ccccc9)P(c%10ccccc%10)(c%11ccccc%11)c%12ccccc%12"
+              },
+              {
+                "text": "K2CO3",
+                "smiles": "[K+].[K+].[O-]C(=O)[O-]"
+              }
+            ],
+            "temp": "80 °C",
+            "yield": 92
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "reductive-amination-acs-72-png-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "O=Cc1ccccc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "C1COCCN1",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "c1ccc(CN2CCOCC2)cc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [
+              {
+                "text": "NaBH(OAc)3",
+                "smiles": "CC(=O)O[BH-](OC(=O)C)OC(=O)C.[Na+]"
+              }
+            ],
+            "solvent": ""
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "reductive-amination-acs-72-png-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "O=Cc1ccccc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "C1COCCN1",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "c1ccc(CN2CCOCC2)cc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [
+              {
+                "text": "NaBH(OAc)3",
+                "smiles": "[Na+].[B-](H)(OC(=O)C)(OC(=O)C)OC(=O)C"
+              }
+            ]
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "reductive-amination-acs-72-svg-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "O=Cc1ccccc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "C1COCCN1",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "c1ccc(CN2CCOCC2)cc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [
+              {
+                "text": "NaBH(OAc)3",
+                "smiles": "[Na+].[B-H](OC(=O)C)(OC(=O)C)OC(=O)C"
+              }
+            ]
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "reductive-amination-acs-72-svg-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "O=Cc1ccccc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "C1COCCN1",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "c1ccc(CN2CCOCC2)cc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [
+              {
+                "text": "NaBH(OAc)3",
+                "smiles": "[Na+].[BH-](OC(=O)C)(OC(=O)C)OC(=O)C"
+              }
+            ]
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "reductive-amination-acs-72-scan-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "O=Cc1ccccc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "C1COCCN1",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "O1CCN(Cc2ccccc2)CC1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [
+              {
+                "text": "NaBH(OAc)3",
+                "smiles": "[Na+].[BH-](OC(=O)C)(OC(=O)C)OC(=O)C"
+              }
+            ]
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "reductive-amination-acs-72-scan-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "O=Cc1ccccc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "C1COCCN1",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "c1ccc(CN2CCOCC2)cc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [
+              {
+                "text": "NaBH(OAc)3",
+                "smiles": "[Na+].[BH-](OC(=O)C)(OC(=O)C)OC(=O)C"
+              }
+            ]
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "ester-hydrolysis-acs-200-png-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "COC(=O)c1ccc([N+](=O)[O-])cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "O=C(O)c1ccc([N+](=O)[O-])cc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [
+              {
+                "text": "LiOH",
+                "smiles": "[Li+].[OH-]"
+              }
+            ],
+            "yield": 95
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "ester-hydrolysis-acs-200-png-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "COC(=O)c1ccc([N+](=O)[O-])cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "O=C(O)c1ccc([N+](=O)[O-])cc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [
+              {
+                "text": "LiOH",
+                "smiles": "[LiOH]"
+              }
+            ],
+            "yield": 95
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "ester-hydrolysis-acs-200-svg-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "COC(=O)c1ccc([N+](=O)[O-])cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "O=C(O)c1ccc([N+](=O)[O-])cc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [
+              {
+                "text": "LiOH",
+                "smiles": "[Li+].[OH-]"
+              }
+            ],
+            "yield": 95
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "ester-hydrolysis-acs-200-svg-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "COC(=O)C1=CC=C([N+](=O)[O-])C=C1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "O=C(O)C1=CC=C([N+](=O)[O-])C=C1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [
+              {
+                "text": "LiOH",
+                "smiles": "[Li+].[OH-]"
+              }
+            ],
+            "yield": 95
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "ester-hydrolysis-acs-200-scan-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "COC(=O)c1ccc([N+](=O)[O-])cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "O=C(O)c1ccc([N+](=O)[O-])cc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [
+              {
+                "text": "LiOH",
+                "smiles": "[Li+].[OH-]"
+              }
+            ],
+            "yield": 95
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "ester-hydrolysis-acs-200-scan-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "COC(=O)c1ccc([N+](=O)[O-])cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "O=C(O)c1ccc([N+](=O)[O-])cc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [
+              {
+                "text": "LiOH",
+                "smiles": "[Li+].[OH-]"
+              }
+            ],
+            "yield": 95
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "nitro-reduction-footnote-150-png-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "COc1ccc([N+](=O)[O-])cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "COc1ccc(N)cc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [
+              {
+                "text": "Pd/C"
+              }
+            ],
+            "solvent": "MeOH"
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "nitro-reduction-footnote-150-png-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "COc1ccc([N+](=O)[O-])cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "COc1ccc(N)cc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [
+              {
+                "text": "Pd/C"
+              }
+            ],
+            "solvent": "MeOH",
+            "temp": "rt"
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "nitro-reduction-footnote-150-svg-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "COc1ccc([N+](=O)[O-])cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "COc1ccc(N)cc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [
+              {
+                "text": "Pd/C"
+              }
+            ],
+            "solvent": "MeOH"
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "nitro-reduction-footnote-150-svg-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "COc1ccc([N+](=O)[O-])cc1"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "COc1ccc(N)cc1"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [
+              {
+                "text": "Pd/C"
+              }
+            ],
+            "solvent": "MeOH"
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "nitro-reduction-footnote-150-scan-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "COc1ccc([N+](=O)[O-])cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "COc1ccc(N)cc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [
+              {
+                "text": "Pd/C"
+              }
+            ],
+            "solvent": "MeOH"
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "nitro-reduction-footnote-150-scan-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "COc1ccc([N+](=O)[O-])cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "COc1ccc(N)cc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [
+              {
+                "text": "Pd/C"
+              }
+            ],
+            "solvent": "MeOH"
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "dmp-oxidation-lab-150-png-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "starting material",
+            "smiles": "C1CCC(CC1)CO",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "product",
+            "smiles": "C1CCC(CC1)C=O",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [],
+            "solvent": "CH2Cl2"
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "dmp-oxidation-lab-150-png-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "smiles": "OCC1CCCCC1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "smiles": "O=CC1CCCCC1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [],
+            "solvent": "CH2Cl2"
+          }
+        ],
+        "questions": [
+          "The reagent above the arrow is not shown in the image (though the filename suggests DMP oxidation)."
+        ]
+      }
+    ],
+    "dmp-oxidation-lab-150-svg-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "smiles": "OCC1CCCCC1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "smiles": "O=CC1CCCCC1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [],
+            "solvent": "CH2Cl2"
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "dmp-oxidation-lab-150-svg-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "smiles": "OCC1CCCCC1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "smiles": "O=CC1CCCCC1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [],
+            "solvent": "CH2Cl2"
+          }
+        ],
+        "questions": [
+          "Reagent above the reaction arrow is missing in the scheme."
+        ]
+      }
+    ],
+    "dmp-oxidation-lab-150-scan-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "smiles": "C1CCC(CC1)CO",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "smiles": "C1CCC(CC1)C=O",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [],
+            "solvent": "CH2Cl2"
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "dmp-oxidation-lab-150-scan-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "smiles": "OCC1CCCCC1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "smiles": "O=CC1CCCCC1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [],
+            "solvent": "CH2Cl2"
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "grignard-acs-72-png-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "O=Cc1ccccc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "MeMgBr",
+            "smiles": "C[Mg]Br",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "2",
+            "smiles": "CC(O)c1ccccc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [],
+            "solvent": "THF",
+            "yield": 88
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "grignard-acs-72-png-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "O=Cc1ccccc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "MeMgBr",
+            "smiles": "C[Mg]Br",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "2",
+            "smiles": "CC(O)c1ccccc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [],
+            "solvent": "THF",
+            "yield": 88
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "grignard-acs-72-svg-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "O=Cc1ccccc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "MeMgBr",
+            "smiles": "C[Mg]Br",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "2",
+            "smiles": "CC(O)c1ccccc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [],
+            "solvent": "THF",
+            "yield": 88
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "grignard-acs-72-svg-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "O=Cc1ccccc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "MeMgBr",
+            "smiles": "C[Mg]Br",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "2",
+            "smiles": "CC(O)c1ccccc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [],
+            "solvent": "THF",
+            "yield": 88
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "grignard-acs-72-scan-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "O=Cc1ccccc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "CC(O)c1ccccc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [
+              {
+                "text": "MeMgBr",
+                "smiles": "C[Mg]Br"
+              }
+            ],
+            "solvent": "THF",
+            "yield": 88
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "grignard-acs-72-scan-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "O=Cc1ccccc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "MeMgBr",
+            "smiles": "C[Mg]Br",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "2",
+            "smiles": "CC(O)c1ccccc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [],
+            "solvent": "THF",
+            "yield": 88
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "wittig-acs-200-png-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "O=C1CCCCC1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "C=C1CCCCC1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": []
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "wittig-acs-200-png-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "O=C1CCCCC1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "C=C1CCCCC1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ]
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "wittig-acs-200-svg-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "O=C1CCCCC1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "C=C1CCCCC1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": []
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "wittig-acs-200-svg-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "O=C1CCCCC1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "C=C1CCCCC1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": []
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "wittig-acs-200-scan-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "O=C1CCCCC1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "C=C1CCCCC1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ]
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "wittig-acs-200-scan-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "O=C1CCCCC1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "C=C1CCCCC1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": []
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "conjugate-addition-footnote-150-png-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "O=C1CCCC=C1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "Cn1cccc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "Cn1cccc1C1CCCC(=O)C1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [],
+            "yield": 0
+          }
+        ],
+        "questions": [
+          "No specific reagents or reaction conditions were specified for step (a)."
+        ]
+      }
+    ],
+    "conjugate-addition-footnote-150-png-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "O=C1CCCC=C1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "Cn1cccc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "Cn1cccc1C1CCCC(=O)C1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [],
+            "temp": ""
+          }
+        ],
+        "questions": [
+          "Conditions for step (a) are missing from the image."
+        ]
+      }
+    ],
+    "conjugate-addition-footnote-150-svg-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "O=C1CCCC=C1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "CN1C=CC=C1",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "CN1C=CC=C1C1CCCC(=O)C1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": []
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "conjugate-addition-footnote-150-svg-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "O=C1CCCC=C1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "CN1C=CC=C1",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "CN1C=CC=C1C2CCCC(=O)C2",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": []
+          }
+        ],
+        "questions": [
+          "Reagents and conditions for step (a) are missing from the image text."
+        ]
+      }
+    ],
+    "conjugate-addition-footnote-150-scan-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "O=C1CCCC=C1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "Cn1cccc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "O=C1CCCC(c2cccn2C)C1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": []
+          }
+        ],
+        "questions": [
+          "Reagents and conditions for step (a) are missing or left blank in the document."
+        ]
+      }
+    ],
+    "conjugate-addition-footnote-150-scan-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "O=C1CCCC=C1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "CN1C=CC=C1",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "CN1C=CC=C1C2CCCC(=O)C2",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [
+              {
+                "text": "a"
+              }
+            ]
+          }
+        ],
+        "questions": [
+          "Reagents and conditions for step (a) are missing in the image text."
+        ]
+      }
+    ],
+    "mitsunobu-lab-150-png-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "smiles": "C[C@@H](O)c1ccccc1",
+            "cip": "R"
+          },
+          {
+            "ref": "B",
+            "smiles": "O=C(O)c1ccc([N+](=O)[O-])cc1"
+          },
+          {
+            "ref": "C",
+            "smiles": "C[C@@H](OC(=O)c1ccc([N+](=O)[O-])cc1)c1ccccc1",
+            "cip": "R"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [
+              {
+                "text": "PPh3",
+                "smiles": "c1ccc(P(c2ccccc2)c2ccccc2)cc1"
+              },
+              {
+                "text": "DIAD",
+                "smiles": "CC(C)OC(=O)/N=N/C(=O)OC(C)C"
+              }
+            ]
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "mitsunobu-lab-150-png-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "smiles": "C[C@@H](O)c1ccccc1",
+            "confidence": "high",
+            "cip": "R"
+          },
+          {
+            "ref": "B",
+            "smiles": "O=C(O)c1ccc([N+](=O)[O-])cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "smiles": "C[C@@H](OC(=O)c1ccc([N+](=O)[O-])cc1)c1ccccc1",
+            "confidence": "high",
+            "cip": "R"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [
+              {
+                "text": "PPh3",
+                "smiles": "c1ccccc1P(c2ccccc2)c3ccccc3"
+              },
+              {
+                "text": "DIAD",
+                "smiles": "CC(C)OC(=O)N=NC(=O)OC(C)C"
+              }
+            ]
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "mitsunobu-lab-150-svg-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "smiles": "C[C@@H](O)c1ccccc1",
+            "confidence": "high",
+            "cip": "R"
+          },
+          {
+            "ref": "B",
+            "smiles": "O=C(O)c1ccc([N+](=O)[O-])cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "smiles": "C[C@@H](OC(=O)c1ccc([N+](=O)[O-])cc1)c1ccccc1",
+            "confidence": "high",
+            "cip": "R"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [
+              {
+                "text": "PPh3",
+                "smiles": "c1ccccc1P(c1ccccc1)c1ccccc1"
+              },
+              {
+                "text": "DIAD",
+                "smiles": "CC(C)OC(=O)N=NC(=O)OC(C)C"
+              }
+            ]
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "mitsunobu-lab-150-svg-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "smiles": "C[C@@H](O)c1ccccc1",
+            "cip": "S"
+          },
+          {
+            "ref": "B",
+            "smiles": "O=C(O)c1ccc([N+](=O)[O-])cc1"
+          },
+          {
+            "ref": "C",
+            "smiles": "C[C@@H](OC(=O)c1ccc([N+](=O)[O-])cc1)c1ccccc1",
+            "cip": "S"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [
+              {
+                "text": "PPh3",
+                "smiles": "c1ccc(P(c2ccccc2)c3ccccc3)cc1"
+              },
+              {
+                "text": "DIAD",
+                "smiles": "CC(C)OC(=O)/N=N/C(=O)OC(C)C"
+              }
+            ]
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "mitsunobu-lab-150-scan-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "smiles": "C[C@@H](O)c1ccccc1",
+            "confidence": "high",
+            "cip": "R"
+          },
+          {
+            "ref": "B",
+            "smiles": "O=C(O)c1ccc([N+](=O)[O-])cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "smiles": "C[C@@H](OC(=O)c1ccc([N+](=O)[O-])cc1)c1ccccc1",
+            "confidence": "high",
+            "cip": "R"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [
+              {
+                "text": "PPh3",
+                "smiles": "c1ccc(P(c2ccccc2)c3ccccc3)cc1"
+              },
+              {
+                "text": "DIAD",
+                "smiles": "CC(C)OC(=O)/N=N/C(=O)OC(C)C"
+              }
+            ]
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "mitsunobu-lab-150-scan-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "smiles": "C[C@H](O)c1ccccc1",
+            "cip": "R"
+          },
+          {
+            "ref": "B",
+            "smiles": "O=C(O)c1ccc([N+](=O)[O-])cc1"
+          },
+          {
+            "ref": "C",
+            "smiles": "C[C@@H](OC(=O)c1ccc([N+](=O)[O-])cc1)c1ccccc1",
+            "cip": "S"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [
+              {
+                "text": "PPh3",
+                "smiles": "P(c1ccccc1)(c2ccccc2)c3ccccc3"
+              },
+              {
+                "text": "DIAD",
+                "smiles": "CC(C)OC(=O)/N=N/C(=O)OC(C)C"
+              }
+            ]
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "benzylation-acs-72-png-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "O=Cc1ccc(O)cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "BrCc1ccccc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "O=Cc1ccc(OCc2ccccc2)cc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [
+              {
+                "text": "K2CO3",
+                "smiles": "O=C([O-])[O-].[K+].[K+]"
+              }
+            ],
+            "solvent": "DMF",
+            "temp": "60 °C",
+            "yield": 90
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "benzylation-acs-72-png-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "O=Cc1ccc(O)cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "BrCc1ccccc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "O=Cc1ccc(OCc2ccccc2)cc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [
+              {
+                "text": "K2CO3",
+                "smiles": "O=C([O-])[O-].[K+].[K+]"
+              }
+            ],
+            "solvent": "DMF",
+            "temp": "60 °C",
+            "yield": 90
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "benzylation-acs-72-svg-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "O=Cc1ccc(O)cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "BrCc1ccccc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "O=Cc1ccc(OCc2ccccc2)cc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [
+              {
+                "text": "K2CO3",
+                "smiles": "[K+].[K+].[O-]C(=O)[O-]"
+              }
+            ],
+            "solvent": "DMF",
+            "temp": "60 °C",
+            "yield": 90
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "benzylation-acs-72-svg-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "O=Cc1ccc(O)cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "BrCc1ccccc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "O=Cc1ccc(OCc2ccccc2)cc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [
+              {
+                "text": "K2CO3",
+                "smiles": "[K+].[K+].[O-]C(=O)[O-]"
+              }
+            ],
+            "solvent": "DMF",
+            "temp": "60 °C",
+            "yield": 90
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "benzylation-acs-72-scan-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "O=Cc1ccc(O)cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "BrCc1ccccc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "O=Cc1ccc(OCc2ccccc2)cc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [
+              {
+                "text": "K2CO3",
+                "smiles": "O=C([O-])[O-].[K+].[K+]"
+              }
+            ],
+            "solvent": "DMF",
+            "temp": "60 °C",
+            "yield": 90
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "benzylation-acs-72-scan-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "O=Cc1ccc(O)cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "BrCc1ccccc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "O=Cc1ccc(OCc2ccccc2)cc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [
+              {
+                "text": "K2CO3",
+                "smiles": "O=C([O-])[O-].[K+].[K+]"
+              }
+            ],
+            "solvent": "DMF",
+            "temp": "60 °C",
+            "yield": 90
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "boc-protection-acs-200-png-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "COC(=O)[C@@H](N)Cc1ccccc1",
+            "cip": "S"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "COC(=O)[C@@H](Cc1ccccc1)NC(=O)OC(C)(C)C",
+            "cip": "S"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [
+              {
+                "text": "Boc2O",
+                "smiles": "CC(C)(C)OC(=O)OC(=O)OC(C)(C)C"
+              },
+              {
+                "text": "Et3N",
+                "smiles": "CCN(CC)CC"
+              }
+            ]
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "boc-protection-acs-200-png-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "COC(=O)[C@H](N)Cc1ccccc1",
+            "cip": "S"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "COC(=O)[C@H](Cc1ccccc1)NC(=O)OC(C)(C)C",
+            "cip": "S"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [
+              {
+                "text": "Boc2O",
+                "smiles": "CC(C)(C)OC(=O)OC(=O)OC(C)(C)C"
+              },
+              {
+                "text": "Et3N",
+                "smiles": "CCN(CC)CC"
+              }
+            ]
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "boc-protection-acs-200-svg-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "COC(=O)[C@@H](N)Cc1ccccc1",
+            "confidence": "high",
+            "cip": "S"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "COC(=O)[C@H](Cc1ccccc1)NC(=O)OC(C)(C)C",
+            "confidence": "high",
+            "cip": "S"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [
+              {
+                "text": "Boc2O",
+                "smiles": "CC(C)(C)OC(=O)OC(=O)OC(C)(C)C"
+              },
+              {
+                "text": "Et3N",
+                "smiles": "CCN(CC)CC"
+              }
+            ]
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "boc-protection-acs-200-svg-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "COC(=O)[C@H](N)Cc1ccccc1",
+            "cip": "S"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "COC(=O)[C@H](Cc1ccccc1)NC(=O)OC(C)(C)C",
+            "cip": "S"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [
+              {
+                "text": "Boc2O",
+                "smiles": "CC(C)(C)OC(=O)OC(=O)OC(C)(C)C"
+              },
+              {
+                "text": "Et3N",
+                "smiles": "CCN(CC)CC"
+              }
+            ]
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "boc-protection-acs-200-scan-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "COC(=O)[C@@H](N)Cc1ccccc1",
+            "cip": "R"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "COC(=O)[C@H](Cc1ccccc1)NC(=O)OC(C)(C)C",
+            "cip": "S"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [
+              {
+                "text": "Boc2O",
+                "smiles": "CC(C)(C)OC(=O)OC(=O)OC(C)(C)C"
+              },
+              {
+                "text": "Et3N",
+                "smiles": "CCN(CC)CC"
+              }
+            ]
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "boc-protection-acs-200-scan-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "COC(=O)[C@@H](N)Cc1ccccc1",
+            "confidence": "high",
+            "cip": "S"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "COC(=O)[C@@H](Cc1ccccc1)NC(=O)OC(C)(C)C",
+            "confidence": "high",
+            "cip": "S"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [
+              {
+                "text": "Boc2O",
+                "smiles": "CC(C)(C)OC(=O)OC(=O)OC(C)(C)C"
+              },
+              {
+                "text": "Et3N",
+                "smiles": "CCN(CC)CC"
+              }
+            ]
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "three-steps-footnote-150-png-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "O=C(O)c1ccc(Br)cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "COC(=O)c1ccc(Br)cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "OB(O)c1cccnc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "D",
+            "name": "4",
+            "smiles": "COC(=O)c1ccc(-c2cccnc2)cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "E",
+            "name": "5",
+            "smiles": "OCc1ccc(-c2cccnc2)cc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [
+              {
+                "text": "MeOH",
+                "smiles": "CO"
+              }
+            ]
+          },
+          {
+            "from": [
+              "B",
+              "C"
+            ],
+            "to": [
+              "D"
+            ],
+            "reagents": [
+              {
+                "text": "Pd(dppf)Cl2"
+              },
+              {
+                "text": "Na2CO3",
+                "smiles": "[Na+].[Na+].[O-]C(=O)[O-]"
+              }
+            ]
+          },
+          {
+            "from": [
+              "D"
+            ],
+            "to": [
+              "E"
+            ],
+            "reagents": [
+              {
+                "text": "LiAlH4",
+                "smiles": "[Li+].[AlH4-]"
+              }
+            ],
+            "solvent": "THF"
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "three-steps-footnote-150-png-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "O=C(O)c1ccc(Br)cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "COC(=O)c1ccc(Br)cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "OB(O)c1cccnc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "D",
+            "name": "4",
+            "smiles": "COC(=O)c1ccc(-c2cccnc2)cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "E",
+            "name": "5",
+            "smiles": "OCc1ccc(-c2cccnc2)cc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [
+              {
+                "text": "MeOH",
+                "smiles": "CO"
+              }
+            ]
+          },
+          {
+            "from": [
+              "B",
+              "C"
+            ],
+            "to": [
+              "D"
+            ],
+            "reagents": [
+              {
+                "text": "Pd(dppf)Cl2"
+              },
+              {
+                "text": "Na2CO3",
+                "smiles": "O=C([O-])[O-].[Na+].[Na+]"
+              }
+            ]
+          },
+          {
+            "from": [
+              "D"
+            ],
+            "to": [
+              "E"
+            ],
+            "reagents": [
+              {
+                "text": "LiAlH4",
+                "smiles": "[Li+].[AlH4-]"
+              }
+            ],
+            "solvent": "THF"
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "three-steps-footnote-150-svg-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "O=C(O)c1ccc(Br)cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "COC(=O)c1ccc(Br)cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "OB(O)c1cccnc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "D",
+            "name": "4",
+            "smiles": "COC(=O)c1ccc(-c2cccnc2)cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "E",
+            "name": "5",
+            "smiles": "OCc1ccc(-c2cccnc2)cc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [],
+            "solvent": "MeOH"
+          },
+          {
+            "from": [
+              "B",
+              "C"
+            ],
+            "to": [
+              "D"
+            ],
+            "reagents": [
+              {
+                "text": "Pd(dppf)Cl2"
+              },
+              {
+                "text": "Na2CO3",
+                "smiles": "[Na+].[Na+].[O-]C(=O)[O-]"
+              }
+            ]
+          },
+          {
+            "from": [
+              "D"
+            ],
+            "to": [
+              "E"
+            ],
+            "reagents": [
+              {
+                "text": "LiAlH4",
+                "smiles": "[Li+].[AlH4-]"
+              }
+            ],
+            "solvent": "THF"
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "three-steps-footnote-150-svg-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "O=C(O)c1ccc(Br)cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "COC(=O)c1ccc(Br)cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "OB(O)c1cccnc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "D",
+            "name": "4",
+            "smiles": "COC(=O)c1ccc(-c2cccnc2)cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "E",
+            "name": "5",
+            "smiles": "OCc1ccc(-c2cccnc2)cc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [
+              {
+                "text": "MeOH",
+                "smiles": "CO"
+              }
+            ]
+          },
+          {
+            "from": [
+              "B",
+              "C"
+            ],
+            "to": [
+              "D"
+            ],
+            "reagents": [
+              {
+                "text": "Pd(dppf)Cl2"
+              },
+              {
+                "text": "Na2CO3",
+                "smiles": "[Na+].[Na+].[O-]C(=O)[O-]"
+              }
+            ]
+          },
+          {
+            "from": [
+              "D"
+            ],
+            "to": [
+              "E"
+            ],
+            "reagents": [
+              {
+                "text": "LiAlH4",
+                "smiles": "[Li+].[AlH4-]"
+              }
+            ],
+            "solvent": "THF"
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "three-steps-footnote-150-scan-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "O=C(O)c1ccc(Br)cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "COC(=O)c1ccc(Br)cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "OB(O)c1cccnc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "D",
+            "name": "4",
+            "smiles": "COC(=O)c1ccc(-c2cccnc2)cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "E",
+            "name": "5",
+            "smiles": "OCc1ccc(-c2cccnc2)cc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [
+              {
+                "text": "MeOH",
+                "smiles": "CO"
+              }
+            ]
+          },
+          {
+            "from": [
+              "B",
+              "C"
+            ],
+            "to": [
+              "D"
+            ],
+            "reagents": [
+              {
+                "text": "Pd(dppf)Cl2"
+              },
+              {
+                "text": "Na2CO3",
+                "smiles": "[Na+].[Na+].[O-]C(=O)[O-]"
+              }
+            ]
+          },
+          {
+            "from": [
+              "D"
+            ],
+            "to": [
+              "E"
+            ],
+            "reagents": [
+              {
+                "text": "LiAlH4",
+                "smiles": "[Li+].[AlH4-]"
+              }
+            ],
+            "solvent": "THF"
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "three-steps-footnote-150-scan-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "O=C(O)c1ccc(Br)cc1"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "COC(=O)c1ccc(Br)cc1"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "OB(O)c1cccnc1"
+          },
+          {
+            "ref": "D",
+            "name": "4",
+            "smiles": "COC(=O)c1ccc(-c2cccnc2)cc1"
+          },
+          {
+            "ref": "E",
+            "name": "5",
+            "smiles": "OCc1ccc(-c2cccnc2)cc1"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [
+              {
+                "text": "MeOH",
+                "smiles": "CO"
+              }
+            ]
+          },
+          {
+            "from": [
+              "B",
+              "C"
+            ],
+            "to": [
+              "D"
+            ],
+            "reagents": [
+              {
+                "text": "Pd(dppf)Cl2"
+              },
+              {
+                "text": "Na2CO3",
+                "smiles": "[Na+].[Na+].[O-]C(=O)[O-]"
+              }
+            ]
+          },
+          {
+            "from": [
+              "D"
+            ],
+            "to": [
+              "E"
+            ],
+            "reagents": [
+              {
+                "text": "LiAlH4",
+                "smiles": "[Li+].[AlH4-]"
+              }
+            ],
+            "solvent": "THF"
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "experimental-en-lab-150-png-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "smiles": "Nc1ccccn1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "smiles": "CC(=O)Nc1ccccn1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [
+              {
+                "text": "AcCl",
+                "smiles": "CC(=O)Cl"
+              },
+              {
+                "text": "Et3N",
+                "smiles": "CCN(CC)CC"
+              }
+            ],
+            "solvent": "CH2Cl2",
+            "yield": 78
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "experimental-en-lab-150-png-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "smiles": "Nc1ccccn1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "smiles": "CC(=O)Cl",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "smiles": "CC(=O)Nc1ccccn1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [
+              {
+                "text": "Et3N",
+                "smiles": "CCN(CC)CC"
+              }
+            ],
+            "solvent": "CH2Cl2",
+            "yield": 78
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "experimental-en-lab-150-svg-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "starting material",
+            "smiles": "c1ccncc1N",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "product",
+            "smiles": "CC(=O)Nc1ccncc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [
+              {
+                "text": "AcCl",
+                "smiles": "CC(=O)Cl"
+              },
+              {
+                "text": "Et3N",
+                "smiles": "CCN(CC)CC"
+              }
+            ],
+            "solvent": "CH2Cl2",
+            "yield": 78
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "experimental-en-lab-150-svg-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "smiles": "Nc1ccccn1"
+          },
+          {
+            "ref": "B",
+            "smiles": "CC(=O)Cl"
+          },
+          {
+            "ref": "C",
+            "smiles": "CC(=O)Nc1ccccn1"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [
+              {
+                "text": "Et3N",
+                "smiles": "CCN(CC)CC"
+              }
+            ],
+            "solvent": "CH2Cl2",
+            "yield": 78
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "experimental-en-lab-150-scan-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "pyridin-3-amine",
+            "smiles": "Nc1cccnc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "N-(pyridin-3-yl)acetamide",
+            "smiles": "CC(=O)Nc1cccnc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [
+              {
+                "text": "AcCl",
+                "smiles": "CC(=O)Cl"
+              },
+              {
+                "text": "Et3N",
+                "smiles": "CCN(CC)CC"
+              }
+            ],
+            "solvent": "CH2Cl2",
+            "yield": 78
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "experimental-en-lab-150-scan-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "smiles": "Nc1ccccn1"
+          },
+          {
+            "ref": "B",
+            "smiles": "CC(=O)Cl"
+          },
+          {
+            "ref": "C",
+            "smiles": "CC(=O)Nc1ccccn1"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [
+              {
+                "text": "Et3N",
+                "smiles": "CCN(CC)CC"
+              }
+            ],
+            "solvent": "CH2Cl2",
+            "yield": 78
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "click-acs-72-png-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "c1ccc(CN=[N+]=[N-])cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "C#Cc1ccccc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "c1ccc(Cn2cc(-c3ccccc3)nn2)cc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": []
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "click-acs-72-png-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "[N-]=[N+]=NCc1ccccc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "C#Cc1ccccc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "c1ccc(Cc2cn(c3ccccc3)nn2)cc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": []
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "click-acs-72-svg-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "[N-]=[N+]=NCc1ccccc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "C#Cc1ccccc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "c1ccc(cc1)Cn1cc(-c2ccccc2)nn1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": []
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "click-acs-72-svg-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "c1ccc(CN=[N+]=[N-])cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "C#Cc1ccccc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "c1ccc(Cn2cc(-c3ccccc3)nn2)cc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": []
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "click-acs-72-scan-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "c1ccc(cc1)CN=[N+]=[N-]",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "c1ccc(cc1)C#C",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "c1ccc(cc1)Cn2cc(nn2)-c3ccccc3",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": []
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "click-acs-72-scan-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "c1ccc(CN=[N+]=[N-])cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "C#Cc1ccccc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "c1ccc(Cn2cc(-c3ccccc3)nn2)cc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": []
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "buchwald-acs-200-png-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "Cc1ccc(Cl)cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "C1COCCN1",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "Cc1ccc(N2CCOCC2)cc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [
+              {
+                "text": "Pd2(dba)3"
+              },
+              {
+                "text": "XPhos"
+              },
+              {
+                "text": "NaOtBu"
+              }
+            ],
+            "temp": "100 °C"
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "buchwald-acs-200-png-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "Cc1ccc(Cl)cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "C1COCCN1",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "Cc1ccc(N2CCOCC2)cc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [
+              {
+                "text": "Pd2(dba)3"
+              },
+              {
+                "text": "XPhos"
+              },
+              {
+                "text": "NaOtBu",
+                "smiles": "CC(C)(C)[O-].[Na+]"
+              }
+            ],
+            "temp": "100 °C"
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "buchwald-acs-200-svg-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "Cc1ccc(Cl)cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "C1COCCN1",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "Cc1ccc(N2CCOCC2)cc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [
+              {
+                "text": "Pd2(dba)3"
+              },
+              {
+                "text": "XPhos"
+              },
+              {
+                "text": "NaOtBu"
+              }
+            ],
+            "temp": "100 °C"
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "buchwald-acs-200-svg-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "Cc1ccc(Cl)cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "C1COCCN1",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "Cc1ccc(N2CCOCC2)cc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [
+              {
+                "text": "Pd2(dba)3"
+              },
+              {
+                "text": "XPhos"
+              },
+              {
+                "text": "NaOtBu",
+                "smiles": "[Na+].[O-]C(C)(C)C"
+              }
+            ],
+            "temp": "100 °C"
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "buchwald-acs-200-scan-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "Cc1ccc(Cl)cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "C1COCCN1",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "Cc1ccc(N2CCOCC2)cc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [
+              {
+                "text": "Pd2(dba)3"
+              },
+              {
+                "text": "XPhos"
+              },
+              {
+                "text": "NaOtBu"
+              }
+            ],
+            "temp": "100 °C"
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "buchwald-acs-200-scan-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "Cc1ccc(Cl)cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "C1COCCN1",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "Cc1ccc(N2CCOCC2)cc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [
+              {
+                "text": "Pd2(dba)3"
+              },
+              {
+                "text": "XPhos"
+              },
+              {
+                "text": "NaOtBu"
+              }
+            ],
+            "temp": "100 °C"
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "three-steps-acs-72-png-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "O=C(O)c1ccc(Br)cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "COC(=O)c1ccc(Br)cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "OB(O)c1ccncc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "D",
+            "name": "4",
+            "smiles": "COC(=O)c1ccc(-c2ccncc2)cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "E",
+            "name": "5",
+            "smiles": "OCc1ccc(-c2ccncc2)cc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [],
+            "solvent": "MeOH"
+          },
+          {
+            "from": [
+              "B",
+              "C"
+            ],
+            "to": [
+              "D"
+            ],
+            "reagents": [
+              {
+                "text": "Pd(dppf)Cl2"
+              },
+              {
+                "text": "Na2CO3"
+              }
+            ]
+          },
+          {
+            "from": [
+              "D"
+            ],
+            "to": [
+              "E"
+            ],
+            "reagents": [
+              {
+                "text": "LiAlH4"
+              }
+            ],
+            "solvent": "THF"
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "three-steps-acs-72-png-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "O=C(O)c1ccc(Br)cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "COC(=O)c1ccc(Br)cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "OB(O)c1cccnc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "D",
+            "name": "4",
+            "smiles": "COC(=O)c1ccc(-c2cccnc2)cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "E",
+            "name": "5",
+            "smiles": "OCc1ccc(-c2cccnc2)cc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [],
+            "solvent": "MeOH"
+          },
+          {
+            "from": [
+              "B",
+              "C"
+            ],
+            "to": [
+              "D"
+            ],
+            "reagents": [
+              {
+                "text": "Pd(dppf)Cl2"
+              },
+              {
+                "text": "Na2CO3",
+                "smiles": "[Na+].[Na+].[O-]C([O-])=O"
+              }
+            ]
+          },
+          {
+            "from": [
+              "D"
+            ],
+            "to": [
+              "E"
+            ],
+            "reagents": [
+              {
+                "text": "LiAlH4",
+                "smiles": "[Li+].[AlH4-]"
+              }
+            ],
+            "solvent": "THF"
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "three-steps-acs-72-svg-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "O=C(O)c1ccc(Br)cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "COC(=O)c1ccc(Br)cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "OB(O)c1cccnc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "D",
+            "name": "4",
+            "smiles": "COC(=O)c1ccc(-c2cccnc2)cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "E",
+            "name": "5",
+            "smiles": "OCc1ccc(-c2cccnc2)cc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [],
+            "solvent": "MeOH"
+          },
+          {
+            "from": [
+              "B",
+              "C"
+            ],
+            "to": [
+              "D"
+            ],
+            "reagents": [
+              {
+                "text": "Pd(dppf)Cl2"
+              },
+              {
+                "text": "Na2CO3",
+                "smiles": "[Na+].[Na+].[O-]C(=O)[O-]"
+              }
+            ]
+          },
+          {
+            "from": [
+              "D"
+            ],
+            "to": [
+              "E"
+            ],
+            "reagents": [
+              {
+                "text": "LiAlH4",
+                "smiles": "[Li+].[AlH4-]"
+              }
+            ],
+            "solvent": "THF"
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "three-steps-acs-72-svg-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "O=C(O)c1ccc(Br)cc1"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "COC(=O)c1ccc(Br)cc1"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "OB(O)c1cccnc1"
+          },
+          {
+            "ref": "D",
+            "name": "4",
+            "smiles": "COC(=O)c1ccc(-c2cccnc2)cc1"
+          },
+          {
+            "ref": "E",
+            "name": "5",
+            "smiles": "OCc1ccc(-c2cccnc2)cc1"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [],
+            "solvent": "MeOH"
+          },
+          {
+            "from": [
+              "B",
+              "C"
+            ],
+            "to": [
+              "D"
+            ],
+            "reagents": [
+              {
+                "text": "Pd(dppf)Cl2"
+              },
+              {
+                "text": "Na2CO3"
+              }
+            ]
+          },
+          {
+            "from": [
+              "D"
+            ],
+            "to": [
+              "E"
+            ],
+            "reagents": [
+              {
+                "text": "LiAlH4"
+              }
+            ],
+            "solvent": "THF"
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "three-steps-acs-72-scan-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "O=C(O)c1ccc(Br)cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "COC(=O)c1ccc(Br)cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "OB(O)c1cccnc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "D",
+            "name": "4",
+            "smiles": "COC(=O)c1ccc(-c2cccnc2)cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "E",
+            "name": "5",
+            "smiles": "OCc1ccc(-c2cccnc2)cc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [],
+            "solvent": "MeOH"
+          },
+          {
+            "from": [
+              "B",
+              "C"
+            ],
+            "to": [
+              "D"
+            ],
+            "reagents": [
+              {
+                "text": "Pd(dppf)Cl2"
+              },
+              {
+                "text": "Na2CO3",
+                "smiles": "O=C([O-])[O-].[Na+].[Na+]"
+              }
+            ],
+            "solvent": ""
+          },
+          {
+            "from": [
+              "D"
+            ],
+            "to": [
+              "E"
+            ],
+            "reagents": [
+              {
+                "text": "LiAlH4",
+                "smiles": "[AlH4-].[Li+]"
+              }
+            ],
+            "solvent": "THF"
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "three-steps-acs-72-scan-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "O=C(O)c1ccc(Br)cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "COC(=O)c1ccc(Br)cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "OB(O)c1cccnc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "D",
+            "name": "4",
+            "smiles": "COC(=O)c1ccc(-c2cccnc2)cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "E",
+            "name": "5",
+            "smiles": "OCc1ccc(-c2cccnc2)cc1",
+            "confidence": "high"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [],
+            "solvent": "MeOH"
+          },
+          {
+            "from": [
+              "B",
+              "C"
+            ],
+            "to": [
+              "D"
+            ],
+            "reagents": [
+              {
+                "text": "Pd(dppf)Cl2"
+              },
+              {
+                "text": "Na2CO3",
+                "smiles": "[Na+].[Na+].[O-]C(=O)[O-]"
+              }
+            ]
+          },
+          {
+            "from": [
+              "D"
+            ],
+            "to": [
+              "E"
+            ],
+            "reagents": [
+              {
+                "text": "LiAlH4",
+                "smiles": "[Li+].[AlH4-]"
+              }
+            ],
+            "solvent": "THF"
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "mitsunobu-footnote-150-png-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "C[C@@H](O)c1ccccc1",
+            "confidence": "high",
+            "cip": "R"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "O=C(O)c1ccc([N+](=O)[O-])cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "C[C@H](OC(=O)c1ccc([N+](=O)[O-])cc1)c1ccccc1",
+            "confidence": "high",
+            "cip": "S"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [
+              {
+                "text": "PPh3",
+                "smiles": "c1ccc(P(c2ccccc2)c3ccccc3)cc1"
+              },
+              {
+                "text": "DIAD",
+                "smiles": "CC(C)OC(=O)N=NC(=O)OC(C)C"
+              }
+            ]
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "mitsunobu-footnote-150-png-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "C[C@@H](O)c1ccccc1",
+            "confidence": "high",
+            "cip": "R"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "O=C(O)c1ccc([N+](=O)[O-])cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "C[C@@H](OC(=O)c1ccc([N+](=O)[O-])cc1)c1ccccc1",
+            "confidence": "high",
+            "cip": "R"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [
+              {
+                "text": "PPh3",
+                "smiles": "c1ccc(P(c2ccccc2)c2ccccc2)cc1"
+              },
+              {
+                "text": "DIAD",
+                "smiles": "CC(C)OC(=O)N=NC(=O)OC(C)C"
+              }
+            ]
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "mitsunobu-footnote-150-svg-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "C[C@@H](O)c1ccccc1",
+            "cip": "R"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "O=C(O)c1ccc([N+](=O)[O-])cc1"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "C[C@@H](OC(=O)c1ccc([N+](=O)[O-])cc1)c1ccccc1",
+            "cip": "R"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [
+              {
+                "text": "PPh3",
+                "smiles": "c1ccc(P(c2ccccc2)c3ccccc3)cc1"
+              },
+              {
+                "text": "DIAD",
+                "smiles": "CC(C)OC(=O)/N=N/C(=O)OC(C)C"
+              }
+            ]
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "mitsunobu-footnote-150-svg-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "C[C@H](O)c1ccccc1",
+            "cip": "R"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "O=C(O)c1ccc([N+](=O)[O-])cc1"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "C[C@@H](OC(=O)c1ccc([N+](=O)[O-])cc1)c1ccccc1",
+            "cip": "S"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [
+              {
+                "text": "PPh3",
+                "smiles": "c1ccc(P(c2ccccc2)c3ccccc3)cc1"
+              },
+              {
+                "text": "DIAD",
+                "smiles": "CC(C)OC(=O)N=NC(=O)OC(C)C"
+              }
+            ]
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "mitsunobu-footnote-150-scan-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "C[C@@H](O)c1ccccc1",
+            "confidence": "high",
+            "cip": "R"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "O=C(O)c1ccc([N+](=O)[O-])cc1",
+            "confidence": "high"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "C[C@H](OC(=O)c1ccc([N+](=O)[O-])cc1)c1ccccc1",
+            "confidence": "high",
+            "cip": "S"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [
+              {
+                "text": "PPh3",
+                "smiles": "c1ccc(P(c2ccccc2)c3ccccc3)cc1"
+              },
+              {
+                "text": "DIAD",
+                "smiles": "CC(C)OC(=O)N=NC(=O)OC(C)C"
+              }
+            ]
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "mitsunobu-footnote-150-scan-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "C[C@@H](O)c1ccccc1",
+            "cip": "R"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "O=C(O)c1ccc([N+](=O)[O-])cc1"
+          },
+          {
+            "ref": "C",
+            "name": "3",
+            "smiles": "C[C@@H](OC(=O)c1ccc([N+](=O)[O-])cc1)c1ccccc1",
+            "cip": "S"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A",
+              "B"
+            ],
+            "to": [
+              "C"
+            ],
+            "reagents": [
+              {
+                "text": "PPh3",
+                "smiles": "P(c1ccccc1)(c2ccccc2)c3ccccc3"
+              },
+              {
+                "text": "DIAD",
+                "smiles": "CC(C)OC(=O)N=NC(=O)OC(C)C"
+              }
+            ]
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "boc-protection-acs-72-png-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "COC(=O)[C@@H](N)Cc1ccccc1",
+            "cip": "S"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "COC(=O)[C@@H](NC(=O)OC(C)(C)C)Cc1ccccc1",
+            "cip": "S"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [
+              {
+                "text": "Boc2O",
+                "smiles": "CC(C)(C)OC(=O)OC(=O)OC(C)(C)C"
+              },
+              {
+                "text": "Et3N",
+                "smiles": "CCN(CC)CC"
+              }
+            ]
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "boc-protection-acs-72-png-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "COC(=O)[C@@H](N)Cc1ccccc1",
+            "confidence": "high",
+            "cip": "S"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "COC(=O)[C@H](Cc1ccccc1)NC(=O)OC(C)(C)C",
+            "confidence": "high",
+            "cip": "S"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [
+              {
+                "text": "Boc2O",
+                "smiles": "CC(C)(C)OC(=O)OC(=O)OC(C)(C)C"
+              },
+              {
+                "text": "Et3N",
+                "smiles": "CCN(CC)CC"
+              }
+            ]
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "boc-protection-acs-72-svg-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "COC(=O)[C@@H](N)Cc1ccccc1",
+            "cip": "S"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "COC(=O)[C@@H](NC(=O)OC(C)(C)C)Cc1ccccc1",
+            "cip": "S"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [
+              {
+                "text": "Boc2O",
+                "smiles": "CC(C)(C)OC(=O)OC(=O)OC(C)(C)C"
+              },
+              {
+                "text": "Et3N",
+                "smiles": "CCN(CC)CC"
+              }
+            ]
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "boc-protection-acs-72-svg-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "COC(=O)[C@@H](N)Cc1ccccc1",
+            "confidence": "high",
+            "cip": "S"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "COC(=O)[C@@H](NC(=O)OC(C)(C)C)Cc1ccccc1",
+            "confidence": "high",
+            "cip": "S"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [
+              {
+                "text": "Boc2O",
+                "smiles": "CC(C)(C)OC(=O)OC(=O)OC(C)(C)C"
+              },
+              {
+                "text": "Et3N",
+                "smiles": "CCN(CC)CC"
+              }
+            ]
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "boc-protection-acs-72-scan-page": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "COC(=O)[C@H](N)Cc1ccccc1",
+            "cip": "R"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "COC(=O)[C@H](Cc1ccccc1)NC(=O)OC(C)(C)C",
+            "cip": "R"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [
+              {
+                "text": "Boc2O",
+                "smiles": "CC(C)(C)OC(=O)OC(=O)OC(C)(C)C"
+              },
+              {
+                "text": "Et3N",
+                "smiles": "CCN(CC)CC"
+              }
+            ]
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "boc-protection-acs-72-scan-crop": [
+      {
+        "compounds": [
+          {
+            "ref": "A",
+            "name": "1",
+            "smiles": "COC(=O)[C@@H](Cc1ccccc1)N",
+            "confidence": "high",
+            "cip": "S"
+          },
+          {
+            "ref": "B",
+            "name": "2",
+            "smiles": "COC(=O)[C@H](Cc1ccccc1)NC(=O)OC(C)(C)C",
+            "confidence": "high",
+            "cip": "S"
+          }
+        ],
+        "steps": [
+          {
+            "from": [
+              "A"
+            ],
+            "to": [
+              "B"
+            ],
+            "reagents": [
+              {
+                "text": "Boc2O",
+                "smiles": "CC(C)(C)OC(=O)OC(=O)OC(C)(C)C"
+              },
+              {
+                "text": "Et3N",
+                "smiles": "CCN(CC)CC"
+              }
+            ]
+          }
+        ],
+        "questions": []
+      }
+    ]
+  }
+}

@@ -1,0 +1,1503 @@
+{
+  "model": "gemini-3.8-flash",
+  "thinking": "low",
+  "recordedAt": "2026-11-07T12-09-59",
+  "page": {
+    "width": 595.28,
+    "height": 841.89
+  },
+  "pad": 6,
+  "cases": {
+    "amide-hatu-acs-200-png-page": {
+      "base": "amide-hatu",
+      "form": "png",
+      "ok": false,
+      "crop": {
+        "x": 125.55688,
+        "y": 302.13174,
+        "width": 345.3568,
+        "height": 136.59972000000005
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              366,
+              221,
+              514,
+              781
+            ],
+            "label": "Scheme 1",
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "amide-hatu-acs-200-svg-page": {
+      "base": "amide-hatu",
+      "form": "svg",
+      "ok": false,
+      "crop": {
+        "x": 124.36632,
+        "y": 302.13174,
+        "width": 346.54736,
+        "height": 135.75783
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              366,
+              219,
+              513,
+              781
+            ],
+            "label": "Scheme 1",
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "amide-hatu-acs-200-scan-page": {
+      "base": "amide-hatu",
+      "form": "scan",
+      "ok": false,
+      "crop": {
+        "x": 126.15216000000001,
+        "y": 303.81552,
+        "width": 342.3804,
+        "height": 131.54838
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              368,
+              222,
+              510,
+              777
+            ],
+            "label": "Scheme 1",
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "boc-removal-footnote-150-png-page": {
+      "base": "boc-removal",
+      "form": "png",
+      "ok": false,
+      "crop": {
+        "x": 166.63119999999998,
+        "y": 299.60607,
+        "width": 259.63648,
+        "height": 113.02679999999998
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              363,
+              290,
+              483,
+              706
+            ],
+            "label": "Scheme 1",
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "boc-removal-footnote-150-svg-page": {
+      "base": "boc-removal",
+      "form": "svg",
+      "ok": false,
+      "crop": {
+        "x": 170.20288,
+        "y": 302.13174,
+        "width": 256.0648,
+        "height": 110.50112999999999
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              366,
+              296,
+              483,
+              706
+            ],
+            "label": "Scheme 1",
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "boc-removal-footnote-150-scan-page": {
+      "base": "boc-removal",
+      "form": "scan",
+      "ok": false,
+      "crop": {
+        "x": 166.63119999999998,
+        "y": 299.60607,
+        "width": 260.82703999999995,
+        "height": 113.86869000000002
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              363,
+              290,
+              484,
+              708
+            ],
+            "label": "Scheme 1",
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "suzuki-lab-150-png-page": {
+      "base": "suzuki",
+      "form": "png",
+      "ok": false,
+      "crop": {
+        "x": 99.95983999999999,
+        "y": 302.13174,
+        "width": 393.57447999999994,
+        "height": 65.03906999999998
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              366,
+              178,
+              429,
+              819
+            ],
+            "label": "Scheme 1",
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "suzuki-lab-150-svg-page": {
+      "base": "suzuki",
+      "form": "svg",
+      "ok": false,
+      "crop": {
+        "x": 103.53151999999999,
+        "y": 303.81552,
+        "width": 387.62167999999997,
+        "height": 65.03906999999998
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              368,
+              184,
+              431,
+              815
+            ],
+            "label": "Scheme 1",
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "suzuki-lab-150-scan-page": {
+      "base": "suzuki",
+      "form": "scan",
+      "ok": false,
+      "crop": {
+        "x": 98.17399999999999,
+        "y": 303.81552,
+        "width": 397.14616000000007,
+        "height": 64.19718
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              368,
+              175,
+              430,
+              822
+            ],
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "reductive-amination-acs-72-png-page": {
+      "base": "reductive-amination",
+      "form": "png",
+      "ok": false,
+      "crop": {
+        "x": 148.7728,
+        "y": 302.97363,
+        "width": 297.13911999999993,
+        "height": 82.71875999999997
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              367,
+              260,
+              451,
+              739
+            ],
+            "label": "Scheme 1",
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "reductive-amination-acs-72-svg-page": {
+      "base": "reductive-amination",
+      "form": "svg",
+      "ok": false,
+      "crop": {
+        "x": 148.7728,
+        "y": 302.97363,
+        "width": 297.13911999999993,
+        "height": 83.56065000000001
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              367,
+              260,
+              452,
+              739
+            ],
+            "label": "Scheme 1",
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "reductive-amination-acs-72-scan-page": {
+      "base": "reductive-amination",
+      "form": "scan",
+      "ok": false,
+      "crop": {
+        "x": 148.7728,
+        "y": 302.97363,
+        "width": 298.92495999999994,
+        "height": 84.40253999999999
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              367,
+              260,
+              453,
+              742
+            ],
+            "label": "Scheme 1",
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "ester-hydrolysis-acs-200-png-page": {
+      "base": "ester-hydrolysis",
+      "form": "png",
+      "ok": false,
+      "crop": {
+        "x": 167.82175999999998,
+        "y": 303.81552,
+        "width": 258.44592,
+        "height": 65.88096000000002
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              368,
+              292,
+              432,
+              706
+            ],
+            "label": "Scheme 1",
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "ester-hydrolysis-acs-200-svg-page": {
+      "base": "ester-hydrolysis",
+      "form": "svg",
+      "ok": false,
+      "crop": {
+        "x": 167.82175999999998,
+        "y": 302.13174,
+        "width": 258.44592,
+        "height": 69.24851999999998
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              366,
+              292,
+              434,
+              706
+            ],
+            "label": "Scheme 1",
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "ester-hydrolysis-acs-200-scan-page": {
+      "base": "ester-hydrolysis",
+      "form": "scan",
+      "ok": false,
+      "crop": {
+        "x": 170.79816,
+        "y": 304.65740999999997,
+        "width": 252.49311999999998,
+        "height": 64.19718
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              369,
+              297,
+              431,
+              701
+            ],
+            "label": "Scheme 1",
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "nitro-reduction-footnote-150-png-page": {
+      "base": "nitro-reduction",
+      "form": "png",
+      "ok": false,
+      "crop": {
+        "x": 183.89432,
+        "y": 303.81552,
+        "width": 226.89608000000004,
+        "height": 101.24034
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              368,
+              319,
+              474,
+              680
+            ],
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "nitro-reduction-footnote-150-svg-page": {
+      "base": "nitro-reduction",
+      "form": "svg",
+      "ok": false,
+      "crop": {
+        "x": 183.89432,
+        "y": 303.81552,
+        "width": 226.89608000000004,
+        "height": 103.76601
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              368,
+              319,
+              477,
+              680
+            ],
+            "label": "Scheme 1",
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "nitro-reduction-footnote-150-scan-page": {
+      "base": "nitro-reduction",
+      "form": "scan",
+      "ok": false,
+      "crop": {
+        "x": 182.70376,
+        "y": 302.97363,
+        "width": 229.87248,
+        "height": 106.29167999999999
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              367,
+              317,
+              479,
+              683
+            ],
+            "label": "Scheme 1",
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "dmp-oxidation-lab-150-png-page": {
+      "base": "dmp-oxidation",
+      "form": "png",
+      "ok": false,
+      "crop": {
+        "x": 201.15743999999998,
+        "y": 302.97363,
+        "width": 192.36984000000004,
+        "height": 49.04315999999994
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              367,
+              348,
+              411,
+              651
+            ],
+            "label": "Scheme 1.",
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "dmp-oxidation-lab-150-svg-page": {
+      "base": "dmp-oxidation",
+      "form": "svg",
+      "ok": false,
+      "crop": {
+        "x": 200.56215999999998,
+        "y": 303.81552,
+        "width": 192.36984000000004,
+        "height": 44.833709999999996
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              368,
+              347,
+              407,
+              650
+            ],
+            "label": "Scheme 1",
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "dmp-oxidation-lab-150-scan-page": {
+      "base": "dmp-oxidation",
+      "form": "scan",
+      "ok": false,
+      "crop": {
+        "x": 198.77631999999997,
+        "y": 302.97363,
+        "width": 197.13208,
+        "height": 46.51748999999995
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              367,
+              344,
+              408,
+              655
+            ],
+            "label": "Scheme 1",
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "grignard-acs-72-png-page": {
+      "base": "grignard",
+      "form": "png",
+      "ok": false,
+      "crop": {
+        "x": 195.79992000000001,
+        "y": 302.13174,
+        "width": 201.89431999999996,
+        "height": 59.14584000000002
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              366,
+              339,
+              422,
+              658
+            ],
+            "label": "Scheme 1",
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "grignard-acs-72-svg-page": {
+      "base": "grignard",
+      "form": "svg",
+      "ok": false,
+      "crop": {
+        "x": 197.58576,
+        "y": 302.97363,
+        "width": 198.32263999999998,
+        "height": 59.145839999999964
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              367,
+              342,
+              423,
+              655
+            ],
+            "label": "Scheme 1",
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "grignard-acs-72-scan-page": {
+      "base": "grignard",
+      "form": "scan",
+      "ok": false,
+      "crop": {
+        "x": 197.58576,
+        "y": 302.97363,
+        "width": 198.91791999999998,
+        "height": 59.98772999999994
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              367,
+              342,
+              424,
+              656
+            ],
+            "label": "Scheme 1",
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "wittig-acs-200-png-page": {
+      "base": "wittig",
+      "form": "png",
+      "ok": false,
+      "crop": {
+        "x": 214.25359999999998,
+        "y": 302.97363,
+        "width": 167.36808,
+        "height": 53.25260999999995
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              367,
+              370,
+              416,
+              631
+            ],
+            "label": "Scheme 1",
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "wittig-acs-200-svg-page": {
+      "base": "wittig",
+      "form": "svg",
+      "ok": false,
+      "crop": {
+        "x": 213.06303999999997,
+        "y": 302.13174,
+        "width": 167.96336,
+        "height": 54.93639000000002
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              366,
+              368,
+              417,
+              630
+            ],
+            "label": "Scheme 1",
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "wittig-acs-200-scan-page": {
+      "base": "wittig",
+      "form": "scan",
+      "ok": false,
+      "crop": {
+        "x": 213.06303999999997,
+        "y": 301.28985,
+        "width": 168.55864,
+        "height": 55.778279999999995
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              365,
+              368,
+              417,
+              631
+            ],
+            "label": "Scheme 1",
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "conjugate-addition-footnote-150-png-page": {
+      "base": "conjugate-addition",
+      "form": "png",
+      "ok": false,
+      "crop": {
+        "x": 166.03591999999998,
+        "y": 302.13174,
+        "width": 263.80343999999997,
+        "height": 110.50112999999999
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              366,
+              289,
+              483,
+              712
+            ],
+            "label": "Scheme 1",
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "conjugate-addition-footnote-150-svg-page": {
+      "base": "conjugate-addition",
+      "form": "svg",
+      "ok": false,
+      "crop": {
+        "x": 169.01232,
+        "y": 303.81552,
+        "width": 257.25536,
+        "height": 108.81734999999998
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              368,
+              294,
+              483,
+              706
+            ],
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "conjugate-addition-footnote-150-scan-page": {
+      "base": "conjugate-addition",
+      "form": "scan",
+      "ok": false,
+      "crop": {
+        "x": 169.01232,
+        "y": 303.81552,
+        "width": 257.25536,
+        "height": 108.81734999999998
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              368,
+              294,
+              483,
+              706
+            ],
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "mitsunobu-lab-150-png-page": {
+      "base": "mitsunobu",
+      "form": "png",
+      "ok": false,
+      "crop": {
+        "x": 95.79288,
+        "y": 302.97363,
+        "width": 402.5036799999999,
+        "height": 65.88095999999996
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              367,
+              171,
+              431,
+              827
+            ],
+            "label": "Scheme 1",
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "mitsunobu-lab-150-svg-page": {
+      "base": "mitsunobu",
+      "form": "svg",
+      "ok": false,
+      "crop": {
+        "x": 96.38815999999998,
+        "y": 301.28985,
+        "width": 401.3131199999999,
+        "height": 65.88095999999996
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              365,
+              172,
+              429,
+              826
+            ],
+            "label": "Scheme 1",
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "mitsunobu-lab-150-scan-page": {
+      "base": "mitsunobu",
+      "form": "scan",
+      "ok": false,
+      "crop": {
+        "x": 95.19760000000001,
+        "y": 302.97363,
+        "width": 403.0989599999999,
+        "height": 65.88095999999996
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              367,
+              170,
+              431,
+              827
+            ],
+            "label": "Scheme 1",
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "benzylation-acs-72-png-page": {
+      "base": "benzylation",
+      "form": "png",
+      "ok": false,
+      "crop": {
+        "x": 102.93624,
+        "y": 302.97363,
+        "width": 388.21696,
+        "height": 73.45796999999999
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              367,
+              183,
+              440,
+              815
+            ],
+            "label": "Scheme 1",
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "benzylation-acs-72-svg-page": {
+      "base": "benzylation",
+      "form": "svg",
+      "ok": false,
+      "crop": {
+        "x": 104.12679999999999,
+        "y": 302.97363,
+        "width": 386.43112,
+        "height": 72.61607999999995
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              367,
+              185,
+              439,
+              814
+            ],
+            "label": "Scheme 1",
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "benzylation-acs-72-scan-page": {
+      "base": "benzylation",
+      "form": "scan",
+      "ok": false,
+      "crop": {
+        "x": 104.12679999999999,
+        "y": 303.81552,
+        "width": 386.43112,
+        "height": 69.24851999999998
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              368,
+              185,
+              436,
+              814
+            ],
+            "label": "Scheme 1",
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "boc-protection-acs-200-png-page": {
+      "base": "boc-protection",
+      "form": "png",
+      "ok": false,
+      "crop": {
+        "x": 159.48784,
+        "y": 302.97363,
+        "width": 275.11375999999996,
+        "height": 117.23624999999998
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              367,
+              278,
+              492,
+              720
+            ],
+            "label": "Scheme 1",
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "boc-protection-acs-200-svg-page": {
+      "base": "boc-protection",
+      "form": "svg",
+      "ok": false,
+      "crop": {
+        "x": 159.48784,
+        "y": 302.97363,
+        "width": 274.51847999999995,
+        "height": 118.07813999999996
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              367,
+              278,
+              493,
+              719
+            ],
+            "label": "Scheme 1",
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "boc-protection-acs-200-scan-page": {
+      "base": "boc-protection",
+      "form": "scan",
+      "ok": false,
+      "crop": {
+        "x": 160.6784,
+        "y": 303.81552,
+        "width": 272.73263999999995,
+        "height": 116.39436
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              368,
+              280,
+              492,
+              718
+            ],
+            "label": "Scheme 1",
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "three-steps-footnote-150-png-page": {
+      "base": "three-steps",
+      "form": "png",
+      "ok": false,
+      "crop": {
+        "x": 58.29024,
+        "y": 317.28576,
+        "width": 478.10423999999995,
+        "height": 165.22397999999998
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              384,
+              108,
+              566,
+              891
+            ],
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "three-steps-footnote-150-svg-page": {
+      "base": "three-steps",
+      "form": "svg",
+      "ok": false,
+      "crop": {
+        "x": 57.694959999999995,
+        "y": 317.28576,
+        "width": 478.69951999999995,
+        "height": 168.59153999999995
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              384,
+              107,
+              570,
+              891
+            ],
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "three-steps-footnote-150-scan-page": {
+      "base": "three-steps",
+      "form": "scan",
+      "ok": false,
+      "crop": {
+        "x": 60.076080000000005,
+        "y": 318.96954,
+        "width": 474.53256000000005,
+        "height": 161.85641999999996
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              386,
+              111,
+              564,
+              888
+            ],
+            "label": "Scheme 1",
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "experimental-en-lab-150-png-page": {
+      "base": "experimental-en",
+      "form": "png",
+      "ok": false,
+      "crop": {
+        "x": 189.84712,
+        "y": 302.13174,
+        "width": 216.18104000000002,
+        "height": 75.98364000000004
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              366,
+              329,
+              442,
+              672
+            ],
+            "label": "Scheme 1",
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "experimental-en-lab-150-svg-page": {
+      "base": "experimental-en",
+      "form": "svg",
+      "ok": false,
+      "crop": {
+        "x": 189.84712,
+        "y": 303.81552,
+        "width": 216.18104000000002,
+        "height": 72.61608000000001
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              368,
+              329,
+              440,
+              672
+            ],
+            "label": "Scheme 1",
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "experimental-en-lab-150-scan-page": {
+      "base": "experimental-en",
+      "form": "scan",
+      "ok": false,
+      "crop": {
+        "x": 189.84712,
+        "y": 303.81552,
+        "width": 214.39520000000002,
+        "height": 72.61608000000001
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              368,
+              329,
+              440,
+              669
+            ],
+            "label": "Scheme 1",
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "click-acs-72-png-page": {
+      "base": "click",
+      "form": "png",
+      "ok": false,
+      "crop": {
+        "x": 109.48432,
+        "y": 302.13174,
+        "width": 375.12080000000003,
+        "height": 65.03906999999998
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              366,
+              194,
+              429,
+              804
+            ],
+            "label": "Scheme 1",
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "click-acs-72-svg-page": {
+      "base": "click",
+      "form": "svg",
+      "ok": false,
+      "crop": {
+        "x": 110.67488,
+        "y": 302.13174,
+        "width": 373.93024,
+        "height": 65.03906999999998
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              366,
+              196,
+              429,
+              804
+            ],
+            "label": "Scheme 1",
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "click-acs-72-scan-page": {
+      "base": "click",
+      "form": "scan",
+      "ok": false,
+      "crop": {
+        "x": 105.31736,
+        "y": 302.13174,
+        "width": 379.28776,
+        "height": 66.72285
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              366,
+              187,
+              431,
+              804
+            ],
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "buchwald-acs-200-png-page": {
+      "base": "buchwald",
+      "form": "png",
+      "ok": false,
+      "crop": {
+        "x": 125.55688,
+        "y": 303.81552,
+        "width": 344.76152,
+        "height": 71.77418999999998
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              368,
+              221,
+              439,
+              780
+            ],
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "buchwald-acs-200-svg-page": {
+      "base": "buchwald",
+      "form": "svg",
+      "ok": false,
+      "crop": {
+        "x": 124.9616,
+        "y": 302.13174,
+        "width": 345.95208,
+        "height": 75.98364000000004
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              366,
+              220,
+              442,
+              781
+            ],
+            "label": "Scheme 1",
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "buchwald-acs-200-scan-page": {
+      "base": "buchwald",
+      "form": "scan",
+      "ok": false,
+      "crop": {
+        "x": 126.15216000000001,
+        "y": 302.97363,
+        "width": 342.97568,
+        "height": 71.77418999999998
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              367,
+              222,
+              438,
+              778
+            ],
+            "label": "Scheme 1",
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "three-steps-acs-72-png-page": {
+      "base": "three-steps",
+      "form": "png",
+      "ok": false,
+      "crop": {
+        "x": 95.79288,
+        "y": 318.96954,
+        "width": 403.6942399999999,
+        "height": 138.2835
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              386,
+              171,
+              536,
+              829
+            ],
+            "label": "Scheme 1",
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "three-steps-acs-72-svg-page": {
+      "base": "three-steps",
+      "form": "svg",
+      "ok": false,
+      "crop": {
+        "x": 95.19760000000001,
+        "y": 316.44387,
+        "width": 404.8847999999999,
+        "height": 141.65106000000003
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              383,
+              170,
+              537,
+              830
+            ],
+            "label": "Scheme 1",
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "three-steps-acs-72-scan-page": {
+      "base": "three-steps",
+      "form": "scan",
+      "ok": false,
+      "crop": {
+        "x": 95.79288,
+        "y": 318.96954,
+        "width": 403.0989599999999,
+        "height": 135.75783
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              386,
+              171,
+              533,
+              828
+            ],
+            "label": "Scheme 1",
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "mitsunobu-footnote-150-png-page": {
+      "base": "mitsunobu",
+      "form": "png",
+      "ok": false,
+      "crop": {
+        "x": 110.67488,
+        "y": 302.13174,
+        "width": 373.93024,
+        "height": 117.23624999999998
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              366,
+              196,
+              491,
+              804
+            ],
+            "label": "Scheme 1",
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "mitsunobu-footnote-150-svg-page": {
+      "base": "mitsunobu",
+      "form": "svg",
+      "ok": false,
+      "crop": {
+        "x": 110.67488,
+        "y": 302.97363,
+        "width": 373.93024,
+        "height": 117.23624999999998
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              367,
+              196,
+              492,
+              804
+            ],
+            "label": "Scheme 1",
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "mitsunobu-footnote-150-scan-page": {
+      "base": "mitsunobu",
+      "form": "scan",
+      "ok": false,
+      "crop": {
+        "x": 108.29375999999999,
+        "y": 299.60607,
+        "width": 376.31136000000004,
+        "height": 118.92003
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              363,
+              192,
+              490,
+              804
+            ],
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "boc-protection-acs-72-png-page": {
+      "base": "boc-protection",
+      "form": "png",
+      "ok": false,
+      "crop": {
+        "x": 160.6784,
+        "y": 303.81552,
+        "width": 273.32791999999995,
+        "height": 113.86869000000002
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              368,
+              280,
+              489,
+              719
+            ],
+            "label": "Scheme 1",
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "boc-protection-acs-72-svg-page": {
+      "base": "boc-protection",
+      "form": "svg",
+      "ok": false,
+      "crop": {
+        "x": 159.48784,
+        "y": 302.97363,
+        "width": 276.89959999999996,
+        "height": 118.07813999999996
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              367,
+              278,
+              493,
+              723
+            ],
+            "label": "Scheme 1",
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    },
+    "boc-protection-acs-72-scan-page": {
+      "base": "boc-protection",
+      "form": "scan",
+      "ok": false,
+      "crop": {
+        "x": 158.89256,
+        "y": 302.13174,
+        "width": 275.70903999999996,
+        "height": 118.07814000000002
+      },
+      "raw": {
+        "figures": [
+          {
+            "box_2d": [
+              366,
+              277,
+              492,
+              720
+            ],
+            "label": "Scheme 1",
+            "kind": "reaction-scheme"
+          }
+        ]
+      }
+    }
+  }
+}

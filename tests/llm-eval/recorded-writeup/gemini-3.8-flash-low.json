@@ -1,0 +1,88 @@
+{
+  "model": "gemini-3.8-flash",
+  "thinking": "low",
+  "recordedAt": "2026-10-27T15-33-23",
+  "outcomes": {
+    "amide-en": "correct",
+    "amide-ja": "correct",
+    "amide-workup": "correct",
+    "amide-noscale": "correct",
+    "two-step": "correct",
+    "suzuki-unknown-mw": "correct",
+    "deprotect-quant": "correct",
+    "nmr-request": "correct",
+    "spoken-en": "correct",
+    "spoken-kanji": "correct",
+    "spoken-ja": "correct"
+  },
+  "raw": {
+    "amide-en": [
+      {
+        "text": "To a solution of {{C1}} ({{s1.C1.mg}}, {{s1.C1.mmol}}, {{s1.C1.equiv}}) and {{C2}} ({{s1.C2.mg}}, {{s1.C2.mmol}}, {{s1.C2.equiv}}) in {{s1.solvent}} were added {{s1.R1}} ({{s1.R1.mg}}, {{s1.R1.mmol}}, {{s1.R1.equiv}}) and {{s1.R2}} ({{s1.R2.uL}}, {{s1.R2.mmol}}, {{s1.R2.equiv}}). The reaction mixture was stirred at {{s1.temp}} for {{s1.time}}. After completion of the reaction, [[work-up]] and [[purification]] afforded {{C3}} ({{s1.C3.mg}}, {{s1.C3.mmol}}, {{s1.yield}}).",
+        "questions": []
+      }
+    ],
+    "amide-ja": [
+      {
+        "text": "{{C1}} ({{s1.C1.mg}}, {{s1.C1.mmol}}, {{s1.C1.equiv}}) および {{C2}} ({{s1.C2.mg}}, {{s1.C2.mmol}}, {{s1.C2.equiv}}) の {{s1.solvent}} 溶液に、{{s1.R1}} ({{s1.R1.mg}}, {{s1.R1.mmol}}, {{s1.R1.equiv}}) と {{s1.R2}} ({{s1.R2.uL}}, {{s1.R2.mmol}}, {{s1.R2.equiv}}) を加えた。混合物を {{s1.temp}} で {{s1.time}} 撹拌した。[[work-up]] [[purification]] により、{{C3}} ({{s1.C3.mg}}, {{s1.C3.mmol}}, {{s1.yield}}) を得た。",
+        "questions": []
+      }
+    ],
+    "amide-workup": [
+      {
+        "text": "To a solution of {{C1}} ({{s1.C1.mg}}, {{s1.C1.mmol}}, {{s1.C1.equiv}}) and {{C2}} ({{s1.C2.mg}}, {{s1.C2.mmol}}, {{s1.C2.equiv}}) in {{s1.solvent}} were added {{s1.R1}} ({{s1.R1.mg}}, {{s1.R1.mmol}}, {{s1.R1.equiv}}) and {{s1.R2}} ({{s1.R2.uL}}, {{s1.R2.mmol}}, {{s1.R2.equiv}}). The reaction mixture was stirred at {{s1.temp}} for {{s1.time}}. The mixture was diluted with EtOAc, washed sequentially with 1 M HCl, saturated aqueous NaHCO3, and brine, dried over Na2SO4, and concentrated under reduced pressure. Purification by silica gel column chromatography (hexane/EtOAc 1:1) afforded {{C3}} ({{s1.C3.mg}}, {{s1.yield}}) as a white solid.",
+        "questions": []
+      }
+    ],
+    "amide-noscale": [
+      {
+        "text": "To a solution of {{C1}} ({{s1.C1.mg}}, {{s1.C1.mmol}}, {{s1.C1.equiv}}) and {{C2}} ({{s1.C2.mg}}, {{s1.C2.mmol}}, {{s1.C2.equiv}}) in {{s1.solvent}} were added {{s1.R1}} ({{s1.R1.mg}}, {{s1.R1.mmol}}, {{s1.R1.equiv}}) and {{s1.R2}} ({{s1.R2.mg}}, {{s1.R2.mmol}}, {{s1.R2.equiv}}). The reaction mixture was stirred at {{s1.temp}} for {{s1.time}}. [[work-up]] [[purification]] to afford {{C3}} ({{s1.C3.mg}}, {{s1.C3.mmol}}, {{s1.yield}}).",
+        "questions": []
+      }
+    ],
+    "two-step": [
+      {
+        "text": "To a solution of {{C1}} ({{s1.C1.mg}}, {{s1.C1.mmol}}, {{s1.C1.equiv}}) and {{C2}} ({{s1.C2.mg}}, {{s1.C2.mmol}}, {{s1.C2.equiv}}) in {{s1.solvent}} were added {{s1.R1}} ({{s1.R1.mg}}, {{s1.R1.mmol}}, {{s1.R1.equiv}}) and {{s1.R2}} ({{s1.R2.uL}}, {{s1.R2.mmol}}, {{s1.R2.equiv}}). The reaction mixture was stirred at {{s1.temp}} for {{s1.time}}. After [[work-up]] and [[purification]], {{C3}} was obtained ({{s1.C3.mg}}, {{s1.C3.mmol}}, {{s1.yield}}).\n\nTo a solution of {{C3}} ({{s2.C3.mg}}, {{s2.C3.mmol}}, {{s2.C3.equiv}}) in {{s2.solvent}} was added {{s2.R1}} ({{s2.R1.uL}}, {{s2.R1.mmol}}, {{s2.R1.equiv}}) at {{s2.temp}}. The mixture was stirred for {{s2.time}}. After [[work-up]] and [[purification]], {{C4}} was obtained ({{s2.C4.mg}}, {{s2.C4.mmol}}, {{s2.yield}}).",
+        "questions": []
+      }
+    ],
+    "suzuki-unknown-mw": [
+      {
+        "text": "To a mixture of {{C1}} ({{s1.C1.mg}}, {{s1.C1.mmol}}, {{s1.C1.equiv}}), {{C2}} ({{s1.C2.mg}}, {{s1.C2.mmol}}, {{s1.C2.equiv}}), {{s1.R1}} ({{s1.R1.mg}}, {{s1.R1.mmol}}, {{s1.R1.equiv}}), and {{s1.R2}} ({{s1.R2.mg}}, {{s1.R2.mmol}}, {{s1.R2.equiv}}) was added {{s1.solvent}}. The reaction mixture was stirred at {{s1.temp}} for {{s1.time}}. After [[work-up]] and [[purification]], {{C3}} was obtained ({{s1.C3.mg}}, {{s1.C3.mmol}}, {{s1.yield}}).",
+        "questions": []
+      }
+    ],
+    "deprotect-quant": [
+      {
+        "text": "To a solution of {{C1}} ({{s1.C1.mg}}, {{s1.C1.mmol}}, {{s1.C1.equiv}}) in {{s1.solvent}} was added {{s1.R1}} ({{s1.R1.uL}}, {{s1.R1.mmol}}, {{s1.R1.equiv}}). The reaction mixture was stirred at {{s1.temp}} for {{s1.time}}. [[work-up]] [[purification]] to afford {{C2}} ({{s1.C2.mg}}, {{s1.C2.mmol}}, {{s1.yield}}).",
+        "questions": []
+      }
+    ],
+    "nmr-request": [
+      {
+        "text": "To a solution of {{C1}} ({{s1.C1.mg}}, {{s1.C1.mmol}}, {{s1.C1.equiv}}) and {{C2}} ({{s1.C2.mg}}, {{s1.C2.mmol}}, {{s1.C2.equiv}}) in {{s1.solvent}} were added {{s1.R1}} ({{s1.R1.mg}}, {{s1.R1.mmol}}, {{s1.R1.equiv}}) and {{s1.R2}} ({{s1.R2.uL}}, {{s1.R2.mmol}}, {{s1.R2.equiv}}). The reaction mixture was stirred at {{s1.temp}} for {{s1.time}}. [[work-up]] [[purification]] to afford {{C3}} ({{s1.C3.mg}}, {{s1.C3.mmol}}, {{s1.yield}}). 1H NMR: [[1H NMR data]]; HRMS: [[HRMS data]].",
+        "questions": [
+          "Please provide the 1H NMR and HRMS analytical data, as well as the work-up and purification procedures, to replace the placeholders."
+        ]
+      }
+    ],
+    "spoken-en": [
+      {
+        "text": "To a solution of {{C1}} ({{s1.C1.mg}}, {{s1.C1.mmol}}, {{s1.C1.equiv}}) and {{C2}} ({{s1.C2.mg}}, {{s1.C2.mmol}}, {{s1.C2.equiv}}) in {{s1.solvent}} were added {{s1.R1}} ({{s1.R1.mg}}, {{s1.R1.mmol}}, {{s1.R1.equiv}}) and {{s1.R2}} ({{s1.R2.uL}}, {{s1.R2.mmol}}, {{s1.R2.equiv}}). The reaction mixture was stirred at {{s1.temp}} for {{s1.time}}. The reaction mixture was washed with saturated aqueous NaHCO3, dried over Na2SO4, and concentrated under reduced pressure. The residue was purified by silica gel column chromatography (hexane/EtOAc, 3:1) to afford {{C3}} ({{s1.C3.mg}}, {{s1.C3.mmol}}, {{s1.yield}}).",
+        "questions": []
+      }
+    ],
+    "spoken-kanji": [
+      {
+        "text": "To a solution of {{C1}} ({{s1.C1.mg}}, {{s1.C1.mmol}}, {{s1.C1.equiv}}) and {{C2}} ({{s1.C2.mg}}, {{s1.C2.mmol}}, {{s1.C2.equiv}}) in {{s1.solvent}} were added {{s1.R1}} ({{s1.R1.mg}}, {{s1.R1.mmol}}, {{s1.R1.equiv}}) and {{s1.R2}} ({{s1.R2.uL}}, {{s1.R2.mmol}}, {{s1.R2.equiv}}). The mixture was stirred at {{s1.temp}} for {{s1.time}}. The mixture was extracted with EtOAc, washed with brine, and dried over Na2SO4. The solution was concentrated under reduced pressure, and the residue was purified by silica gel column chromatography (hexane/EtOAc, 3:1) to afford {{C3}} ({{s1.C3.mg}}, {{s1.C3.mmol}}, {{s1.yield}}).",
+        "questions": []
+      }
+    ],
+    "spoken-ja": [
+      {
+        "text": "{{C1}} ({{s1.C1.mg}}, {{s1.C1.mmol}}, {{s1.C1.equiv}})および{{C2}} ({{s1.C2.mg}}, {{s1.C2.mmol}}, {{s1.C2.equiv}})の{{s1.solvent}}溶液に、{{s1.temp}}で{{s1.R1}} ({{s1.R1.mg}}, {{s1.R1.mmol}}, {{s1.R1.equiv}})と{{s1.R2}} ({{s1.R2.uL}}, {{s1.R2.mmol}}, {{s1.R2.equiv}})を加え、{{s1.temp}}で{{s1.time}}撹拌した。反応液を飽和重曹水で洗浄し、無水硫酸ナトリウムで乾燥した。減圧下で濃縮後、シリカゲルカラムクロマトグラフィー (ヘキサン/酢酸エチル = 3:1) により精製し、{{C3}} ({{s1.C3.mg}}, {{s1.C3.mmol}}, {{s1.yield}})を得た。",
+        "questions": []
+      }
+    ]
+  }
+}

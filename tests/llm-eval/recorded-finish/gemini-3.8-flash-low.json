@@ -1,0 +1,274 @@
+{
+  "model": "gemini-3.8-flash",
+  "thinking": "low",
+  "recordedAt": "2026-10-28T14-50-14",
+  "outcomes": {
+    "acs-submission": "correct",
+    "footnote-renumber": "correct",
+    "equiv-format": "correct",
+    "roman-footnote": "correct",
+    "notation": "correct",
+    "rename-reagent": "correct",
+    "cannot-font": "correct",
+    "content-change": "correct",
+    "scope-active": "correct",
+    "prefix": "correct"
+  },
+  "raw": {
+    "acs-submission": [
+      {
+        "ops": [
+          {
+            "op": "set_style",
+            "style": "acs"
+          },
+          {
+            "op": "set_condition",
+            "scheme": 1,
+            "step": 1,
+            "field": "temp",
+            "value": "rt"
+          },
+          {
+            "op": "set_condition",
+            "scheme": 1,
+            "step": 1,
+            "field": "time",
+            "value": "2 h"
+          },
+          {
+            "op": "set_condition",
+            "scheme": 1,
+            "step": 2,
+            "field": "temp",
+            "value": "rt"
+          },
+          {
+            "op": "set_condition",
+            "scheme": 1,
+            "step": 2,
+            "field": "time",
+            "value": "1 h"
+          },
+          {
+            "op": "set_condition",
+            "scheme": 2,
+            "step": 1,
+            "field": "temp",
+            "value": "rt"
+          },
+          {
+            "op": "set_condition",
+            "scheme": 2,
+            "step": 1,
+            "field": "time",
+            "value": "16 h"
+          }
+        ],
+        "cannot": [],
+        "questions": []
+      }
+    ],
+    "footnote-renumber": [
+      {
+        "ops": [
+          {
+            "op": "renumber",
+            "start": 1
+          },
+          {
+            "op": "set_style",
+            "style": "footnote"
+          }
+        ],
+        "cannot": [],
+        "questions": []
+      }
+    ],
+    "equiv-format": [
+      {
+        "ops": [
+          {
+            "op": "set_style_option",
+            "option": "equivFormat",
+            "value": "({n} equiv)"
+          }
+        ],
+        "cannot": [],
+        "questions": []
+      }
+    ],
+    "roman-footnote": [
+      {
+        "ops": [
+          {
+            "op": "set_style",
+            "style": "footnote"
+          },
+          {
+            "op": "set_style_option",
+            "option": "stepMarks",
+            "value": "roman"
+          }
+        ],
+        "cannot": [],
+        "questions": []
+      }
+    ],
+    "notation": [
+      {
+        "ops": [
+          {
+            "op": "set_condition",
+            "scheme": 1,
+            "step": 1,
+            "field": "temp",
+            "value": "rt"
+          },
+          {
+            "op": "set_condition",
+            "scheme": 1,
+            "step": 1,
+            "field": "time",
+            "value": "2 h"
+          },
+          {
+            "op": "set_condition",
+            "scheme": 1,
+            "step": 2,
+            "field": "temp",
+            "value": "rt"
+          },
+          {
+            "op": "set_condition",
+            "scheme": 1,
+            "step": 2,
+            "field": "time",
+            "value": "1 h"
+          },
+          {
+            "op": "set_condition",
+            "scheme": 2,
+            "step": 1,
+            "field": "temp",
+            "value": "rt"
+          },
+          {
+            "op": "set_condition",
+            "scheme": 2,
+            "step": 1,
+            "field": "time",
+            "value": "16 h"
+          }
+        ],
+        "cannot": [],
+        "questions": []
+      }
+    ],
+    "rename-reagent": [
+      {
+        "ops": [
+          {
+            "op": "rename_reagent",
+            "scheme": 1,
+            "step": 1,
+            "reagent": "TEA",
+            "text": "Et3N"
+          }
+        ],
+        "cannot": [],
+        "questions": []
+      }
+    ],
+    "cannot-font": [
+      {
+        "ops": [],
+        "cannot": [
+          "フォントの設定（Arial 10 pt）",
+          "結合の線の太さの設定（0.6 pt）"
+        ],
+        "questions": []
+      }
+    ],
+    "content-change": [
+      {
+        "ops": [
+          {
+            "op": "set_style",
+            "style": "acs"
+          },
+          {
+            "op": "set_condition",
+            "scheme": 1,
+            "step": 1,
+            "field": "temp",
+            "value": "rt"
+          },
+          {
+            "op": "set_condition",
+            "scheme": 1,
+            "step": 1,
+            "field": "time",
+            "value": "2 h"
+          },
+          {
+            "op": "set_condition",
+            "scheme": 1,
+            "step": 2,
+            "field": "temp",
+            "value": "rt"
+          },
+          {
+            "op": "set_condition",
+            "scheme": 1,
+            "step": 2,
+            "field": "time",
+            "value": "1 h"
+          },
+          {
+            "op": "set_condition",
+            "scheme": 2,
+            "step": 1,
+            "field": "temp",
+            "value": "rt"
+          },
+          {
+            "op": "set_condition",
+            "scheme": 2,
+            "step": 1,
+            "field": "time",
+            "value": "16 h"
+          }
+        ],
+        "cannot": [
+          "試薬を別の試薬に変更すること（TFAからHClへの変更）"
+        ],
+        "questions": []
+      }
+    ],
+    "scope-active": [
+      {
+        "ops": [
+          {
+            "op": "renumber",
+            "start": 1
+          }
+        ],
+        "cannot": [],
+        "questions": []
+      }
+    ],
+    "prefix": [
+      {
+        "ops": [
+          {
+            "op": "renumber",
+            "prefix": "S"
+          }
+        ],
+        "cannot": [],
+        "questions": []
+      }
+    ]
+  }
+}

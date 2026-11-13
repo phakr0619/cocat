@@ -1,0 +1,26 @@
+// 完了条件の「主要な構造20種程度」。立体・電荷・橋かけ環・複素環を含める
+export const STRUCTURES: Record<string, string> = {
+  aspirin: 'CC(=O)Oc1ccccc1C(=O)O',
+  caffeine: 'CN1C=NC2=C1C(=O)N(C(=O)N2C)C',
+  ibuprofen: 'CC(C)Cc1ccc(cc1)C(C)C(=O)O',
+  paracetamol: 'CC(=O)Nc1ccc(O)cc1',
+  penicillinG: 'CC1([C@@H](N2[C@H](S1)[C@@H](C2=O)NC(=O)CC3=CC=CC=C3)C(=O)O)C',
+  morphine: 'CN1CC[C@]23[C@@H]4[C@H]1CC5=C2C(=C(C=C5)O)O[C@H]3[C@H](C=C4)O',
+  cholesterol: 'C[C@H](CCCC(C)C)[C@H]1CC[C@@H]2[C@@]1(CC[C@H]3[C@H]2CC=C4[C@@]3(CC[C@@H](C4)O)C)C',
+  glucose: 'OC[C@H]1O[C@@H](O)[C@H](O)[C@@H](O)[C@@H]1O',
+  proline: 'OC(=O)[C@@H]1CCCN1',
+  phenylalanine: 'N[C@@H](Cc1ccccc1)C(=O)O',
+  nicotine: 'CN1CCC[C@H]1c1cccnc1',
+  serotonin: 'NCCc1c[nH]c2ccc(O)cc12',
+  testosterone: 'C[C@]12CC[C@H]3[C@@H](CCC4=CC(=O)CC[C@]34C)[C@@H]1CC[C@@H]2O',
+  quinine: 'COc1ccc2nccc([C@@H](O)[C@@H]3C[C@@H]4CCN3C[C@@H]4C=C)c2c1',
+  strychnine: 'O=C1C[C@H]2OCC=C3CN4CC[C@]56[C@@H]4C[C@@H]3[C@@H]2[C@@H]6N1c1ccccc15',
+  indole: 'c1ccc2[nH]ccc2c1',
+  sodiumAcetate: 'CC(=O)[O-].[Na+]',
+  stilbeneE: 'C(=C/c1ccccc1)\\c1ccccc1',
+  menthol: 'CC(C)[C@@H]1CC[C@@H](C)C[C@H]1O',
+  adenine: 'Nc1ncnc2[nH]cnc12',
+  fmocGly: 'O=C(O)CNC(=O)OCC1c2ccccc2-c2ccccc21',
+  taxol:
+    'CC1=C2[C@@]([C@]([C@H]([C@@H]3[C@]4([C@H](OC4)C[C@@H]([C@]3(C(=O)[C@@H]2OC(=O)C)C)O)OC(=O)C)OC(=O)c5ccccc5)(C[C@@H]1OC(=O)[C@H](O)[C@@H](NC(=O)c6ccccc6)c7ccccc7)O)(C)C',
+};

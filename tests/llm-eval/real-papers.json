@@ -1,0 +1,54 @@
+{
+  "about": "M6 段3 の確かめに使う、実際のオープンアクセスの論文（本文と SI）。PDF はリポジトリに入れず、node scripts/fetch-real-papers.mjs で tests/llm-eval/real-papers/ に取ってくる。ライセンスはどれも CC BY 4.0。利用条件（/bjoc/terms）に AI・テキストマイニングを禁じる文は無かった（2026-11-08 に確かめた）",
+  "checkedAt": "2026-11-08",
+  "papers": [
+    {
+      "id": "bjoc-21-38",
+      "title": "Synthesis of the aggregation pheromone of Tribolium castaneum",
+      "authors": "Biyu An, Xueyang Wang, Ao Jiao, Qinghua Bian, Jiangchun Zhong",
+      "citation": "Beilstein J. Org. Chem. 2025, 21, 510–514",
+      "doi": "10.3762/bjoc.21.38",
+      "page": "https://www.beilstein-journals.org/bjoc/articles/21/38",
+      "main": "https://www.beilstein-journals.org/bjoc/content/pdf/1860-5397-21-38.pdf",
+      "si": "https://www.beilstein-journals.org/bjoc/content/supplementary/1860-5397-21-38-S1.pdf",
+      "note": "SI の見出しが「(R)-Hex-5-en-2-ol ((R)-4)」のように系統名＋番号。OPSIN での突き合わせ（立体を含む）を確かめる",
+      "license": "CC BY 4.0（Beilstein-Institut Open Access License Agreement。CC BY 4.0 と同じ。https://www.beilstein-journals.org/bjoc/terms ）",
+      "sha256": {
+        "main": "4e615396104e482125c1c68f84358587dcabee566a793f93648ea85a428c5f76",
+        "si": "0f57d52d1fc15ad7f81ec79d330d09262a8010735a2fd777dd5f9d69445028f4"
+      }
+    },
+    {
+      "id": "bjoc-21-47",
+      "title": "Total synthesis of (±)-simonsol C using dearomatization as key reaction under acidic conditions",
+      "authors": "Xiao-Yang Bi, Xiao-Shuai Yang, Shan-Shan Chen, Jia-Jun Sui, Zhao-Nan Cai, Yong-Ming Chuan, Hong-Bo Qin",
+      "citation": "Beilstein J. Org. Chem. 2025, 21, 601–606",
+      "doi": "10.3762/bjoc.21.47",
+      "page": "https://www.beilstein-journals.org/bjoc/articles/21/47",
+      "main": "https://www.beilstein-journals.org/bjoc/content/pdf/1860-5397-21-47.pdf",
+      "si": "https://www.beilstein-journals.org/bjoc/content/supplementary/1860-5397-21-47-S1.pdf",
+      "note": "SI の見出しが「Synthesis of compound 17:」のように番号だけ。系統名が無いときに条件・収率を補う所を確かめる",
+      "license": "CC BY 4.0（Beilstein-Institut Open Access License Agreement。CC BY 4.0 と同じ。https://www.beilstein-journals.org/bjoc/terms ）",
+      "sha256": {
+        "main": "cc592579b428be7b9f6d12ba4143f13f50c0dc94ae4de4b0767a7aa70a2483b8",
+        "si": "ad8acb4bc6bf9991796fb56ccea5b76d82bcb45e631e29c72c99c7135ab8feea"
+      }
+    },
+    {
+      "id": "bjoc-21-14",
+      "title": "Streamlined modular synthesis of saframycin substructure via copper-catalyzed three-component assembly and gold-promoted 6-endo cyclization",
+      "authors": "Asahi Kanno, Ryo Tanifuji, Satoshi Yoshida, Sota Sato, Saori Maki-Yonekura, Kiyofumi Takaba, Jungmin Kang, Kensuke Tono, Koji Yonekura, Hiroki Oguri",
+      "citation": "Beilstein J. Org. Chem. 2025, 21, 226–233",
+      "doi": "10.3762/bjoc.21.14",
+      "page": "https://www.beilstein-journals.org/bjoc/articles/21/14",
+      "main": "https://www.beilstein-journals.org/bjoc/content/pdf/1860-5397-21-14.pdf",
+      "si": "https://www.beilstein-journals.org/bjoc/content/supplementary/1860-5397-21-14-S1.pdf",
+      "note": "SI の見出しが「Compound S2」のように番号だけ。文献番号の上付きが化合物番号にくっつく（「15」＋上付き「3」が「153」）落とし穴を確かめる",
+      "license": "CC BY 4.0（Beilstein-Institut Open Access License Agreement。CC BY 4.0 と同じ。https://www.beilstein-journals.org/bjoc/terms ）",
+      "sha256": {
+        "main": "af3b26a5fe55403802f070fd4ab9a1da0ca0fd42703ce539b0c2a575e2ff4fa1",
+        "si": "5179ac9887f4800d8d0ecf9eb3b59375e8eaaa90d713573b77c48127efda8540"
+      }
+    }
+  ]
+}

@@ -1,0 +1,2148 @@
+{
+  "model": "gemini-3.8-flash",
+  "thinking": "low",
+  "recordedAt": "2026-11-08T17-07-29",
+  "raw": {
+    "amide-hatu-acs-200:same": [
+      {
+        "compounds": [
+          {
+            "label": "3",
+            "names": [
+              "methyl 2-[[(2S)-2-[(tert-butoxycarbonyl)amino]propanoyl]amino]acetate"
+            ],
+            "page": "SI p.1",
+            "quote": "methyl 2-[[(2S)-2-[(tert-butoxycarbonyl)amino]propanoyl]amino]acetate (3)"
+          }
+        ],
+        "steps": [
+          {
+            "to": [
+              "3"
+            ],
+            "from": [
+              "1",
+              "2"
+            ],
+            "reagents": [
+              {
+                "text": "HATU",
+                "equiv": 1.2
+              },
+              {
+                "text": "DIPEA",
+                "equiv": 3
+              }
+            ],
+            "solvent": "DMF",
+            "temp": "room temperature",
+            "time": "2 h",
+            "yield": 85,
+            "page": "SI p.1",
+            "quote": "were added HATU (4.56 g, 12.0 mmol, 1.2 equiv) and DIPEA (5.2 mL, 30 mmol, 3 equiv). The mixture was stirred at room temperature for 2 h"
+          }
+        ]
+      }
+    ],
+    "amide-hatu-acs-200:conflict": [
+      {
+        "compounds": [
+          {
+            "label": "3",
+            "names": [
+              "methyl 2-[[(2S)-2-[(tert-butoxycarbonyl)amino]propanoyl]amino]acetate"
+            ],
+            "page": "SI p.1",
+            "quote": "methyl 2-[[(2S)-2-[(tert-butoxycarbonyl)amino]propanoyl]amino]acetate (3)"
+          }
+        ],
+        "steps": [
+          {
+            "to": [
+              "3"
+            ],
+            "from": [
+              "1",
+              "2"
+            ],
+            "reagents": [
+              {
+                "text": "HATU",
+                "equiv": 1.2
+              },
+              {
+                "text": "DIPEA",
+                "equiv": 3
+              }
+            ],
+            "solvent": "DMF",
+            "temp": "room temperature",
+            "time": "2 h",
+            "yield": 72,
+            "page": "SI p.1",
+            "quote": "The mixture was stirred at room temperature for 2 h, diluted with EtOAc and washed with brine. Purification by column chromatography gave 3 (2.21 g, 72%)"
+          }
+        ]
+      }
+    ],
+    "amide-hatu-acs-200:wrong": [
+      {
+        "compounds": [
+          {
+            "label": "3",
+            "names": [
+              "methyl 3-[[(2S)-2-[(tert-butoxycarbonyl)amino]propanoyl]amino]propanoate"
+            ],
+            "page": "SI p.1",
+            "quote": "methyl 3-[[(2S)-2-[(tert-butoxycarbonyl)amino]propanoyl]amino]propanoate (3)"
+          }
+        ],
+        "steps": [
+          {
+            "to": [
+              "3"
+            ],
+            "from": [
+              "1",
+              "2"
+            ],
+            "reagents": [
+              {
+                "text": "HATU",
+                "equiv": 1.2
+              },
+              {
+                "text": "DIPEA",
+                "equiv": 3
+              }
+            ],
+            "solvent": "DMF",
+            "temp": "room temperature",
+            "time": "2 h",
+            "yield": 85,
+            "page": "SI p.1",
+            "quote": "To a solution of 1 (1.89 g, 10.0 mmol) and 2 (1.38 g, 11.0 mmol) in DMF (40 mL) were added HATU (4.56 g, 12.0 mmol, 1.2 equiv) and DIPEA (5.2 mL, 30 mmol, 3 equiv). The mixture was stirred at room temperature for 2 h"
+          }
+        ]
+      }
+    ],
+    "amide-hatu-acs-200:missing": [
+      {
+        "compounds": [],
+        "steps": [
+          {
+            "to": [
+              "3"
+            ],
+            "from": [
+              "1",
+              "2"
+            ],
+            "reagents": [
+              {
+                "text": "HATU"
+              },
+              {
+                "text": "DIPEA"
+              }
+            ],
+            "solvent": "DMF",
+            "yield": 85,
+            "page": "本文 p.1",
+            "quote": "Compound 3 was prepared from compounds 1 and 2 using HATU and DIPEA in DMF (85%)."
+          }
+        ]
+      }
+    ],
+    "benzylation-acs-72:same": [
+      {
+        "compounds": [
+          {
+            "label": "3",
+            "names": [
+              "4-(benzyloxy)benzaldehyde"
+            ],
+            "page": "SI p.1",
+            "quote": "4-(benzyloxy)benzaldehyde (3)"
+          }
+        ],
+        "steps": [
+          {
+            "to": [
+              "3"
+            ],
+            "from": [
+              "1",
+              "2"
+            ],
+            "reagents": [
+              {
+                "text": "K2CO3",
+                "equiv": 2
+              }
+            ],
+            "solvent": "DMF",
+            "temp": "60 °C",
+            "time": "4 h",
+            "yield": 90,
+            "page": "SI p.1",
+            "quote": "A mixture of 1 (1.22 g, 10.0 mmol), 2 (1.31 mL, 11.0 mmol) and K2CO3 (2.76 g, 20.0 mmol) in DMF (30 mL) was stirred at 60 °C for 4 h. After cooling, water was added and the product was extracted with Et2O. Recrystallization gave 3 (1.91 g, 90%)"
+          }
+        ]
+      }
+    ],
+    "benzylation-acs-72:conflict": [
+      {
+        "compounds": [
+          {
+            "label": "3",
+            "names": [
+              "4-(benzyloxy)benzaldehyde"
+            ],
+            "page": "SI p.1",
+            "quote": "4-(benzyloxy)benzaldehyde (3)"
+          }
+        ],
+        "steps": [
+          {
+            "to": [
+              "3"
+            ],
+            "from": [
+              "1",
+              "2"
+            ],
+            "reagents": [
+              {
+                "text": "K2CO3",
+                "equiv": 2
+              }
+            ],
+            "solvent": "DMF",
+            "temp": "60 °C",
+            "time": "4 h",
+            "yield": 78,
+            "page": "SI p.1",
+            "quote": "A mixture of 1 (1.22 g, 10.0 mmol), 2 (1.31 mL, 11.0 mmol) and K2CO3 (2.76 g, 20.0 mmol) in DMF (30 mL) was stirred at 60 °C for 4 h. After cooling, water was added and the product was extracted with Et2O. Recrystallization gave 3 (1.91 g, 78%)"
+          }
+        ]
+      }
+    ],
+    "benzylation-acs-72:wrong": [
+      {
+        "compounds": [
+          {
+            "label": "3",
+            "names": [
+              "3-(benzyloxy)benzaldehyde"
+            ],
+            "page": "SI p.1",
+            "quote": "3-(benzyloxy)benzaldehyde (3)\nA mixture of 1 (1.22 g, 10.0 mmol)"
+          }
+        ],
+        "steps": [
+          {
+            "to": [
+              "3"
+            ],
+            "from": [
+              "1",
+              "2"
+            ],
+            "reagents": [
+              {
+                "text": "K2CO3",
+                "equiv": 2
+              }
+            ],
+            "solvent": "DMF",
+            "temp": "60 °C",
+            "time": "4 h",
+            "yield": 90,
+            "page": "SI p.1",
+            "quote": "A mixture of 1 (1.22 g, 10.0 mmol), 2 (1.31 mL, 11.0 mmol) and K2CO3 (2.76 g, 20.0 mmol) in DMF (30 mL) was stirred at 60 °C for 4 h."
+          }
+        ]
+      }
+    ],
+    "benzylation-acs-72:missing": [
+      {
+        "compounds": [],
+        "steps": [
+          {
+            "to": [
+              "3"
+            ],
+            "from": [
+              "1",
+              "2"
+            ],
+            "reagents": [
+              {
+                "text": "K2CO3"
+              }
+            ],
+            "solvent": "DMF",
+            "temp": "60 °C",
+            "yield": 90,
+            "page": "本文 p.1",
+            "quote": "Compound 3 was prepared from compounds 1 and 2 using K2CO3 in DMF at 60 °C (90%)."
+          }
+        ]
+      }
+    ],
+    "boc-protection-acs-200:same": [
+      {
+        "compounds": [
+          {
+            "label": "2",
+            "names": [
+              "methyl (2S)-2-[(tert-butoxycarbonyl)amino]-3-phenylpropanoate"
+            ],
+            "page": "SI p.1",
+            "quote": "methyl (2S)-2-[(tert-butoxycarbonyl)amino]-3-phenylpropanoate (2)"
+          }
+        ],
+        "steps": [
+          {
+            "to": [
+              "2"
+            ],
+            "from": [
+              "1"
+            ],
+            "reagents": [
+              {
+                "text": "Et3N",
+                "equiv": 2
+              },
+              {
+                "text": "Boc2O",
+                "equiv": 1.1
+              }
+            ],
+            "solvent": "CH2Cl2",
+            "temp": "0 °C to room temperature",
+            "time": "12 h",
+            "yield": 92,
+            "page": "SI p.1",
+            "quote": "To a solution of 1 (1.79 g, 10.0 mmol) and Et3N (2.8 mL, 20 mmol) in CH2Cl2 (30 mL) at 0 °C was added Boc2O (2.40 g, 11.0 mmol). The mixture was warmed to room temperature and stirred for 12 h. The residue was purified by flash chromatography to give 2 (2.57 g, 92%)"
+          }
+        ]
+      }
+    ],
+    "boc-protection-acs-200:wrong": [
+      {
+        "compounds": [
+          {
+            "label": "2",
+            "names": [
+              "methyl 3-[(tert-butoxycarbonyl)amino]-3-phenylpropanoate"
+            ],
+            "page": "SI p.1",
+            "quote": "methyl 3-[(tert-butoxycarbonyl)amino]-3-phenylpropanoate (2)"
+          }
+        ],
+        "steps": [
+          {
+            "to": [
+              "2"
+            ],
+            "from": [
+              "1"
+            ],
+            "reagents": [
+              {
+                "text": "Et3N",
+                "equiv": 2
+              },
+              {
+                "text": "Boc2O",
+                "equiv": 1.1
+              }
+            ],
+            "solvent": "CH2Cl2",
+            "temp": "0 °C to room temperature",
+            "time": "12 h",
+            "yield": 92,
+            "page": "SI p.1",
+            "quote": "To a solution of 1 (1.79 g, 10.0 mmol) and Et3N (2.8 mL, 20 mmol) in CH2Cl2 (30 mL) at 0 °C was added Boc2O (2.40 g, 11.0 mmol). The mixture was warmed to room temperature and stirred for 12 h. The residue was purified by flash chromatography to give 2 (2.57 g, 92%)"
+          }
+        ]
+      }
+    ],
+    "boc-protection-acs-200:missing": [
+      {
+        "compounds": [],
+        "steps": [
+          {
+            "to": [
+              "2"
+            ],
+            "from": [
+              "1"
+            ],
+            "reagents": [
+              {
+                "text": "Boc2O"
+              },
+              {
+                "text": "Et3N"
+              }
+            ],
+            "page": "本文 p.1",
+            "quote": "Compound 2 was prepared from compound 1 using Boc2O and Et3N."
+          }
+        ]
+      }
+    ],
+    "boc-protection-acs-72:same": [
+      {
+        "compounds": [
+          {
+            "label": "2",
+            "names": [
+              "methyl (2S)-2-[(tert-butoxycarbonyl)amino]-3-phenylpropanoate"
+            ],
+            "page": "SI p.1",
+            "quote": "methyl (2S)-2-[(tert-butoxycarbonyl)amino]-3-phenylpropanoate (2)"
+          }
+        ],
+        "steps": [
+          {
+            "to": [
+              "2"
+            ],
+            "from": [
+              "1"
+            ],
+            "reagents": [
+              {
+                "text": "Et3N",
+                "equiv": 2
+              },
+              {
+                "text": "Boc2O",
+                "equiv": 1.1
+              }
+            ],
+            "solvent": "CH2Cl2",
+            "temp": "0 °C to room temperature",
+            "time": "12 h",
+            "yield": 92,
+            "page": "SI p.1",
+            "quote": "To a solution of 1 (1.79 g, 10.0 mmol) and Et3N (2.8 mL, 20 mmol) in CH2Cl2 (30 mL) at 0 °C was added Boc2O (2.40 g, 11.0 mmol). The mixture was warmed to room temperature and stirred for 12 h."
+          }
+        ]
+      }
+    ],
+    "boc-protection-acs-72:wrong": [
+      {
+        "compounds": [
+          {
+            "label": "2",
+            "names": [
+              "methyl 3-[(tert-butoxycarbonyl)amino]-3-phenylpropanoate"
+            ],
+            "page": "SI p.1",
+            "quote": "methyl 3-[(tert-butoxycarbonyl)amino]-3-phenylpropanoate (2)"
+          }
+        ],
+        "steps": [
+          {
+            "to": [
+              "2"
+            ],
+            "from": [
+              "1"
+            ],
+            "reagents": [
+              {
+                "text": "Et3N",
+                "equiv": 2
+              },
+              {
+                "text": "Boc2O",
+                "equiv": 1.1
+              }
+            ],
+            "solvent": "CH2Cl2",
+            "temp": "0 °C to room temperature",
+            "time": "12 h",
+            "yield": 92,
+            "page": "SI p.1",
+            "quote": "To a solution of 1 (1.79 g, 10.0 mmol) and Et3N (2.8 mL, 20 mmol) in CH2Cl2 (30 mL) at 0 °C was added Boc2O (2.40 g, 11.0 mmol). The mixture was warmed to room temperature and stirred for 12 h. The residue was purified by flash chromatography to give 2 (2.57 g, 92%)"
+          }
+        ]
+      }
+    ],
+    "boc-protection-acs-72:missing": [
+      {
+        "compounds": [],
+        "steps": [
+          {
+            "to": [
+              "2"
+            ],
+            "from": [
+              "1"
+            ],
+            "reagents": [
+              {
+                "text": "Boc2O"
+              },
+              {
+                "text": "Et3N"
+              }
+            ],
+            "page": "本文 p.1",
+            "quote": "Compound 2 was prepared from compound 1 using Boc2O and Et3N."
+          }
+        ]
+      }
+    ],
+    "boc-removal-footnote-150:same": [
+      {
+        "compounds": [
+          {
+            "label": "2",
+            "names": [
+              "piperidin-4-ylmethanol"
+            ],
+            "page": "SI p.1",
+            "quote": "piperidin-4-ylmethanol (2)"
+          }
+        ],
+        "steps": [
+          {
+            "to": [
+              "2"
+            ],
+            "from": [
+              "1"
+            ],
+            "reagents": [
+              {
+                "text": "TFA"
+              }
+            ],
+            "solvent": "CH2Cl2",
+            "temp": "room temperature",
+            "time": "1 h",
+            "yield": 95,
+            "page": "SI p.1",
+            "quote": "dissolved in CH2Cl2 (20 mL) and TFA (10 mL) was added at 0 °C. The solution was stirred at room temperature for 1 h and concentrated. The residue was passed through a basic resin to give 2 (1.09 g, 95%)"
+          }
+        ]
+      }
+    ],
+    "boc-removal-footnote-150:wrong": [
+      {
+        "compounds": [
+          {
+            "label": "2",
+            "names": [
+              "piperidin-3-ylmethanol"
+            ],
+            "page": "SI p.1",
+            "quote": "piperidin-3-ylmethanol (2)"
+          }
+        ],
+        "steps": [
+          {
+            "to": [
+              "2"
+            ],
+            "from": [
+              "1"
+            ],
+            "reagents": [
+              {
+                "text": "TFA"
+              }
+            ],
+            "solvent": "CH2Cl2",
+            "temp": "room temperature",
+            "time": "1 h",
+            "yield": 95,
+            "page": "SI p.1",
+            "quote": "Compound 1 (2.15 g, 10.0 mmol) was dissolved in CH2Cl2 (20 mL) and TFA (10 mL) was added at 0 °C. The solution was stirred at room temperature for 1 h and concentrated. The residue was passed through a basic resin to give 2 (1.09 g, 95%)"
+          }
+        ]
+      }
+    ],
+    "boc-removal-footnote-150:missing": [
+      {
+        "compounds": [],
+        "steps": [
+          {
+            "to": [
+              "2"
+            ],
+            "from": [
+              "1"
+            ],
+            "reagents": [
+              {
+                "text": "TFA"
+              }
+            ],
+            "page": "本文 p.1",
+            "quote": "Compound 2 was prepared from compound 1 using TFA."
+          }
+        ]
+      }
+    ],
+    "buchwald-acs-200:same": [
+      {
+        "compounds": [
+          {
+            "label": "3",
+            "names": [
+              "4-(4-methylphenyl)morpholine"
+            ],
+            "page": "SI p.1",
+            "quote": "4-(4-methylphenyl)morpholine (3)"
+          }
+        ],
+        "steps": [
+          {
+            "to": [
+              "3"
+            ],
+            "from": [
+              "1",
+              "2"
+            ],
+            "reagents": [
+              {
+                "text": "Pd2(dba)3"
+              },
+              {
+                "text": "XPhos"
+              },
+              {
+                "text": "NaOtBu"
+              }
+            ],
+            "solvent": "Toluene",
+            "temp": "100 °C",
+            "time": "16 h",
+            "yield": 88,
+            "page": "SI p.1",
+            "quote": "Toluene (20 mL), 1 (1.27 g, 10.0 mmol) and 2 (1.05 mL, 12.0 mmol) were added and the mixture was heated at 100 °C for 16 h. Filtration through Celite and chromatography gave 3 (1.56 g, 88%)"
+          }
+        ]
+      }
+    ],
+    "buchwald-acs-200:conflict": [
+      {
+        "compounds": [
+          {
+            "label": "3",
+            "names": [
+              "4-(4-methylphenyl)morpholine"
+            ],
+            "page": "SI p.1",
+            "quote": "4-(4-methylphenyl)morpholine (3)"
+          }
+        ],
+        "steps": [
+          {
+            "to": [
+              "3"
+            ],
+            "from": [
+              "1",
+              "2"
+            ],
+            "reagents": [
+              {
+                "text": "Pd2(dba)3"
+              },
+              {
+                "text": "XPhos"
+              },
+              {
+                "text": "NaOtBu"
+              }
+            ],
+            "solvent": "Toluene",
+            "temp": "60 °C",
+            "time": "16 h",
+            "yield": 88,
+            "page": "SI p.1",
+            "quote": "Toluene (20 mL), 1 (1.27 g, 10.0 mmol) and 2 (1.05 mL, 12.0 mmol) were added and the mixture was heated at 60 °C for 16 h. Filtration through Celite and chromatography gave 3 (1.56 g, 88%)"
+          }
+        ]
+      }
+    ],
+    "buchwald-acs-200:wrong": [
+      {
+        "compounds": [
+          {
+            "label": "3",
+            "names": [
+              "4-(3-methylphenyl)morpholine"
+            ],
+            "page": "SI p.1",
+            "quote": "4-(3-methylphenyl)morpholine (3)"
+          }
+        ],
+        "steps": [
+          {
+            "to": [
+              "3"
+            ],
+            "from": [
+              "1",
+              "2"
+            ],
+            "reagents": [
+              {
+                "text": "Pd2(dba)3"
+              },
+              {
+                "text": "XPhos"
+              },
+              {
+                "text": "NaOtBu"
+              }
+            ],
+            "solvent": "Toluene",
+            "temp": "100 °C",
+            "time": "16 h",
+            "yield": 88,
+            "page": "SI p.1",
+            "quote": "Toluene (20 mL), 1 (1.27 g, 10.0 mmol) and 2 (1.05 mL, 12.0 mmol) were added and the mixture was heated at 100 °C for 16 h. Filtration through Celite and chromatography gave 3 (1.56 g, 88%) as a white solid."
+          }
+        ]
+      }
+    ],
+    "buchwald-acs-200:missing": [
+      {
+        "compounds": [],
+        "steps": [
+          {
+            "to": [
+              "3"
+            ],
+            "from": [
+              "1",
+              "2"
+            ],
+            "reagents": [
+              {
+                "text": "Pd2(dba)3"
+              },
+              {
+                "text": "XPhos"
+              },
+              {
+                "text": "NaOtBu"
+              }
+            ],
+            "temp": "100 °C",
+            "page": "本文 p.1",
+            "quote": "Compound 3 was prepared from compounds 1 and 2 using Pd2(dba)3, XPhos and NaOtBu at 100 °C."
+          }
+        ]
+      }
+    ],
+    "click-acs-72:same": [
+      {
+        "compounds": [
+          {
+            "label": "3",
+            "names": [
+              "1-benzyl-4-phenyl-1H-1,2,3-triazole"
+            ],
+            "page": "SI p.1",
+            "quote": "1-benzyl-4-phenyl-1H-1,2,3-triazole (3)"
+          }
+        ],
+        "steps": [
+          {
+            "to": [
+              "3"
+            ],
+            "from": [
+              "1",
+              "2"
+            ],
+            "reagents": [
+              {
+                "text": "CuSO4·5H2O"
+              },
+              {
+                "text": "sodium ascorbate"
+              }
+            ],
+            "solvent": "t-BuOH/H2O (1:1, 40 mL)",
+            "temp": "room temperature",
+            "time": "18 h",
+            "yield": 90,
+            "page": "SI p.1",
+            "quote": "The mixture was stirred at room temperature for 18 h. The precipitate was collected by filtration to give 3 (2.12 g, 90%) as a white solid."
+          }
+        ]
+      }
+    ],
+    "click-acs-72:wrong": [
+      {
+        "compounds": [
+          {
+            "label": "3",
+            "names": [
+              "1-benzyl-5-phenyl-1H-1,2,3-triazole"
+            ],
+            "page": "SI p.1",
+            "quote": "1-benzyl-5-phenyl-1H-1,2,3-triazole (3)"
+          }
+        ],
+        "steps": [
+          {
+            "to": [
+              "3"
+            ],
+            "from": [
+              "1",
+              "2"
+            ],
+            "reagents": [
+              {
+                "text": "CuSO4·5H2O",
+                "equiv": 0.05
+              },
+              {
+                "text": "sodium ascorbate",
+                "equiv": 0.2
+              }
+            ],
+            "solvent": "t-BuOH/H2O (1:1)",
+            "temp": "room temperature",
+            "time": "18 h",
+            "yield": 90,
+            "page": "SI p.1",
+            "quote": "The mixture was stirred at room temperature for 18 h. The precipitate was collected by filtration to give 3 (2.12 g, 90%) as a white solid."
+          }
+        ]
+      }
+    ],
+    "click-acs-72:missing": [
+      {
+        "compounds": [],
+        "steps": [
+          {
+            "to": [
+              "3"
+            ],
+            "from": [
+              "1",
+              "2"
+            ],
+            "page": "本文 p.1",
+            "quote": "Compound 3 was prepared from compounds 1 and 2."
+          }
+        ]
+      }
+    ],
+    "conjugate-addition-footnote-150:same": [
+      {
+        "compounds": [
+          {
+            "label": "3",
+            "names": [
+              "3-(1-methyl-1H-pyrrol-2-yl)cyclohexan-1-one"
+            ],
+            "page": "SI p.1",
+            "quote": "3-(1-methyl-1H-pyrrol-2-yl)cyclohexan-1-one (3)"
+          }
+        ],
+        "steps": [
+          {
+            "to": [
+              "3"
+            ],
+            "from": [
+              "1",
+              "2"
+            ],
+            "reagents": [
+              {
+                "text": "the imidazolidinone catalyst",
+                "equiv": 0.2
+              },
+              {
+                "text": "TFA",
+                "equiv": 0.2
+              }
+            ],
+            "solvent": "CH2Cl2",
+            "temp": "−20 °C",
+            "time": "24 h",
+            "yield": 78,
+            "page": "SI p.1",
+            "quote": "The mixture was stirred at −20 °C for 24 h. Chromatography gave 3 (1.38 g, 78%) as a yellow oil."
+          }
+        ]
+      }
+    ],
+    "conjugate-addition-footnote-150:wrong": [
+      {
+        "compounds": [
+          {
+            "label": "3",
+            "names": [
+              "4-(1-methyl-1H-pyrrol-2-yl)cyclohexan-1-one"
+            ],
+            "page": "SI p.1",
+            "quote": "4-(1-methyl-1H-pyrrol-2-yl)cyclohexan-1-one (3)"
+          }
+        ],
+        "steps": [
+          {
+            "to": [
+              "3"
+            ],
+            "from": [
+              "1",
+              "2"
+            ],
+            "reagents": [
+              {
+                "text": "the imidazolidinone catalyst",
+                "equiv": 0.2
+              },
+              {
+                "text": "TFA",
+                "equiv": 0.2
+              }
+            ],
+            "solvent": "CH2Cl2",
+            "temp": "−20 °C",
+            "time": "24 h",
+            "yield": 78,
+            "page": "SI p.1",
+            "quote": "The mixture was stirred at −20 °C for 24 h. Chromatography gave 3 (1.38 g, 78%) as a yellow oil."
+          }
+        ]
+      }
+    ],
+    "conjugate-addition-footnote-150:missing": [
+      {
+        "compounds": [],
+        "steps": [
+          {
+            "to": [
+              "3"
+            ],
+            "from": [
+              "1",
+              "2"
+            ],
+            "page": "本文 p.1",
+            "quote": "Compound 3 was prepared from compounds 1 and 2."
+          }
+        ]
+      }
+    ],
+    "ester-hydrolysis-acs-200:same": [
+      {
+        "compounds": [
+          {
+            "label": "2",
+            "names": [
+              "4-nitrobenzoic acid"
+            ],
+            "page": "SI p.1",
+            "quote": "4-nitrobenzoic acid (2)"
+          }
+        ],
+        "steps": [
+          {
+            "to": [
+              "2"
+            ],
+            "from": [
+              "1"
+            ],
+            "reagents": [
+              {
+                "text": "LiOH",
+                "equiv": 2
+              }
+            ],
+            "solvent": "THF/H2O (3:1, 40 mL)",
+            "temp": "room temperature",
+            "time": "3 h",
+            "yield": 95,
+            "page": "SI p.1",
+            "quote": "A solution of 1 (1.81 g, 10.0 mmol) and LiOH (0.48 g, 20.0 mmol) in THF/H2O (3:1, 40 mL) was stirred at room temperature for 3 h, then acidified with 1 M HCl. The precipitate was collected to give 2 (1.59 g, 95%)"
+          }
+        ]
+      }
+    ],
+    "ester-hydrolysis-acs-200:conflict": [
+      {
+        "compounds": [
+          {
+            "label": "2",
+            "names": [
+              "4-nitrobenzoic acid"
+            ],
+            "page": "SI p.1",
+            "quote": "4-nitrobenzoic acid (2)\nA solution of 1 (1.81 g, 10.0 mmol)"
+          }
+        ],
+        "steps": [
+          {
+            "to": [
+              "2"
+            ],
+            "from": [
+              "1"
+            ],
+            "reagents": [
+              {
+                "text": "LiOH",
+                "equiv": 2
+              }
+            ],
+            "solvent": "THF/H2O (3:1, 40 mL)",
+            "temp": "room temperature",
+            "time": "3 h",
+            "yield": 82,
+            "page": "SI p.1",
+            "quote": "A solution of 1 (1.81 g, 10.0 mmol) and LiOH (0.48 g, 20.0 mmol) in THF/H2O (3:1, 40 mL) was stirred at room temperature for 3 h, then acidified with 1 M HCl. The precipitate was collected to give 2 (1.59 g, 82%)"
+          }
+        ]
+      }
+    ],
+    "ester-hydrolysis-acs-200:wrong": [
+      {
+        "compounds": [
+          {
+            "label": "2",
+            "names": [
+              "3-nitrobenzoic acid"
+            ],
+            "page": "SI p.1",
+            "quote": "3-nitrobenzoic acid (2)"
+          }
+        ],
+        "steps": [
+          {
+            "to": [
+              "2"
+            ],
+            "from": [
+              "1"
+            ],
+            "reagents": [
+              {
+                "text": "LiOH",
+                "equiv": 2
+              }
+            ],
+            "solvent": "THF/H2O (3:1, 40 mL)",
+            "temp": "room temperature",
+            "time": "3 h",
+            "yield": 95,
+            "page": "SI p.1",
+            "quote": "A solution of 1 (1.81 g, 10.0 mmol) and LiOH (0.48 g, 20.0 mmol) in THF/H2O (3:1, 40 mL) was stirred at room temperature for 3 h, then acidified with 1 M HCl. The precipitate was collected to give 2 (1.59 g, 95%)"
+          }
+        ]
+      }
+    ],
+    "ester-hydrolysis-acs-200:missing": [
+      {
+        "compounds": [],
+        "steps": [
+          {
+            "to": [
+              "2"
+            ],
+            "from": [
+              "1"
+            ],
+            "reagents": [
+              {
+                "text": "LiOH"
+              }
+            ],
+            "yield": 95,
+            "page": "本文 p.1",
+            "quote": "Compound 2 was prepared from compound 1 using LiOH (95%)."
+          }
+        ]
+      }
+    ],
+    "grignard-acs-72:same": [
+      {
+        "compounds": [
+          {
+            "label": "2",
+            "names": [
+              "1-phenylethan-1-ol"
+            ],
+            "page": "SI p.1",
+            "quote": "1-phenylethan-1-ol (2)"
+          }
+        ],
+        "steps": [
+          {
+            "to": [
+              "2"
+            ],
+            "from": [
+              "1",
+              "MeMgBr"
+            ],
+            "reagents": [
+              {
+                "text": "MeMgBr",
+                "equiv": 1.2
+              }
+            ],
+            "solvent": "THF",
+            "temp": "0 °C",
+            "time": "30 min",
+            "yield": 88,
+            "page": "SI p.1",
+            "quote": "To a solution of 1 (1.06 g, 10.0 mmol) in THF (30 mL) at 0 °C was added MeMgBr (3.0 M in Et2O, 4.0 mL, 12.0 mmol) dropwise. The mixture was stirred at 0 °C for 30 min and quenched with saturated aqueous NH4Cl. Distillation gave 2 (1.07 g, 88%)"
+          }
+        ]
+      }
+    ],
+    "grignard-acs-72:conflict": [
+      {
+        "compounds": [
+          {
+            "label": "2",
+            "names": [
+              "1-phenylethan-1-ol"
+            ],
+            "page": "SI p.1",
+            "quote": "1-phenylethan-1-ol (2)"
+          }
+        ],
+        "steps": [
+          {
+            "to": [
+              "2"
+            ],
+            "from": [
+              "1",
+              "MeMgBr"
+            ],
+            "reagents": [
+              {
+                "text": "MeMgBr",
+                "equiv": 1.2
+              }
+            ],
+            "solvent": "THF",
+            "temp": "0 °C",
+            "time": "30 min",
+            "yield": 70,
+            "page": "SI p.1",
+            "quote": "To a solution of 1 (1.06 g, 10.0 mmol) in THF (30 mL) at 0 °C was added MeMgBr (3.0 M in Et2O, 4.0 mL, 12.0 mmol) dropwise. The mixture was stirred at 0 °C for 30 min and quenched with saturated aqueous NH4Cl. Distillation gave 2 (1.07 g, 70%)"
+          }
+        ]
+      }
+    ],
+    "grignard-acs-72:wrong": [
+      {
+        "compounds": [
+          {
+            "label": "2",
+            "names": [
+              "2-phenylethan-1-ol"
+            ],
+            "page": "SI p.1",
+            "quote": "2-phenylethan-1-ol (2)"
+          }
+        ],
+        "steps": [
+          {
+            "to": [
+              "2"
+            ],
+            "from": [
+              "1",
+              "MeMgBr"
+            ],
+            "reagents": [
+              {
+                "text": "MeMgBr",
+                "equiv": 1.2
+              }
+            ],
+            "solvent": "THF",
+            "temp": "0 °C",
+            "time": "30 min",
+            "yield": 88,
+            "page": "SI p.1",
+            "quote": "To a solution of 1 (1.06 g, 10.0 mmol) in THF (30 mL) at 0 °C was added MeMgBr (3.0 M in Et2O, 4.0 mL, 12.0 mmol) dropwise. The mixture was stirred at 0 °C for 30 min and quenched with saturated aqueous NH4Cl. Distillation gave 2 (1.07 g, 88%)"
+          }
+        ]
+      }
+    ],
+    "grignard-acs-72:missing": [
+      {
+        "compounds": [],
+        "steps": [
+          {
+            "to": [
+              "2"
+            ],
+            "from": [
+              "1",
+              "MeMgBr"
+            ],
+            "reagents": [
+              {
+                "text": "MeMgBr"
+              }
+            ],
+            "solvent": "THF",
+            "yield": 88,
+            "page": "本文 p.1",
+            "quote": "Compound 2 was prepared from compound 1 using MeMgBr in THF (88%)."
+          }
+        ]
+      }
+    ],
+    "mitsunobu-footnote-150:same": [
+      {
+        "compounds": [
+          {
+            "label": "3",
+            "names": [
+              "(1S)-1-phenylethyl 4-nitrobenzoate"
+            ],
+            "page": "SI p.1",
+            "quote": "(1S)-1-phenylethyl 4-nitrobenzoate (3)"
+          }
+        ],
+        "steps": [
+          {
+            "to": [
+              "3"
+            ],
+            "from": [
+              "1",
+              "2"
+            ],
+            "reagents": [
+              {
+                "text": "PPh3",
+                "equiv": 1.2
+              },
+              {
+                "text": "DIAD",
+                "equiv": 1.2
+              }
+            ],
+            "solvent": "THF",
+            "temp": "room temperature",
+            "time": "6 h",
+            "yield": 76,
+            "page": "SI p.1",
+            "quote": "To a solution of 1 (1.22 g, 10.0 mmol), 2 (2.00 g, 12.0 mmol) and PPh3 (3.15 g, 12.0 mmol) in THF (40 mL) at 0 °C was added DIAD (2.4 mL, 12.0 mmol) dropwise. The mixture was stirred at room temperature for 6 h. Chromatography gave 3 (2.06 g, 76%)"
+          }
+        ]
+      }
+    ],
+    "mitsunobu-footnote-150:wrong": [
+      {
+        "compounds": [
+          {
+            "label": "3",
+            "names": [
+              "(1S)-1-phenylethyl 3-nitrobenzoate"
+            ],
+            "page": "SI p.1",
+            "quote": "(1S)-1-phenylethyl 3-nitrobenzoate (3)"
+          }
+        ],
+        "steps": [
+          {
+            "to": [
+              "3"
+            ],
+            "from": [
+              "1",
+              "2"
+            ],
+            "reagents": [
+              {
+                "text": "PPh3",
+                "equiv": 1.2
+              },
+              {
+                "text": "DIAD",
+                "equiv": 1.2
+              }
+            ],
+            "solvent": "THF",
+            "temp": "room temperature",
+            "time": "6 h",
+            "yield": 76,
+            "page": "SI p.1",
+            "quote": "The mixture was stirred at room temperature for 6 h. Chromatography gave 3 (2.06 g, 76%) as a white solid."
+          }
+        ]
+      }
+    ],
+    "mitsunobu-footnote-150:missing": [
+      {
+        "compounds": [],
+        "steps": [
+          {
+            "to": [
+              "3"
+            ],
+            "from": [
+              "1",
+              "2"
+            ],
+            "reagents": [
+              {
+                "text": "PPh3"
+              },
+              {
+                "text": "DIAD"
+              }
+            ],
+            "page": "本文 p.1",
+            "quote": "Compound 3 was prepared from compounds 1 and 2 using PPh3 and DIAD."
+          }
+        ]
+      }
+    ],
+    "nitro-reduction-footnote-150:same": [
+      {
+        "compounds": [
+          {
+            "label": "2",
+            "names": [
+              "4-methoxyaniline"
+            ],
+            "page": "SI p.1",
+            "quote": "4-methoxyaniline (2)\nA suspension of 1 (1.53 g, 10.0 mmol)"
+          }
+        ],
+        "steps": [
+          {
+            "to": [
+              "2"
+            ],
+            "from": [
+              "1"
+            ],
+            "reagents": [
+              {
+                "text": "10% Pd/C"
+              },
+              {
+                "text": "H2"
+              }
+            ],
+            "solvent": "MeOH",
+            "temp": "room temperature",
+            "time": "5 h",
+            "yield": 95,
+            "page": "SI p.1",
+            "quote": "A suspension of 1 (1.53 g, 10.0 mmol) and 10% Pd/C (150 mg) in MeOH (30 mL) was stirred under H2 (1 atm) at room temperature for 5 h and filtered through Celite. Concentration gave 2 (1.17 g, 95%)"
+          }
+        ]
+      }
+    ],
+    "nitro-reduction-footnote-150:conflict": [
+      {
+        "compounds": [
+          {
+            "label": "2",
+            "names": [
+              "4-methoxyaniline"
+            ],
+            "page": "SI p.1",
+            "quote": "4-methoxyaniline (2)"
+          }
+        ],
+        "steps": [
+          {
+            "to": [
+              "2"
+            ],
+            "from": [
+              "1"
+            ],
+            "reagents": [
+              {
+                "text": "10% Pd/C"
+              },
+              {
+                "text": "H2"
+              }
+            ],
+            "solvent": "MeOH",
+            "temp": "70 °C",
+            "time": "5 h",
+            "yield": 95,
+            "page": "SI p.1",
+            "quote": "A suspension of 1 (1.53 g, 10.0 mmol) and 10% Pd/C (150 mg) in MeOH (30 mL) was stirred under H2 (1 atm) at 70 °C for 5 h and filtered through Celite. Concentration gave 2 (1.17 g, 95%)"
+          }
+        ]
+      }
+    ],
+    "nitro-reduction-footnote-150:wrong": [
+      {
+        "compounds": [
+          {
+            "label": "2",
+            "names": [
+              "3-methoxyaniline"
+            ],
+            "page": "SI p.1",
+            "quote": "3-methoxyaniline (2)"
+          }
+        ],
+        "steps": [
+          {
+            "to": [
+              "2"
+            ],
+            "from": [
+              "1"
+            ],
+            "reagents": [
+              {
+                "text": "10% Pd/C"
+              },
+              {
+                "text": "H2"
+              }
+            ],
+            "solvent": "MeOH",
+            "temp": "room temperature",
+            "time": "5 h",
+            "yield": 95,
+            "page": "SI p.1",
+            "quote": "A suspension of 1 (1.53 g, 10.0 mmol) and 10% Pd/C (150 mg) in MeOH (30 mL) was stirred under H2 (1 atm) at room temperature for 5 h and filtered through Celite. Concentration gave 2 (1.17 g, 95%)"
+          }
+        ]
+      }
+    ],
+    "nitro-reduction-footnote-150:missing": [
+      {
+        "compounds": [],
+        "steps": [
+          {
+            "to": [
+              "2"
+            ],
+            "from": [
+              "1"
+            ],
+            "reagents": [
+              {
+                "text": "Pd/C"
+              }
+            ],
+            "solvent": "MeOH",
+            "page": "本文 p.1",
+            "quote": "Compound 2 was prepared from compound 1 using Pd/C in MeOH."
+          }
+        ]
+      }
+    ],
+    "reductive-amination-acs-72:same": [
+      {
+        "compounds": [
+          {
+            "label": "3",
+            "names": [
+              "4-benzylmorpholine"
+            ],
+            "page": "SI p.1",
+            "quote": "4-benzylmorpholine (3)\nTo a solution of 1"
+          }
+        ],
+        "steps": [
+          {
+            "to": [
+              "3"
+            ],
+            "from": [
+              "1",
+              "2"
+            ],
+            "reagents": [
+              {
+                "text": "NaBH(OAc)3"
+              }
+            ],
+            "solvent": "1,2-dichloroethane",
+            "temp": "room temperature",
+            "time": "8 h",
+            "yield": 88,
+            "page": "SI p.1",
+            "quote": "The mixture was stirred at room temperature for 8 h and quenched with saturated aqueous NaHCO3. Chromatography gave 3 (1.56 g, 88%) as a colorless oil."
+          }
+        ]
+      }
+    ],
+    "reductive-amination-acs-72:wrong": [
+      {
+        "compounds": [
+          {
+            "label": "3",
+            "names": [
+              "2-benzylmorpholine"
+            ],
+            "page": "SI p.1",
+            "quote": "2-benzylmorpholine (3)"
+          }
+        ],
+        "steps": [
+          {
+            "to": [
+              "3"
+            ],
+            "from": [
+              "1",
+              "2"
+            ],
+            "reagents": [
+              {
+                "text": "NaBH(OAc)3",
+                "equiv": 1.4
+              }
+            ],
+            "solvent": "1,2-dichloroethane",
+            "temp": "room temperature",
+            "time": "8 h",
+            "yield": 88,
+            "page": "SI p.1",
+            "quote": "To a solution of 1 (1.06 g, 10.0 mmol) and 2 (0.96 mL, 11.0 mmol) in 1,2-dichloroethane (40 mL) was added NaBH(OAc)3 (2.97 g, 14.0 mmol). The mixture was stirred at room temperature for 8 h and quenched with saturated aqueous NaHCO3. Chromatography gave 3 (1.56 g, 88%)"
+          }
+        ]
+      }
+    ],
+    "reductive-amination-acs-72:missing": [
+      {
+        "compounds": [],
+        "steps": [
+          {
+            "to": [
+              "3"
+            ],
+            "from": [
+              "1",
+              "2"
+            ],
+            "reagents": [
+              {
+                "text": "NaBH(OAc)3"
+              }
+            ],
+            "page": "本文 p.1",
+            "quote": "Compound 3 was prepared from compounds 1 and 2 using NaBH(OAc)3."
+          }
+        ]
+      }
+    ],
+    "three-steps-acs-72:same": [
+      {
+        "compounds": [
+          {
+            "label": "2",
+            "names": [
+              "methyl 4-bromobenzoate"
+            ],
+            "page": "SI p.1",
+            "quote": "methyl 4-bromobenzoate (2)"
+          },
+          {
+            "label": "4",
+            "names": [
+              "methyl 4-(pyridin-3-yl)benzoate"
+            ],
+            "page": "SI p.1",
+            "quote": "methyl 4-(pyridin-3-yl)benzoate (4)"
+          },
+          {
+            "label": "5",
+            "names": [
+              "[4-(pyridin-3-yl)phenyl]methanol"
+            ],
+            "page": "SI p.1",
+            "quote": "[4-(pyridin-3-yl)phenyl]methanol (5)"
+          }
+        ],
+        "steps": [
+          {
+            "to": [
+              "2"
+            ],
+            "from": [
+              "1"
+            ],
+            "reagents": [
+              {
+                "text": "concentrated H2SO4"
+              }
+            ],
+            "solvent": "MeOH",
+            "temp": "reflux",
+            "time": "12 h",
+            "yield": 95,
+            "page": "SI p.1",
+            "quote": "A solution of 1 (2.01 g, 10.0 mmol) in MeOH (40 mL) containing concentrated H2SO4 (0.5 mL) was heated at reflux for 12 h. Workup gave 2 (2.04 g, 95%)"
+          },
+          {
+            "to": [
+              "4"
+            ],
+            "from": [
+              "2",
+              "3"
+            ],
+            "reagents": [
+              {
+                "text": "Pd(dppf)Cl2",
+                "equiv": 0.05
+              },
+              {
+                "text": "Na2CO3",
+                "equiv": 2
+              }
+            ],
+            "solvent": "dioxane/H2O (4:1)",
+            "temp": "90 °C",
+            "time": "8 h",
+            "yield": 82,
+            "page": "SI p.1",
+            "quote": "Pd(dppf)Cl2 (366 mg, 0.50 mmol) and Na2CO3 (2.12 g, 20.0 mmol) in dioxane/H2O (4:1, 50 mL) was heated at 90 °C for 8 h. Chromatography gave 4 (1.75 g, 82%)"
+          },
+          {
+            "to": [
+              "5"
+            ],
+            "from": [
+              "4"
+            ],
+            "reagents": [
+              {
+                "text": "LiAlH4",
+                "equiv": 1.5
+              }
+            ],
+            "solvent": "THF",
+            "temp": "0 °C",
+            "time": "1 h",
+            "yield": 91,
+            "page": "SI p.1",
+            "quote": "The mixture was stirred at 0 °C for 1 h and quenched by the Fieser method. Filtration and concentration gave 5 (1.68 g, 91%)"
+          }
+        ]
+      }
+    ],
+    "three-steps-acs-72:wrong": [
+      {
+        "compounds": [
+          {
+            "label": "2",
+            "names": [
+              "methyl 3-bromobenzoate"
+            ],
+            "page": "SI p.1",
+            "quote": "methyl 3-bromobenzoate (2)"
+          },
+          {
+            "label": "4",
+            "names": [
+              "methyl 3-(pyridin-3-yl)benzoate"
+            ],
+            "page": "SI p.1",
+            "quote": "methyl 3-(pyridin-3-yl)benzoate (4)"
+          },
+          {
+            "label": "5",
+            "names": [
+              "[3-(pyridin-3-yl)phenyl]methanol"
+            ],
+            "page": "SI p.1",
+            "quote": "[3-(pyridin-3-yl)phenyl]methanol (5)"
+          }
+        ],
+        "steps": [
+          {
+            "to": [
+              "2"
+            ],
+            "from": [
+              "1"
+            ],
+            "reagents": [
+              {
+                "text": "concentrated H2SO4"
+              }
+            ],
+            "solvent": "MeOH",
+            "temp": "reflux",
+            "time": "12 h",
+            "yield": 95,
+            "page": "SI p.1",
+            "quote": "A solution of 1 (2.01 g, 10.0 mmol) in MeOH (40 mL) containing concentrated H2SO4 (0.5 mL) was heated at reflux for 12 h. Workup gave 2 (2.04 g, 95%)"
+          },
+          {
+            "to": [
+              "4"
+            ],
+            "from": [
+              "2",
+              "3"
+            ],
+            "reagents": [
+              {
+                "text": "Pd(dppf)Cl2",
+                "equiv": 0.05
+              },
+              {
+                "text": "Na2CO3",
+                "equiv": 2
+              }
+            ],
+            "solvent": "dioxane/H2O (4:1)",
+            "temp": "90 °C",
+            "time": "8 h",
+            "yield": 82,
+            "page": "SI p.1",
+            "quote": "Pd(dppf)Cl2 (366 mg, 0.50 mmol) and Na2CO3 (2.12 g, 20.0 mmol) in dioxane/H2O (4:1, 50 mL) was heated at 90 °C for 8 h. Chromatography gave 4 (1.75 g, 82%)"
+          },
+          {
+            "to": [
+              "5"
+            ],
+            "from": [
+              "4"
+            ],
+            "reagents": [
+              {
+                "text": "LiAlH4",
+                "equiv": 1.5
+              }
+            ],
+            "solvent": "THF",
+            "temp": "0 °C",
+            "time": "1 h",
+            "yield": 91,
+            "page": "SI p.1",
+            "quote": "LiAlH4 (0.57 g, 15.0 mmol) in THF (30 mL) at 0 °C was added a solution of 4 (2.13 g, 10.0 mmol) in THF (10 mL). The mixture was stirred at 0 °C for 1 h and quenched by the Fieser method. Filtration and concentration gave 5 (1.68 g, 91%)"
+          }
+        ]
+      }
+    ],
+    "three-steps-acs-72:missing": [
+      {
+        "compounds": [],
+        "steps": [
+          {
+            "to": [
+              "2"
+            ],
+            "from": [
+              "1"
+            ],
+            "reagents": [],
+            "solvent": "MeOH",
+            "page": "本文 p.1",
+            "quote": "Compound 2 was prepared from compound 1 in MeOH."
+          },
+          {
+            "to": [
+              "4"
+            ],
+            "from": [
+              "2",
+              "3"
+            ],
+            "reagents": [
+              {
+                "text": "Pd(dppf)Cl2"
+              },
+              {
+                "text": "Na2CO3"
+              }
+            ],
+            "page": "本文 p.1",
+            "quote": "Compound 4 was prepared from compounds 2 and 3 using Pd(dppf)Cl2 and Na2CO3."
+          },
+          {
+            "to": [
+              "5"
+            ],
+            "from": [
+              "4"
+            ],
+            "reagents": [
+              {
+                "text": "LiAlH4"
+              }
+            ],
+            "solvent": "THF",
+            "page": "本文 p.1",
+            "quote": "Compound 5 was prepared from compound 4 using LiAlH4 in THF."
+          }
+        ]
+      }
+    ],
+    "three-steps-footnote-150:same": [
+      {
+        "compounds": [
+          {
+            "label": "2",
+            "names": [
+              "methyl 4-bromobenzoate"
+            ],
+            "page": "SI p.1",
+            "quote": "methyl 4-bromobenzoate (2)"
+          },
+          {
+            "label": "4",
+            "names": [
+              "methyl 4-(pyridin-3-yl)benzoate"
+            ],
+            "page": "SI p.1",
+            "quote": "methyl 4-(pyridin-3-yl)benzoate (4)"
+          },
+          {
+            "label": "5",
+            "names": [
+              "[4-(pyridin-3-yl)phenyl]methanol"
+            ],
+            "page": "SI p.1",
+            "quote": "[4-(pyridin-3-yl)phenyl]methanol (5)"
+          }
+        ],
+        "steps": [
+          {
+            "to": [
+              "2"
+            ],
+            "from": [
+              "1"
+            ],
+            "reagents": [
+              {
+                "text": "concentrated H2SO4"
+              }
+            ],
+            "solvent": "MeOH",
+            "temp": "reflux",
+            "time": "12 h",
+            "yield": 95,
+            "page": "SI p.1",
+            "quote": "A solution of 1 (2.01 g, 10.0 mmol) in MeOH (40 mL) containing concentrated H2SO4 (0.5 mL) was heated at reflux for 12 h. Workup gave 2 (2.04 g, 95%) as a white solid."
+          },
+          {
+            "to": [
+              "4"
+            ],
+            "from": [
+              "2",
+              "3"
+            ],
+            "reagents": [
+              {
+                "text": "Pd(dppf)Cl2",
+                "equiv": 0.05
+              },
+              {
+                "text": "Na2CO3",
+                "equiv": 2
+              }
+            ],
+            "solvent": "dioxane/H2O (4:1)",
+            "temp": "90 °C",
+            "time": "8 h",
+            "yield": 82,
+            "page": "SI p.1",
+            "quote": "A mixture of 2 (2.15 g, 10.0 mmol), 3 (1.48 g, 12.0 mmol), Pd(dppf)Cl2 (366 mg, 0.50 mmol) and Na2CO3 (2.12 g, 20.0 mmol) in dioxane/H2O (4:1, 50 mL) was heated at 90 °C for 8 h. Chromatography gave 4 (1.75 g, 82%)"
+          },
+          {
+            "to": [
+              "5"
+            ],
+            "from": [
+              "4"
+            ],
+            "reagents": [
+              {
+                "text": "LiAlH4",
+                "equiv": 1.5
+              }
+            ],
+            "solvent": "THF",
+            "temp": "0 °C",
+            "time": "1 h",
+            "yield": 91,
+            "page": "SI p.1",
+            "quote": "To a suspension of LiAlH4 (0.57 g, 15.0 mmol) in THF (30 mL) at 0 °C was added a solution of 4 (2.13 g, 10.0 mmol) in THF (10 mL). The mixture was stirred at 0 °C for 1 h and quenched by the Fieser method. Filtration and concentration gave 5 (1.68 g, 91%)"
+          }
+        ]
+      }
+    ],
+    "three-steps-footnote-150:wrong": [
+      {
+        "compounds": [
+          {
+            "label": "2",
+            "names": [
+              "methyl 3-bromobenzoate"
+            ],
+            "page": "SI p.1",
+            "quote": "methyl 3-bromobenzoate (2)"
+          },
+          {
+            "label": "4",
+            "names": [
+              "methyl 3-(pyridin-3-yl)benzoate"
+            ],
+            "page": "SI p.1",
+            "quote": "methyl 3-(pyridin-3-yl)benzoate (4)"
+          },
+          {
+            "label": "5",
+            "names": [
+              "[3-(pyridin-3-yl)phenyl]methanol"
+            ],
+            "page": "SI p.1",
+            "quote": "[3-(pyridin-3-yl)phenyl]methanol (5)"
+          }
+        ],
+        "steps": [
+          {
+            "to": [
+              "2"
+            ],
+            "from": [
+              "1"
+            ],
+            "reagents": [
+              {
+                "text": "concentrated H2SO4"
+              }
+            ],
+            "solvent": "MeOH",
+            "temp": "reflux",
+            "time": "12 h",
+            "yield": 95,
+            "page": "SI p.1",
+            "quote": "A solution of 1 (2.01 g, 10.0 mmol) in MeOH (40 mL) containing concentrated H2SO4 (0.5 mL) was heated at reflux for 12 h. Workup gave 2 (2.04 g, 95%)"
+          },
+          {
+            "to": [
+              "4"
+            ],
+            "from": [
+              "2",
+              "3"
+            ],
+            "reagents": [
+              {
+                "text": "Pd(dppf)Cl2",
+                "equiv": 0.05
+              },
+              {
+                "text": "Na2CO3",
+                "equiv": 2
+              }
+            ],
+            "solvent": "dioxane/H2O (4:1)",
+            "temp": "90 °C",
+            "time": "8 h",
+            "yield": 82,
+            "page": "SI p.1",
+            "quote": "A mixture of 2 (2.15 g, 10.0 mmol), 3 (1.48 g, 12.0 mmol), Pd(dppf)Cl2 (366 mg, 0.50 mmol) and Na2CO3 (2.12 g, 20.0 mmol) in dioxane/H2O (4:1, 50 mL) was heated at 90 °C for 8 h. Chromatography gave 4 (1.75 g, 82%)"
+          },
+          {
+            "to": [
+              "5"
+            ],
+            "from": [
+              "4"
+            ],
+            "reagents": [
+              {
+                "text": "LiAlH4",
+                "equiv": 1.5
+              }
+            ],
+            "solvent": "THF",
+            "temp": "0 °C",
+            "time": "1 h",
+            "yield": 91,
+            "page": "SI p.1",
+            "quote": "To a suspension of LiAlH4 (0.57 g, 15.0 mmol) in THF (30 mL) at 0 °C was added a solution of 4 (2.13 g, 10.0 mmol) in THF (10 mL). The mixture was stirred at 0 °C for 1 h and quenched by the Fieser method. Filtration and concentration gave 5 (1.68 g, 91%)"
+          }
+        ]
+      }
+    ],
+    "three-steps-footnote-150:missing": [
+      {
+        "compounds": [],
+        "steps": [
+          {
+            "to": [
+              "2"
+            ],
+            "from": [
+              "1"
+            ],
+            "reagents": [],
+            "solvent": "MeOH",
+            "page": "本文 p.1",
+            "quote": "Compound 2 was prepared from compound 1 in MeOH."
+          },
+          {
+            "to": [
+              "4"
+            ],
+            "from": [
+              "2",
+              "3"
+            ],
+            "reagents": [
+              {
+                "text": "Pd(dppf)Cl2"
+              },
+              {
+                "text": "Na2CO3"
+              }
+            ],
+            "page": "本文 p.1",
+            "quote": "Compound 4 was prepared from compounds 2 and 3 using Pd(dppf)Cl2 and Na2CO3."
+          },
+          {
+            "to": [
+              "5"
+            ],
+            "from": [
+              "4"
+            ],
+            "reagents": [
+              {
+                "text": "LiAlH4"
+              }
+            ],
+            "solvent": "THF",
+            "page": "本文 p.1",
+            "quote": "Compound 5 was prepared from compound 4 using LiAlH4 in THF."
+          }
+        ]
+      }
+    ],
+    "wittig-acs-200:same": [
+      {
+        "compounds": [
+          {
+            "label": "2",
+            "names": [
+              "methylidenecyclohexane"
+            ],
+            "page": "SI p.1",
+            "quote": "methylidenecyclohexane (2)"
+          }
+        ],
+        "steps": [
+          {
+            "to": [
+              "2"
+            ],
+            "from": [
+              "1"
+            ],
+            "reagents": [
+              {
+                "text": "methyltriphenylphosphonium bromide",
+                "equiv": 1.2
+              },
+              {
+                "text": "n-BuLi",
+                "equiv": 1.2
+              }
+            ],
+            "solvent": "THF",
+            "temp": "room temperature",
+            "time": "3 h",
+            "yield": 74,
+            "page": "SI p.1",
+            "quote": "1 (0.98 g, 10.0 mmol) was added and the mixture was stirred at room temperature for 3 h. Careful distillation gave 2 (0.71 g, 74%)"
+          }
+        ]
+      }
+    ],
+    "wittig-acs-200:wrong": [
+      {
+        "compounds": [
+          {
+            "label": "2",
+            "names": [
+              "1-methylcyclohex-1-ene"
+            ],
+            "page": "SI p.1",
+            "quote": "1-methylcyclohex-1-ene (2)"
+          }
+        ],
+        "steps": [
+          {
+            "to": [
+              "2"
+            ],
+            "from": [
+              "1"
+            ],
+            "reagents": [
+              {
+                "text": "methyltriphenylphosphonium bromide",
+                "equiv": 1.2
+              },
+              {
+                "text": "n-BuLi",
+                "equiv": 1.2
+              }
+            ],
+            "solvent": "THF",
+            "temp": "room temperature",
+            "time": "3 h",
+            "yield": 74,
+            "page": "SI p.1",
+            "quote": "1 (0.98 g, 10.0 mmol) was added and the mixture was stirred at room temperature for 3 h. Careful distillation gave 2 (0.71 g, 74%)"
+          }
+        ]
+      }
+    ],
+    "wittig-acs-200:missing": [
+      {
+        "compounds": [],
+        "steps": [
+          {
+            "to": [
+              "2"
+            ],
+            "from": [
+              "1"
+            ],
+            "page": "本文 p.1",
+            "quote": "Compound 2 was prepared from compound 1. The work described here was carried out as part of a small internal study"
+          }
+        ]
+      }
+    ]
+  }
+}

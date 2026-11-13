@@ -1,0 +1,2 @@
+rdkit>=2025.9.1
+epam.indigo>=1.40

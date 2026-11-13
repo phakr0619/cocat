@@ -1,0 +1,246 @@
+{
+  "model": "gemini-3.8-flash",
+  "thinking": "low",
+  "recordedAt": "2026-10-25T09-40-18",
+  "outcomes": {
+    "replace-reagent": "correct",
+    "replace-keep-equiv": "correct",
+    "conditions": "correct",
+    "add-reagent": "correct",
+    "remove-reagent": "correct",
+    "renumber": "correct",
+    "style": "correct",
+    "nickname": "correct",
+    "english": "correct",
+    "structure-named": "correct",
+    "structure-selected": "correct",
+    "structure-whole": "correct",
+    "ask-structure-scope": "correct",
+    "ask-missing-step": "correct"
+  },
+  "raw": {
+    "replace-reagent": [
+      {
+        "ops": [
+          {
+            "op": "replace_reagent",
+            "step": 2,
+            "reagent": "TFA",
+            "text": "4 M HCl/dioxane"
+          }
+        ]
+      }
+    ],
+    "replace-keep-equiv": [
+      {
+        "ops": [
+          {
+            "op": "replace_reagent",
+            "step": 1,
+            "reagent": "DIPEA",
+            "text": "Et3N",
+            "equiv": 3
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "conditions": [
+      {
+        "ops": [
+          {
+            "op": "set_condition",
+            "step": 1,
+            "field": "temp",
+            "value": "0 °C"
+          },
+          {
+            "op": "set_condition",
+            "step": 1,
+            "field": "time",
+            "value": "4 h"
+          },
+          {
+            "op": "set_condition",
+            "step": 1,
+            "field": "yield",
+            "value": "92"
+          }
+        ]
+      }
+    ],
+    "add-reagent": [
+      {
+        "ops": [
+          {
+            "op": "add_reagent",
+            "step": 1,
+            "text": "HOAt",
+            "equiv": 0.1
+          }
+        ]
+      }
+    ],
+    "remove-reagent": [
+      {
+        "ops": [
+          {
+            "op": "remove_reagent",
+            "step": 1,
+            "reagent": "DIPEA"
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "renumber": [
+      {
+        "ops": [
+          {
+            "op": "renumber",
+            "start": 1
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "style": [
+      {
+        "ops": [
+          {
+            "op": "set_style",
+            "style": "footnote"
+          }
+        ]
+      }
+    ],
+    "nickname": [
+      {
+        "ops": [
+          {
+            "op": "set_compound",
+            "compound": "c6",
+            "nickname": "ジペプチドアミン"
+          }
+        ]
+      }
+    ],
+    "english": [
+      {
+        "ops": [
+          {
+            "op": "set_condition",
+            "step": 1,
+            "field": "solvent",
+            "value": "NMP"
+          },
+          {
+            "op": "set_condition",
+            "step": 1,
+            "field": "yield",
+            "value": "78"
+          }
+        ]
+      }
+    ],
+    "structure-named": [
+      {
+        "ops": [
+          {
+            "op": "replace_structure",
+            "compound": "c4",
+            "smiles": "COC(=O)CNC(=O)[C@H](C)NC(=O)OCc1ccccc1",
+            "from_group": "Boc",
+            "to_group": "Cbz"
+          }
+        ]
+      }
+    ],
+    "structure-selected": [
+      {
+        "ops": [
+          {
+            "op": "replace_structure",
+            "compound": "c2",
+            "from_group": "Boc",
+            "to_group": "Fmoc受容体/Fmoc基? Fmocだけ: Fmoc"
+          }
+        ],
+        "questions": []
+      },
+      {
+        "ops": [
+          {
+            "op": "replace_structure",
+            "compound": "c2",
+            "smiles": "C[C@H](NC(=O)OCC1C2=CC=CC=C2C3=CC=CC=C13)C(=O)O",
+            "from_group": "Boc",
+            "to_group": "Fmoc"
+          },
+          {
+            "op": "set_compound",
+            "compound": "c2",
+            "nickname": "Fmoc-Ala-OH"
+          }
+        ],
+        "questions": []
+      }
+    ],
+    "structure-whole": [
+      {
+        "ops": [
+          {
+            "op": "replace_structure",
+            "compound": "c2",
+            "smiles": "C[C@H](NC(=O)OCc1ccccc1)C(=O)O",
+            "from_group": "Boc",
+            "to_group": "Cbz"
+          },
+          {
+            "op": "set_compound",
+            "compound": "c2",
+            "nickname": "Cbz-Ala-OH"
+          },
+          {
+            "op": "replace_structure",
+            "compound": "c4",
+            "smiles": "COC(=O)CNC(=O)[C@H](C)NC(=O)OCc1ccccc1",
+            "from_group": "Boc",
+            "to_group": "Cbz"
+          },
+          {
+            "op": "replace_reagent",
+            "step": 2,
+            "reagent": "TFA",
+            "text": "H2, Pd/C"
+          },
+          {
+            "op": "set_condition",
+            "step": 2,
+            "field": "solvent",
+            "value": "MeOH"
+          }
+        ],
+        "whole_scheme": true,
+        "questions": []
+      }
+    ],
+    "ask-structure-scope": [
+      {
+        "ops": [],
+        "whole_scheme": false,
+        "questions": [
+          "スキーム全体のBoc基（Boc-Ala-OH および 化合物 5）をCbzに変更しますか？それとも特定の化合物のみ変更しますか？また、Step 2の脱保護条件（TFA）も水素化分解（H2, Pd/Cなど）に変更しますか？"
+        ]
+      }
+    ],
+    "ask-missing-step": [
+      {
+        "ops": [],
+        "questions": [
+          "スキームにはステップ 2 までしか存在しません。どのステップの温度を変更しますか？"
+        ]
+      }
+    ]
+  }
+}
