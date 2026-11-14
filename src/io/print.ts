@@ -65,6 +65,11 @@ svg { display: block; }
 
 /** 見えない枠にページを作って、印刷の画面を開く */
 export function printDoc(doc: Doc, paper: Paper = 'A4') {
+  printPage(printHtml(doc, paper));
+}
+
+/** 作ってある HTML のページを、見えない枠に入れて印刷の画面を開く */
+export function printPage(html: string) {
   const frame = document.createElement('iframe');
   frame.setAttribute('aria-hidden', 'true');
   frame.dataset.testid = 'print-frame';
@@ -72,7 +77,7 @@ export function printDoc(doc: Doc, paper: Paper = 'A4') {
   document.body.appendChild(frame);
   const w = frame.contentWindow!;
   w.document.open();
-  w.document.write(printHtml(doc, paper));
+  w.document.write(html);
   w.document.close();
   // 印刷の画面を閉じたら枠を外す
   const done = () => setTimeout(() => frame.remove(), 1000);

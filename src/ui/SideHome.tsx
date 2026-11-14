@@ -1,6 +1,7 @@
 // 右の欄の「この文書」（何も選んでいないとき）と、空のキャンバスの入口
 import type { Doc } from '../chem/model';
 import { Thumb } from './LibraryPanel';
+import { runLabel } from '../process/ops';
 
 /** 文書の中の分子の数（つながった原子のまとまり） */
 function moleculeCount(doc: Doc): number {
@@ -19,7 +20,11 @@ export function SideHome({
   onScheme,
   onTable,
   onMolecules,
+  onNewRun,
+  onRun,
 }: {
+  onNewRun(): void;
+  onRun(id: string): void;
   doc: Doc;
   onNewScheme(): void;
   onNewTable(): void;
@@ -38,6 +43,11 @@ export function SideHome({
         </button>
         <button type="button" data-testid="new-table" onClick={onNewTable}>
           ＋ 検討表
+        </button>
+      </div>
+      <div className="side-home-new">
+        <button type="button" data-testid="new-run" title="実験の 1 回ぶんの記録を作る。仕込み・操作の流れと重さ・操作ごとの記録を入れると、フロー図と収支を描く" onClick={onNewRun}>
+          ＋ 実験の記録
         </button>
       </div>
       <ul className="side-home-list">
@@ -69,6 +79,17 @@ export function SideHome({
               <span className="home-text">
                 <b>{`検討表 ${i + 1}`}</b>
                 <small>{`${t.rows.length} 行`}</small>
+              </span>
+            </button>
+          </li>
+        ))}
+        {Object.values(doc.runs ?? {}).map((r) => (
+          <li key={r.id}>
+            <button type="button" className="home-item" data-testid="home-run" onClick={() => onRun(r.id)}>
+              <span className="home-icon" aria-hidden="true">▤</span>
+              <span className="home-text">
+                <b>{runLabel(r)}</b>
+                <small>{`${r.operations.length} 操作・記録 ${r.events.length} 行${r.date ? `・${r.date}` : ''}`}</small>
               </span>
             </button>
           </li>

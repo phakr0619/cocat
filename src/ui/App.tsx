@@ -23,6 +23,8 @@ import { LibraryPanel } from './LibraryPanel';
 import { ProjectStore } from '../project/store';
 import { placeCompound } from '../project/library';
 import { activeSchemeId, SchemePanel } from './SchemePanel';
+import { RunDock, RunSummary } from './RunDock';
+import { createRun } from '../process/ops';
 import { NextStepGhost, SchemeEditPopover } from './OnCanvasEditors';
 import type { SchemeTarget } from '../scheme/pick';
 import { TablePanel } from './TablePanel';
@@ -133,7 +135,9 @@ export function App() {
     if (!box || !el) return setView((v) => ({ ...v, x: 0, y: 0 }));
     const pad = 16;
     const w = el.clientWidth;
-    const h = el.clientHeight;
+    // 下の端は、今の道具の案内と拡大・縮小が重なるので、その分を空ける
+    const below = 48;
+    const h = Math.max(120, el.clientHeight - below);
     const z = Math.min(2.5, Math.max(MIN_ZOOM, Math.min(w / (box.x2 - box.x1 + pad * 2), h / (box.y2 - box.y1 + pad * 2))));
     setView({ zoom: z, x: (box.x1 + box.x2) / 2 - w / z / 2, y: (box.y1 + box.y2) / 2 - h / z / 2 });
   };
@@ -154,6 +158,10 @@ export function App() {
   const [showPageSetup, setShowPageSetup] = useState(false);
   // 右の欄に出す物。タブは無く、選んだ物か、押したボタンで替わる
   const [side, setSideRaw] = useState<SideView>('home');
+  /** 開いている実験の記録（下の表の欄と、右の欄に出す） */
+  const [runId, setRunId] = useState<string | null>(null);
+  /** 下の表の欄を畳んでいる */
+  const [dockClosed, setDockClosed] = useState(false);
   // 右の欄は畳める（キャンバスを広く使うため）。畳んだことはブラウザに置く
   const [sideOpen, setSideOpenRaw] = useState(() => {
     try {
@@ -192,13 +200,19 @@ export function App() {
     let next: SideView = 'analysis';
     for (const id of selection) {
       const ref = d.atoms[id]?.ref?.split(':')[0] ?? d.arrows[id]?.ref ?? d.texts[id]?.ref ?? d.pluses[id]?.ref;
+      const runRef = d.shapes?.[id]?.ref ?? d.arrows[id]?.ref ?? d.texts[id]?.ref;
+      if (runRef && d.runs?.[runRef]) {
+        next = 'run';
+        setRunId(runRef);
+        break;
+      }
       if (ref && d.schemes?.[ref]) next = 'scheme';
       else if (ref && d.tables?.[ref]) next = 'table';
       if (next !== 'analysis') break;
     }
     setSideRaw((cur) => {
       // 分子の欄は、選んだ物（スキームの化合物も）の分子量などを見るので、選んでも替えない
-      if (cur === 'ai' || cur === 'name' || cur === 'io' || cur === 'new-scheme' || cur === 'analysis') return cur;
+      if (cur === 'ai' || cur === 'name' || cur === 'io' || cur === 'new-scheme' || (cur === 'analysis' && next !== 'run')) return cur;
       // スキーム・検討表の欄で分子を選ぶのは、その欄で使うため（生成物にする、母核にする）
       if ((cur === 'scheme' || cur === 'table') && next === 'analysis') return cur;
       return next;
@@ -250,6 +264,21 @@ export function App() {
     store.set({ selection: new Set(ids) });
     setSide(view);
   };
+  /** 実験の記録を開く: 下の表の欄と右の欄に出す */
+  const openRun = (id: string) => {
+    setRunId(id);
+    setDockClosed(false);
+    setSide('run');
+  };
+  /** 実験の記録を作って開く。スキームの段から作ると、その段の基質・試薬・溶媒が仕込みに入る */
+  const newRun = (from?: { schemeId: string; stepIndex: number }) => {
+    const first = Object.values(store.get().doc.schemes ?? {})[0];
+    const r = createRun(store.get().doc, from ?? (first ? { schemeId: first.id, stepIndex: 0 } : undefined));
+    store.commit(r.doc, new Set());
+    track(from ? 'run:new-from-step' : 'run:new');
+    openRun(r.runId);
+    fitView(r.doc);
+  };
   const openSample = (id: string) => {
     const s = SAMPLES.find((x) => x.id === id);
     if (!s) return;
@@ -261,6 +290,7 @@ export function App() {
       // 見本の中身に合うタブを開く
       if (s.id === 'conditions' || s.id === 'sar') setSide('table');
       else if (s.id === 'coupling' || s.id === 'multistep') setSide('scheme');
+      else if (s.id === 'run') openRun(Object.keys(store.get().doc.runs ?? {})[0]);
     } catch (err) {
       store.set({ message: String((err as Error).message ?? err) });
     }
@@ -288,6 +318,8 @@ export function App() {
   /** 図の上で直している段か化合物 */
   const [schemeEdit, setSchemeEdit] = useState<SchemeTarget | null>(null);
   const activeScheme = activeSchemeId(doc, selection);
+  const activeRun = runId && doc.runs?.[runId] ? runId : null;
+  const showDock = !!activeRun && !dockClosed && side === 'run';
   /** 右クリックのメニュー（画面の座標） */
   const [ctxMenu, setCtxMenu] = useState<{ x: number; y: number } | null>(null);
   /** 「書き出す」の画面 */
@@ -506,9 +538,15 @@ export function App() {
       { sep: true },
       { label: '選んだ物だけ書き出す…', testId: 'ctx-export', onClick: () => setShowExport({ onlySelected: true }) },
       { label: '分子量などを見る', testId: 'ctx-analysis', onClick: () => setSide('analysis') },
-      { label: showLibrary ? 'ライブラリに登録（左の列で）' : 'ライブラリを開く', onClick: () => !showLibrary && toggleLibrary() },
+      ...(showLibrary ? [] : [{ label: 'ライブラリを開く', onClick: toggleLibrary }]),
     ];
   };
+  // 下の表の欄を開くとキャンバスが低くなるので、図の全体が見えるように合わせ直す
+  useEffect(() => {
+    if (showDock) fitView();
+    // 開いたときだけ
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showDock]);
   /** 選んだ物の帯を出す所（キャンバスの左上からの px）。選択の道具で選んでいて、ドラッグしていないときだけ */
   const selBar = (() => {
     if (busy || overlay || schemeEdit || !selection.size || (tool !== 'select' && tool !== 'lasso')) return null;
@@ -679,6 +717,7 @@ export function App() {
           onLabelEdit={openLabelEditor}
           onTextEdit={openTextEditor}
           onBusy={setBusy}
+          onRunEdit={(id) => openRun(id)}
           onSchemeEdit={(t) => {
             if (store.get().doc.schemes?.[t.schemeId]?.pinned) return store.set({ message: '固定中のスキームです。直すときは、右の欄で固定を外してください' });
             setSchemeEdit(t);
@@ -820,6 +859,7 @@ export function App() {
           />
         )}
       </main>
+      {showDock && activeRun && <RunDock store={store} runId={activeRun} onClose={() => setDockClosed(true)} onOpenTable={() => setSide('table')} />}
       <aside className="side" hidden={!sideOpen}>
         <div className="side-head" data-testid="side-head" data-view={side}>
           <b>{SIDE_TITLE[side === 'ai' ? (`ai-${aiMode}` as const) : side]}</b>
@@ -851,6 +891,8 @@ export function App() {
               onScheme={(id) => selectRef(id, 'scheme')}
               onTable={(id) => selectRef(id, 'table')}
               onMolecules={() => setSide('analysis')}
+              onNewRun={() => newRun()}
+              onRun={openRun}
             />
           </div>
           <div className="tab-page" hidden={side !== 'ai'} data-tab="ai">
@@ -870,7 +912,13 @@ export function App() {
             />
           </div>
           <div className="tab-page" hidden={side !== 'scheme' && side !== 'new-scheme'} data-tab="scheme">
-            <SchemePanel store={store} newScheme={side === 'new-scheme'} onAi={hasKey ? openAi : undefined} />
+            <SchemePanel onNewRun={newRun} store={store} newScheme={side === 'new-scheme'} onAi={hasKey ? openAi : undefined} />
+          </div>
+          <div className="tab-page" hidden={side !== 'run'} data-tab="run">
+            {activeRun && <RunSummary store={store} runId={activeRun} />}
+            {activeRun && dockClosed && (
+              <button type="button" data-testid="run-dock-open" onClick={() => setDockClosed(false)}>下の表を開く</button>
+            )}
           </div>
           <div className="tab-page" hidden={side !== 'table'} data-tab="table">
             <TablePanel store={store} onCreated={() => fitView()} />
@@ -905,7 +953,7 @@ const COLORS: [string, string | undefined][] = [
 ];
 
 /** 右の欄に出す物 */
-export type SideView = 'home' | 'scheme' | 'new-scheme' | 'table' | 'analysis' | 'ai' | 'name' | 'io';
+export type SideView = 'home' | 'scheme' | 'new-scheme' | 'table' | 'analysis' | 'ai' | 'name' | 'io' | 'run';
 export type AiMode = 'create' | 'edit' | 'write' | 'finish';
 
 const SIDE_TITLE: Record<Exclude<SideView, 'ai'> | `ai-${AiMode}`, string> = {
@@ -913,6 +961,7 @@ const SIDE_TITLE: Record<Exclude<SideView, 'ai'> | `ai-${AiMode}`, string> = {
   scheme: '反応スキーム',
   'new-scheme': '新しい反応スキーム',
   table: '検討表',
+  run: '実験の記録',
   analysis: '分子',
   name: '名前から置く',
   io: '読み込みと書き出し',

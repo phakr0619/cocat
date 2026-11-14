@@ -101,7 +101,7 @@ export function toolHint(tool: Tool, partName: string): string {
   const t = TOOL_GROUPS.flatMap((g) => g.tools).find((x) => x.id === tool);
   if (!t) return '';
   const key = KEY_OF.get(tool);
-  return key ? `${t.title}（${key} キー）` : t.title;
+  return key ? `${t.title}。${key} キーで選べます` : t.title;
 }
 
 /** はじめに畳んでおくグループ（使う人が少なく、道具が多く見えるもの） */

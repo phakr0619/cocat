@@ -62,7 +62,10 @@ export function SchemePanel({
   store,
   newScheme = false,
   onAi,
+  onNewRun,
 }: {
+  /** この段を行った 1 回ぶんの、実験の記録を作る */
+  onNewRun?(from: { schemeId: string; stepIndex: number }): void;
   store: EditorStore;
   /** 新しいスキームを始める（今あるスキームは出さない） */
   newScheme?: boolean;
@@ -220,6 +223,11 @@ export function SchemePanel({
                 <Field label="ノート番号" testId="step-notebook" value={st.notebook ?? ''} onCommit={(v) => store.commit(updateStep(store.get().doc, sid, i, { notebook: v || undefined }))} />
               </div>
               <StoichTable store={store} doc={view} schemeId={sid} index={i} step={st} />
+              {onNewRun && !pin && (
+                <button type="button" className="link step-run" data-testid="step-new-run" title="この段を行った 1 回ぶんの記録を作る。仕込み・操作の流れと重さ・操作ごとの記録を入れると、フロー図と収支を描く" onClick={() => onNewRun({ schemeId: sid, stepIndex: i })}>
+                  ＋ 実験の記録を作る
+                </button>
+              )}
             </details>
           ))}
           <div className="row">

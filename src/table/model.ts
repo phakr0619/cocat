@@ -44,6 +44,8 @@ export interface StudyTable {
   core?: Structure;
   /** 表の左上（pt）。反応式があるときは、反応式の置き場所に合わせて動く */
   origin: { x: number; y: number };
+  /** 実験の記録を並べて比べる表なら、記録の id → 行の id（src/process/report.ts） */
+  runIds?: Record<string, string>;
 }
 
 export interface TableTemplate {

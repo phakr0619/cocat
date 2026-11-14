@@ -45,7 +45,14 @@
 html, body, #root { height: 100%; margin: 0; }
 body { font-family: system-ui, -apple-system, 'Hiragino Sans', 'Noto Sans JP', sans-serif; font-size: 13px; color: var(--text); background: var(--bg); }
 .loading { padding: 24px; }
-.app { display: grid; grid-template-columns: var(--tools-w) 1fr var(--side-w); grid-template-rows: auto 1fr; height: 100%; }
+.app { display: grid; grid-template-columns: var(--tools-w) 1fr var(--side-w); grid-template-rows: auto 1fr auto; height: 100%; }
+/* 置き場所を決める: 道具・ライブラリ・右の欄は下まで、キャンバスの下に表の欄 */
+.stage { grid-column: 2; grid-row: 2; min-height: 0; }
+.dock { grid-column: 2; grid-row: 3; }
+.side { grid-column: 3; grid-row: 2 / span 2; }
+.app.with-library .library { grid-column: 2; grid-row: 2 / span 2; }
+.app.with-library .stage, .app.with-library .dock { grid-column: 3; }
+.app.with-library .side { grid-column: 4; }
 .app.side-closed { --side-w: 0px; }
 
 /* 上のバー */
@@ -445,8 +452,8 @@ fieldset.plain:disabled { opacity: 0.6; }
 .tool-group.drop-target > .tool-group-name { outline: 1px dashed var(--accent); outline-offset: -1px; border-radius: 4px; }
 .tools button.tool-group-name[draggable='true'] { cursor: grab; }
 /* 左の道具の列の幅を変えるつまみ（道具の列の右の縁。グリッドで道具の列と同じ所に重ねる） */
-.tools { grid-column: 1; grid-row: 2; }
-.tools-resize { grid-column: 1; grid-row: 2; justify-self: end; width: 7px; margin-right: -4px; z-index: 6; cursor: col-resize; touch-action: none; }
+.tools { grid-column: 1; grid-row: 2 / span 2; }
+.tools-resize { grid-column: 1; grid-row: 2 / span 2; justify-self: end; width: 7px; margin-right: -4px; z-index: 6; cursor: col-resize; touch-action: none; }
 .tools-resize:hover, .tools-resize.active, .tools-resize:focus-visible { background: var(--accent); opacity: 0.45; outline: none; }
 /* ライブラリの開け閉め: キャンバスの左の縁に貼った縦のつまみ（ライブラリの列はここに開く） */
 .tools button.library-tab { width: 100%; height: 30px; gap: 4px; font-size: var(--fs-s); color: var(--text-2); border-color: var(--border); }
@@ -558,3 +565,77 @@ fieldset.plain:disabled { opacity: 0.6; }
 .scheme-panel details.step.active { border-color: var(--accent); background: var(--accent-soft); }
 .scheme-panel .step-head { justify-content: flex-end; }
 .scheme-panel .compound-replace button:disabled { display: none; }
+
+/* 下の表の欄（実験の記録の仕込み・操作と記録・収支） */
+.dock { position: relative; display: flex; flex-direction: column; min-height: 0; background: var(--surface); border-top: 1px solid var(--border-strong); font-size: var(--fs-s); }
+.dock-resize { position: absolute; left: 0; right: 0; top: -3px; height: 7px; cursor: row-resize; z-index: 6; touch-action: none; }
+.dock-resize:hover { background: var(--accent); opacity: 0.45; }
+.dock-head { display: flex; align-items: center; gap: 6px; padding: 5px 8px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+.dock-head .spacer { flex: 1; }
+.dock-head button { font-size: var(--fs-s); padding: 3px 8px; }
+.dock-tabs { display: flex; gap: 2px; margin-right: 6px; }
+.dock-tabs button { border-color: transparent; background: transparent; color: var(--text-2); padding: 4px 10px; }
+.dock-tabs button.on { background: var(--accent-soft); color: var(--accent-text); font-weight: 600; }
+.dock-opt { display: inline-flex; align-items: center; gap: 4px; color: var(--text-2); }
+.dock-opt select { font: var(--fs-s) system-ui, sans-serif; padding: 2px 4px; border: 1px solid var(--border-strong); border-radius: 4px; }
+.dock-head .dock-close { border-color: transparent; background: transparent; color: var(--muted); }
+.dock-notice { margin: 0; padding: 5px 10px; background: var(--warn-soft); color: var(--warn); border-bottom: 1px solid var(--warn-line); }
+.dock-notice button.link, .dock button.link { border: none; background: none; color: var(--accent-text); text-decoration: underline; text-underline-offset: 2px; padding: 0 4px; }
+.dock-body { flex: 1; min-height: 0; display: flex; }
+.dock-scroll { flex: 1; min-width: 0; overflow: auto; padding: 4px 8px 8px; }
+.dock-split { flex: 1; min-width: 0; display: flex; }
+.dock-ops { flex: 0 0 400px; border-right: 1px solid var(--border); }
+.dock-cell { width: 100%; min-width: 0; height: 24px; padding: 0 5px; border: 1px solid transparent; border-radius: 4px; background: transparent; font: var(--fs-s) system-ui, sans-serif; color: var(--text); }
+.dock-cell:hover { border-color: var(--border-strong); }
+.dock-cell:focus { background: var(--surface); }
+select.dock-cell { padding: 0 2px; border-color: var(--border); }
+.dock-cell.r, .dock-table .r { text-align: right; font-variant-numeric: tabular-nums; }
+.dock-cell.w-num { width: 64px; } .dock-cell.w-amt { width: 92px; } .dock-cell.w-lot { width: 90px; } .dock-cell.w-time { width: 54px; } .dock-cell.w-temp { width: 90px; }
+.dock-head .dock-cell { border-color: var(--border); width: auto; }
+.dock-head .w-title { width: 150px; } .dock-head .w-note { width: 100px; } .dock-head .w-date { width: 130px; }
+.dock-table { border-collapse: collapse; width: 100%; }
+.dock-table th { position: sticky; top: -4px; background: var(--surface); text-align: left; font-weight: 600; color: var(--muted); padding: 4px 5px; border-bottom: 1px solid var(--border); white-space: nowrap; z-index: 1; }
+.dock-table td { padding: 1px 2px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+.dock-table.plain td { padding: 4px 6px; white-space: normal; }
+.dock-table th.grow { width: 35%; } .dock-table th.w-time { width: 54px; }
+.dock-table tr.h td, .dock-op.h { background: var(--accent-soft); }
+.dock-table td.calc { color: var(--text-2); padding-right: 6px; }
+.dock-table tr.product td { color: var(--text-2); border-top: 1px solid var(--border-strong); padding-left: 6px; }
+.dock-fixed { padding: 0 6px; font-weight: 600; }
+.dock-x { width: 22px; height: 22px; padding: 0; border-color: transparent; background: transparent; color: var(--muted); font-size: var(--fs-s); }
+.dock-x:hover:not(:disabled) { color: var(--danger); }
+.dock-add { margin-top: 6px; }
+.dock-op { border: 1px solid var(--border); border-radius: 6px; padding: 4px 6px; margin: 4px 0; }
+.dock-op-head { display: flex; align-items: center; gap: 4px; cursor: pointer; }
+.dock-op-n { flex: none; width: 20px; height: 20px; border-radius: 50%; background: var(--border); display: grid; place-items: center; font-weight: 700; }
+.dock-op.h .dock-op-n { background: var(--accent); color: var(--surface); }
+.dock-op-head .w-opname { flex: 1; font-weight: 600; }
+.dock-op-head select.dock-cell { width: 104px; flex: none; }
+.dock-out { display: flex; align-items: center; gap: 4px; padding-left: 24px; }
+.dock-out-label { flex: none; width: 78px; color: var(--muted); }
+.dock-closure { flex: 1; color: var(--text-2); padding-left: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dock-op-add { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+.dock-op-add select { width: 150px; }
+.dock .muted { color: var(--muted); }
+.dock-quick { position: sticky; bottom: -8px; display: flex; gap: 6px; padding: 6px 0 8px; background: var(--surface); }
+.dock-quick select.dock-cell { width: 120px; flex: none; }
+.dock-quick input.dock-cell { flex: 1; border-color: var(--border-strong); height: 26px; }
+.dock .row { display: flex; gap: 6px; margin-top: 10px; }
+/* 右の欄: 実験の記録の結果 */
+.run-summary { display: flex; flex-direction: column; gap: 10px; }
+.kv { margin: 0; }
+.kv > div { display: flex; justify-content: space-between; gap: 8px; padding: 3px 0; border-bottom: 1px solid var(--border); }
+.kv > div:last-child { border-bottom: none; }
+.kv dt { color: var(--text-2); }
+.kv dd { margin: 0; font-weight: 600; font-variant-numeric: tabular-nums; }
+.run-warnings { list-style: none; margin: 0; padding: 0; }
+.run-warnings li { margin: 4px 0; }
+.run-warnings button.link { text-align: left; color: var(--warn); text-decoration: none; }
+.run-summary .muted { font-size: var(--fs-s); margin: 6px 0 0; }
+.scheme-panel .step-run { display: block; margin-top: 6px; border: none; background: none; color: var(--accent-text); padding: 0; text-decoration: underline; text-underline-offset: 2px; }
+
+.dock-ops { flex-basis: 450px; }
+.dock-out .dock-cell.w-amt { width: 124px; flex: none; }
+.dock-out .dock-cell.w-num { width: 84px; flex: none; }
+.dock-log .dock-table td:nth-child(2) select { width: 116px; }
+.dock-log .dock-table td:nth-child(3) input, .dock-log .dock-table td:nth-child(6) input { min-width: 200px; }
