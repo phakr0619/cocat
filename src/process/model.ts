@@ -12,8 +12,8 @@ export interface Amount {
   unit: AmountUnit;
 }
 
-/** substrate: 基質 / reagent: 試薬 / solvent: 溶媒 / other: 水・洗浄液・種晶など */
-export type MaterialRole = 'substrate' | 'reagent' | 'solvent' | 'other';
+/** substrate: 基質 / reagent: 試薬 / solvent: 溶媒 / water: 水と水溶液（洗浄液など） / other: 種晶・ろ過助剤など */
+export type MaterialRole = 'substrate' | 'reagent' | 'solvent' | 'water' | 'other';
 
 /** 仕込みの 1 行 */
 export interface Material {

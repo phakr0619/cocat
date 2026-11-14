@@ -165,8 +165,9 @@ test('化学量論表: 基質の量を入れると、試薬の量と理論収量
   await panel.getByTestId('step-reagents').fill('TFA (10 equiv)');
   await panel.getByTestId('step-reagents').press('Enter');
   await panel.getByText('化学量論表').click();
-  await panel.getByTestId('stoich-scale').fill('189.21');
-  const table = panel.getByTestId('stoich-table');
+  // 表は、開くとキャンバスの下の欄に出る
+  await page.getByTestId('stoich-dock').getByTestId('stoich-scale').fill('189.21');
+  const table = page.getByTestId('stoich-dock').getByTestId('stoich-table');
   // Boc-Ala-OH 189.21 → 1.000 mmol、TFA 10 当量 → 10.000 mmol・1140.2 mg・765.7 µL、Ala（89.09）の理論収量 89.1 mg
   await expect(table.locator('tbody tr').nth(0)).toContainText('1.000');
   await expect(table.locator('tbody tr').nth(1)).toContainText('10.000');

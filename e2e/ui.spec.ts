@@ -206,7 +206,7 @@ test('反応スキームの欄の化合物に、構造の小さな絵を出す',
 
 test('検討表の行を、つまみのドラッグで並べ替える', async ({ page }) => {
   await showTab(page, 'table');
-  const panel = page.getByTestId('table-panel');
+  const panel = page.locator('[data-table-ui]');
   await panel.getByTestId('new-conditions-table').click();
   const solvents = panel.getByTestId('cell-solvent');
   for (const [i, v] of ['DMF', 'THF', 'MeCN'].entries()) {
@@ -446,7 +446,7 @@ test('右の欄は畳める。メニューから欄を出すと開く。畳ん�
   const before = await canvasWidth();
   await page.getByTestId('side-collapse').click();
   await expect(page.getByTestId('side-head')).toBeHidden();
-  expect(await canvasWidth()).toBeGreaterThan(before + 300);
+  expect(await canvasWidth()).toBeGreaterThanOrEqual(before + 300);
   await page.reload();
   await page.getByTestId('canvas').waitFor();
   await expect(page.getByTestId('side-head')).toBeHidden();

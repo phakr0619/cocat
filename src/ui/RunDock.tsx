@@ -215,6 +215,7 @@ export function RunDock({ store, runId, onClose }: { store: EditorStore; runId: 
                           <option value="substrate">基質</option>
                           <option value="reagent">試薬</option>
                           <option value="solvent">溶媒</option>
+                          <option value="water">水・水溶液</option>
                           <option value="other">その他</option>
                         </select>
                       </td>

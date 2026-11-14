@@ -17,6 +17,7 @@ import { partPreview } from '../chem/partOps';
 
 import { schemeTargetOf, type SchemeTarget } from '../scheme/pick';
 import { runTargetOf } from '../process/layout';
+import { tableCellOf, type TableCellTarget } from '../table/pick';
 
 const HILITE = '#3b82f6';
 /** 右ボタン: これより動かしたらドラッグ（表示を動かす）、動かさなければメニュー。環を回す操作と同じ 3 pt */
@@ -33,11 +34,13 @@ export interface View {
 export const MIN_ZOOM = 0.1;
 export const MAX_ZOOM = 8;
 
-export function Canvas({ store, view, setView, showStereo, marks, onDropCompound, onLabelEdit, onTextEdit, onMenu, onBusy, onSchemeEdit, onRunEdit }: {
+export function Canvas({ store, view, setView, showStereo, marks, onDropCompound, onLabelEdit, onTextEdit, onMenu, onBusy, onSchemeEdit, onRunEdit, onTableEdit }: {
   /** 右ボタンを押しただけのとき（ドラッグしなかったとき）。at は画面の座標、hit は押した物 */
   onMenu?(at: { x: number; y: number }, hit: string | null): void;
   /** スキームの矢印・条件の文字・番号の文字をダブルクリックした（図の上で直す） */
   onSchemeEdit?(target: SchemeTarget): void;
+  /** 検討表のセルか見出しの文字をダブルクリックした（下の表のそのセルへ入る） */
+  onTableEdit?(target: TableCellTarget): void;
   /** 実験の記録のフロー図の物をダブルクリックした（下の表を開く） */
   onRunEdit?(runId: string): void;
   /** ドラッグなどの操作の始まりと終わり（選んだ物の帯を、操作の間は隠すため） */
@@ -231,6 +234,11 @@ export function Canvas({ store, view, setView, showStereo, marks, onDropCompound
     if (hit && onRunEdit) {
       const run = runTargetOf(store.get().doc, hit);
       if (run) return onRunEdit(run.runId);
+    }
+    // 検討表の文字は、下の表のそのセルで直す（図の文字を直接直しても、描き直すと戻るため）
+    if (hit && onTableEdit && kindOf(hit) === 'text') {
+      const cell = tableCellOf(store.get().doc, hit);
+      if (cell) return onTableEdit(cell);
     }
     // スキームの矢印・条件・番号は、データを直す小さな欄を出す（文字を直接直しても、描き直すと戻るため）
     if (hit && onSchemeEdit && (kindOf(hit) === 'arrow' || kindOf(hit) === 'text')) {

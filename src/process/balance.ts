@@ -37,6 +37,8 @@ export interface RunBalance {
   assayYieldPct?: number;
   /** PMI: 仕込みの合計 ÷ 得た生成物の重さ */
   pmi?: number;
+  /** PMI の内訳: 溶媒・水と水溶液・そのほか（基質と試薬など）。足すと PMI になる */
+  pmiParts?: { solvent: number; water: number; other: number };
   /** 生成物の行方（理論収量に対する %）。外へ出た物に生成物の含量があるときだけ */
   fate: { name: string; pct: number }[];
   /** 行方の分からない分（%） */
@@ -132,6 +134,12 @@ export function runBalance(run: ProcessRun): RunBalance {
   const assayYieldPct = hasAssay && theoryA && productG !== undefined ? ((productG * (run.product.assay ?? 100)) / 100 / theoryA) * 100 : undefined;
   const pmi = totalInG !== undefined && productG && productG > 0 ? totalInG / productG : undefined;
 
+  let pmiParts: RunBalance['pmiParts'];
+  if (pmi !== undefined && productG) {
+    const of = (pick: (m: Material) => boolean) => run.materials.filter(pick).reduce((a, m) => a + (toGrams(m.amount, m.density) ?? 0), 0) / productG;
+    pmiParts = { solvent: of((m) => m.role === 'solvent'), water: of((m) => m.role === 'water'), other: of((m) => m.role !== 'solvent' && m.role !== 'water') };
+  }
+
   // 生成物の行方: 外へ出た物のうち、生成物の含量が入っている物
   const fate: RunBalance['fate'] = [];
   let fateUnknown: number | undefined;
@@ -169,7 +177,7 @@ export function runBalance(run: ProcessRun): RunBalance {
     }
     lastT = t;
   }
-  return { ops, totalInG, totalOutG, closure, productG, theoryG, yieldPct, assayYieldPct, pmi, fate, fateUnknown, warnings };
+  return { ops, totalInG, totalOutG, closure, productG, theoryG, yieldPct, assayYieldPct, pmi, pmiParts, fate, fateUnknown, warnings };
 }
 
 const pct = (v: number | undefined, d = 1) => (v === undefined || !isFinite(v) ? '' : `${v.toFixed(d)}%`);

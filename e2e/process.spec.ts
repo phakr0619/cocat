@@ -29,6 +29,8 @@ test('見本の実験の記録: フロー図に重さと収支を出し、右の
   await expect(results).toContainText('11.9 g');
   await expect(results).toContainText('86.5%');
   await expect(results).toContainText('34.1');
+  // PMI の内訳: 溶媒・水と水溶液・そのほか
+  await expect(results).toContainText('溶媒 18.5、水・水溶液 12.6、そのほか 3.0');
   await expect(page.getByTestId('run-fate')).toContainText('母液・洗液');
   await expect(page.getByTestId('run-warnings')).toContainText('揮発分 の重さが未入力です。差から 3.0 g としています');
   const texts = await runTexts(page);

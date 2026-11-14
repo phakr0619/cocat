@@ -236,14 +236,16 @@ test('スキームのデータ（3段）と書式', async ({ page }) => {
   await page.getByTestId('scheme-panel').getByTestId('stoich').first().locator('summary').click();
   await page.getByTestId('stoich-scale').first().fill('100');
   await page.mouse.move(2, 2);
-  await page.getByTestId('scheme-step').first().screenshot({ path: `${OUT}/scheme-step.png` });
+  // 化学量論表は、開くとキャンバスの下の欄に出る
+  await page.getByTestId('stoich-dock').getByTestId('stoich-body').screenshot({ path: `${OUT}/scheme-step.png` });
 });
 
 test('検討表', async ({ page }) => {
   await load(page);
   await openSample(page, 'conditions', 2);
   await shotDrawing(page, 'table-conditions');
-  await page.getByTestId('table-panel').screenshot({ path: `${OUT}/table-panel.png` });
+  // 行と列の表は、キャンバスの下の欄に出る
+  await page.getByTestId('table-dock').screenshot({ path: `${OUT}/table-panel.png` });
   await openSample(page, 'sar');
   await shotDrawing(page, 'table-sar');
 });

@@ -153,7 +153,7 @@ test('検討表を反応式ごとプロジェクトに入れ、新しい図に�
   await showTab(page, 'scheme');
   await page.getByTestId('scheme-panel').getByRole('button', { name: '描いた反応式をスキームにする' }).click();
   await showTab(page, 'table');
-  const table = page.getByTestId('table-panel');
+  const table = page.locator('[data-table-ui]');
   await table.getByTestId('new-conditions-table').click();
   await table.getByTestId('cell-yield').first().fill('91^a');
   await table.getByTestId('cell-yield').first().press('Enter');

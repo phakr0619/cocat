@@ -10,7 +10,7 @@ import { renderRun } from './layout';
 import { formatAmount, formatGrams, toGrams, type Material, type ProcessRun } from './model';
 import { materialName, runLabel } from './ops';
 
-const ROLE: Record<Material['role'], string> = { substrate: '基質', reagent: '試薬', solvent: '溶媒', other: 'その他' };
+const ROLE: Record<Material['role'], string> = { substrate: '基質', reagent: '試薬', solvent: '溶媒', water: '水・水溶液', other: 'その他' };
 const num = (v: number | undefined, d: number) => (v === undefined || !isFinite(v) ? '' : v.toFixed(d));
 
 /** 仕込みの 1 行の、計算した値（mmol と、基質 1 g あたりの溶媒量） */
@@ -54,6 +54,7 @@ export function runTables(doc: Doc, run: ProcessRun, bal: RunBalance = runBalanc
     ['含量', run.product.assay === undefined ? '' : `${run.product.assay} wt%`],
     ['含量で補正した収率', formatPct(bal.assayYieldPct)],
     ['PMI', num(bal.pmi, 1)],
+    ['PMI の内訳', bal.pmiParts ? `溶媒 ${bal.pmiParts.solvent.toFixed(1)}、水・水溶液 ${bal.pmiParts.water.toFixed(1)}、そのほか ${bal.pmiParts.other.toFixed(1)}` : ''],
     ['全体の収支', formatPct(bal.closure)],
   ];
   return { materials, events, balance, results: results.filter(([, v]) => v) };

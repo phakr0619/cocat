@@ -323,6 +323,12 @@ export function App() {
   const activeScheme = activeSchemeId(doc, selection);
   const activeRun = runId && doc.runs?.[runId] ? runId : null;
   const showDock = !!activeRun && !dockClosed && side === 'run';
+  /** 検討表の行と列の表を出す、キャンバスの下の欄 */
+  const [tableDock, setTableDock] = useState<HTMLElement | null>(null);
+  /** 化学量論表を出す、キャンバスの下の欄（開いた表があるときだけ中身が入る） */
+  const [stoichDock, setStoichDock] = useState<HTMLElement | null>(null);
+  const showStoichDock = side === 'scheme' && !!activeScheme;
+  const showTableDock = side === 'table' && Object.keys(doc.tables ?? {}).length > 0;
   /** 右クリックのメニュー（画面の座標） */
   const [ctxMenu, setCtxMenu] = useState<{ x: number; y: number } | null>(null);
   /** 「書き出す」の画面 */
@@ -589,10 +595,12 @@ export function App() {
   const dockShown = useRef(false);
   useEffect(() => {
     // 開いたときと閉じたときだけ（はじめの描画では合わせ直さない）
-    if (showDock !== dockShown.current) fitView();
-    dockShown.current = showDock;
+    // 欄の中身が並んで高さが決まってから合わせる
+    const t = (showDock || showTableDock) !== dockShown.current ? setTimeout(() => fitView(), 60) : undefined;
+    dockShown.current = showDock || showTableDock;
+    return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showDock]);
+  }, [showDock, showTableDock]);
   /** 選んだ物の帯を出す所（キャンバスの左上からの px）。選択の道具で選んでいて、ドラッグしていないときだけ */
   const selBar = (() => {
     if (busy || overlay || schemeEdit || !selection.size || (tool !== 'select' && tool !== 'lasso')) return null;
@@ -723,6 +731,23 @@ export function App() {
           onTextEdit={openTextEditor}
           onBusy={setBusy}
           onRunEdit={(id) => openRun(id)}
+          onTableEdit={(cell) => {
+            // その表の欄を出し、下の表のセル（見出しなら、その列のいちばん上のセル）にカーソルを入れる
+            selectRef(cell.tableId, 'table');
+            track('table:edit-from-canvas', { once: true });
+            // 下の欄が出て、図を合わせ直した後まで待つ（欄が出る前や、描き直しの途中では入らないことがある）
+            let tries = 0;
+            const focus = () => {
+              const rows = document.querySelectorAll('[data-testid="table-dock"] [data-testid="table-row"]');
+              const input = rows[Math.max(0, cell.row)]?.querySelectorAll('td')[cell.col + 1]?.querySelector('input');
+              if (input && document.activeElement !== input) {
+                input.focus();
+                input.select();
+              }
+              if (++tries < 6) setTimeout(focus, 60);
+            };
+            setTimeout(focus, 60);
+          }}
           onSchemeEdit={(t) => {
             if (store.get().doc.schemes?.[t.schemeId]?.pinned) return store.set({ message: '固定中のスキームです。直すときは、右の欄で固定を外してください' });
             setSchemeEdit(t);
@@ -864,6 +889,8 @@ export function App() {
           />
         )}
       </main>
+      {showTableDock && <section className="dock table-dock" data-testid="table-dock" data-table-ui aria-label="検討表の行" ref={setTableDock} />}
+      {showStoichDock && <section className="dock stoich-dock" data-testid="stoich-dock" aria-label="化学量論表" ref={setStoichDock} />}
       {showDock && activeRun && <RunDock store={store} runId={activeRun} onClose={() => setDockClosed(true)} />}
       <aside className="side" hidden={!sideOpen}>
         <div className="side-head" data-testid="side-head" data-view={side}>
@@ -917,7 +944,7 @@ export function App() {
             />
           </div>
           <div className="tab-page" hidden={side !== 'scheme' && side !== 'new-scheme'} data-tab="scheme">
-            <SchemePanel onNewRun={newRun} store={store} newScheme={side === 'new-scheme'} onAi={hasKey ? openAi : undefined} />
+            <SchemePanel onNewRun={newRun} stoichHost={showStoichDock ? stoichDock : null} store={store} newScheme={side === 'new-scheme'} onAi={hasKey ? openAi : undefined} />
           </div>
           <div className="tab-page" hidden={side !== 'run'} data-tab="run">
             {activeRun && <RunSummary store={store} runId={activeRun} onOpenTable={() => setSide('table')} />}
@@ -926,7 +953,7 @@ export function App() {
             )}
           </div>
           <div className="tab-page" hidden={side !== 'table'} data-tab="table">
-            <TablePanel store={store} onCreated={() => fitView()} />
+            <TablePanel gridHost={showTableDock ? tableDock : null} store={store} onCreated={() => fitView()} />
           </div>
           <div className="tab-page" hidden={side !== 'analysis'} data-tab="analysis">
             <section className="card">

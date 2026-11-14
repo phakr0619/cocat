@@ -22,7 +22,7 @@ export function sampleRun(doc: Doc): Doc {
   }
   d = updateMaterial(d, id, run().materials[0].id, { assay: 99.5, lot: 'L-2311' });
   const [reaction, sep, conc] = run().operations.map((o) => o.id);
-  for (const [name, g] of [['1 M HCl', 50], ['飽和 NaHCO3 水', 50], ['食塩水', 50]] as const) d = addMaterial(d, id, { name, role: 'other', amount: { value: g, unit: 'g' }, opId: sep });
+  for (const [name, g] of [['1 M HCl', 50], ['飽和 NaHCO3 水', 50], ['食塩水', 50]] as const) d = addMaterial(d, id, { name, role: 'water', amount: { value: g, unit: 'g' }, opId: sep });
   d = updateOutput(d, id, sep, run().operations[1].outputs[0].id, { amount: { value: 163.9, unit: 'g' }, productAssay: 0.12 });
   d = updateOperation(d, id, sep, { carry: { value: 152.0, unit: 'g' } });
   d = updateOutput(d, id, conc, run().operations[2].outputs[0].id, { amount: { value: 131.0, unit: 'g' } });

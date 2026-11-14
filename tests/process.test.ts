@@ -64,6 +64,11 @@ describe('見本の実験の記録の収支', () => {
     // PMI: 仕込みの合計 405.5 g ÷ 11.9 g = 34.1
     expect(b.totalInG).toBeCloseTo(405.5, 1);
     expect(b.pmi).toBeCloseTo(34.1, 1);
+    // 内訳: 溶媒 (133 + 18 + 69) ÷ 11.9 = 18.5、水・水溶液 150 ÷ 11.9 = 12.6、そのほか 35.5 ÷ 11.9 = 3.0。足すと PMI
+    expect(b.pmiParts!.solvent).toBeCloseTo(18.5, 1);
+    expect(b.pmiParts!.water).toBeCloseTo(12.6, 1);
+    expect(b.pmiParts!.other).toBeCloseTo(3.0, 1);
+    expect(b.pmiParts!.solvent + b.pmiParts!.water + b.pmiParts!.other).toBeCloseTo(b.pmi!, 5);
     // 生成物の行方: 単離・水層・母液と、分からない分。合計は 100%
     expect(b.fate.map((f) => f.name)).toEqual(['単離', '水層', '母液・洗液']);
     expect(b.fate.reduce((a, f) => a + f.pct, 0) + b.fateUnknown!).toBeCloseTo(100);

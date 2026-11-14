@@ -64,7 +64,10 @@ export function SchemePanel({
   newScheme = false,
   onAi,
   onNewRun,
+  stoichHost,
 }: {
+  /** 化学量論表を出す所（キャンバスの下の欄） */
+  stoichHost?: HTMLElement | null;
   /** この段を行った 1 回ぶんの、実験の記録を作る */
   onNewRun?(from: { schemeId: string; stepIndex: number }): void;
   store: EditorStore;
@@ -126,7 +129,7 @@ export function SchemePanel({
   };
 
   return (
-    <section className="scheme-panel" data-testid="scheme-panel">
+    <section className="scheme-panel" data-testid="scheme-panel" data-scheme-ui>
       {!scheme && (
         <>
           <p className="muted">キャンバスに分子と矢印を描いて、スキームにします。スキームにすると、条件・番号・書式をここで直せます。</p>
@@ -236,7 +239,7 @@ export function SchemePanel({
                 />
                 <Field label="ノート番号" testId="step-notebook" value={st.notebook ?? ''} onCommit={(v) => store.commit(updateStep(store.get().doc, sid, i, { notebook: v || undefined }))} />
               </div>
-              <StoichTable store={store} doc={view} schemeId={sid} index={i} step={st} />
+              <StoichTable store={store} doc={view} schemeId={sid} index={i} step={st} host={stoichHost} />
               {onNewRun && !pin && (
                 <button type="button" className="link step-run" data-testid="step-new-run" title="この段を行った 1 回ぶんの記録を作る。仕込み・操作の流れと重さ・操作ごとの記録を入れると、フロー図と収支を描く" onClick={() => onNewRun({ schemeId: sid, stepIndex: i })}>
                   ＋ 実験の記録を作る

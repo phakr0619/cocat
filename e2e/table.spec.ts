@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { clickAt, hoverAt, tool, importSmiles, showTab } from './helpers';
+import { clickAt, hoverAt, tool, importSmiles, openSample, showTab } from './helpers';
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/');
@@ -18,7 +18,7 @@ test('反応式から条件検討の表を作り、入力・貼り付け・CSV�
   await showTab(page, 'scheme');
   await page.getByTestId('scheme-panel').getByRole('button', { name: '描いた反応式をスキームにする' }).click();
   await showTab(page, 'table');
-  const panel = page.getByTestId('table-panel');
+  const panel = page.locator('[data-table-ui]');
   await panel.getByTestId('new-conditions-table').click();
   await expect(panel.getByTestId('table-row')).toHaveCount(3);
   await expect.poll(() => tableTexts(page)).toEqual(expect.arrayContaining(['Table 1.', 'entry', 'yield (%)ᵃ', 'ᵃIsolated yield.']));
@@ -96,7 +96,7 @@ test('R1 を付けた分子から SAR の表を作り、置換基を構造で描
   await tool(page, 'select');
   await clickAt(page, ends[0].x, ends[0].y);
   await showTab(page, 'table');
-  const panel = page.getByTestId('table-panel');
+  const panel = page.locator('[data-table-ui]');
   await panel.getByTestId('new-sar-table').click();
   await expect.poll(async () => {
     const d = await doc(page);
@@ -118,7 +118,7 @@ test('R1 を付けた分子から SAR の表を作り、置換基を構造で描
 
 test('反応スキームが無いときの「＋条件検討の表」は、表だけと知らせ、2つ目は1つ目の下に置く', async ({ page }) => {
   await showTab(page, 'table');
-  const panel = page.getByTestId('table-panel');
+  const panel = page.locator('[data-table-ui]');
   await panel.getByTestId('new-conditions-table').click();
   await expect(page.locator('.status')).toContainText('反応スキームが無いので、表だけを作りました');
   await panel.getByTestId('new-conditions-table').click();
@@ -131,4 +131,56 @@ test('反応スキームが無いときの「＋条件検討の表」は、表�
   });
   expect(ys).toHaveLength(2);
   expect(ys[1][0]).toBeGreaterThan(ys[0][1]);
+});
+
+test('検討表の行と列の表は、キャンバスの下の欄に出す。右の欄には題・貼り付け・列の設定・注が残る', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 720 });
+  await openSample(page, 'conditions');
+  const dock = page.getByTestId('table-dock');
+  await expect(dock.getByTestId('table-row')).toHaveCount(3);
+  await expect(page.getByTestId('table-panel').getByTestId('table-row')).toHaveCount(0);
+  await expect(page.getByTestId('table-panel').getByTestId('table-title')).toBeVisible();
+  // 試薬のセルが、横へ送らなくても読める幅で出ている
+  const cell = dock.getByTestId('cell-reagent').first();
+  expect((await cell.boundingBox())!.width).toBeGreaterThan(200);
+  await cell.fill('HBTU (1.1), DIPEA (2)');
+  await cell.press('Enter');
+  expect(await page.evaluate(() => Object.values(window.__editor!.get().doc.texts).some((t) => t.text.includes('HBTU')))).toBe(true);
+  // 表の図の全体が、欄を開いた後のキャンバスに入っている
+  await page.waitForTimeout(200);
+  const fits = await page.evaluate(() => {
+    const d = window.__editor!.get().doc;
+    const svg = document.querySelector('[data-testid=canvas]') as SVGSVGElement;
+    const vb = svg.viewBox.baseVal;
+    const ys = Object.values(d.texts).map((t) => t.y);
+    return Math.min(...ys) > vb.y && Math.max(...ys) < vb.y + vb.height;
+  });
+  expect(fits).toBe(true);
+  // 別の欄へ移ると、下の欄は閉じる
+  await page.getByTestId('side-back').click();
+  await expect(dock).toHaveCount(0);
+});
+
+test('検討表の図の文字をダブルクリックすると、下の表のそのセルに入って直せる', async ({ page }) => {
+  await openSample(page, 'conditions');
+  await page.getByTestId('side-back').click();
+  await expect(page.getByTestId('table-dock')).toHaveCount(0);
+  const at = await page.evaluate(() => {
+    const d = window.__editor!.get().doc;
+    const t = Object.values(d.texts).find((x) => x.text === 'DMF')!;
+    const svg = document.querySelector('[data-testid=canvas]') as SVGSVGElement;
+    const vb = svg.viewBox.baseVal;
+    const r = svg.getBoundingClientRect();
+    const zoom = svg.clientWidth / vb.width;
+    return { x: r.left + (t.x + 4 - vb.x) * zoom, y: r.top + (t.y - 3 - vb.y) * zoom };
+  });
+  await page.mouse.dblclick(at.x, at.y);
+  const cell = page.getByTestId('table-dock').getByTestId('table-row').nth(1).getByTestId('cell-solvent');
+  await expect(cell).toBeFocused();
+  await expect(cell).toHaveValue('DMF');
+  await expect(page.getByTestId('text-input')).toHaveCount(0);
+  await page.keyboard.type('NMP');
+  await page.keyboard.press('Enter');
+  expect(await page.evaluate(() => Object.values(window.__editor!.get().doc.tables!)[0].rows[1].cells)).toMatchObject({});
+  expect(await page.evaluate(() => Object.values(window.__editor!.get().doc.texts).some((t) => t.text === 'NMP'))).toBe(true);
 });

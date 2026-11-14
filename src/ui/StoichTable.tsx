@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import type { Doc } from '../chem/model';
 import type { EditorStore } from '../editor/store';
 import type { Step } from '../scheme/model';
@@ -5,7 +7,8 @@ import { updateStoich } from '../scheme/ops';
 import { formatNumber as fmt, stoichTable, stoichTsv } from '../scheme/stoich';
 
 /** 段ごとの化学量論表。基準の量（最初の基質）を入れると、各試薬の量を出す */
-export function StoichTable({ store, doc, schemeId, index, step }: { store: EditorStore; doc: Doc; schemeId: string; index: number; step: Step }) {
+export function StoichTable({ store, doc, schemeId, index, step, host }: { store: EditorStore; doc: Doc; schemeId: string; index: number; step: Step; /** 表を出す所（キャンバスの下の欄） */ host?: HTMLElement | null }) {
+  const [open, setOpen] = useState(false);
   const rows = stoichTable(doc, step);
   const set = (patch: Parameters<typeof updateStoich>[3]) => store.commit(updateStoich(store.get().doc, schemeId, index, patch));
   const num = (v: string) => (v.trim() === '' ? undefined : Number(v));
@@ -15,9 +18,9 @@ export function StoichTable({ store, doc, schemeId, index, step }: { store: Edit
       () => store.set({ message: 'コピーできませんでした' }),
     );
   };
-  return (
-    <details className="stoich" data-testid="stoich">
-      <summary>化学量論表</summary>
+  const body = (
+    <div className="stoich-body" data-testid="stoich-body" data-scheme-ui>
+      {host && <h3>化学量論表　段 {index + 1}</h3>}
       <div className="row">
         <label className="field">
           <span>最初の基質の量</span>
@@ -109,6 +112,13 @@ export function StoichTable({ store, doc, schemeId, index, step }: { store: Edit
           </tbody>
         </table>
       </div>
+    </div>
+  );
+  return (
+    <details className="stoich" data-testid="stoich" open={open} onToggle={(e) => setOpen((e.currentTarget as HTMLDetailsElement).open)}>
+      <summary>化学量論表</summary>
+      {/* 表は列が多いので、キャンバスの下の欄があれば、そこに出す */}
+      {open && (host ? createPortal(body, host) : body)}
     </details>
   );
 }

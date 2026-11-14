@@ -23,3 +23,20 @@ describe('スキームの図の物から、段と化合物を引く', () => {
     expect(schemeTargetOf(doc, one.id)).toMatchObject({ kind: 'compound', compoundId: scheme.steps[0].from[0] });
   });
 });
+
+describe('検討表の図の文字から、セルを引く', () => {
+  it('条件検討の見本: セルの文字は行と列、見出しの文字は列を指す。題と注は指さない', async () => {
+    await loadRDKit();
+    const { tableCellOf } = await import('../src/table/pick');
+    const doc = SAMPLES.find((s) => s.id === 'conditions')!.build();
+    const t = Object.values(doc.tables!)[0];
+    const text = (s: string) => Object.values(doc.texts).find((x) => x.ref === t.id && x.text === s)!;
+    const col = (kind: string) => t.columns.findIndex((c) => c.kind === kind);
+    expect(tableCellOf(doc, text('DMF').id)).toEqual({ tableId: t.id, row: 1, col: col('solvent') });
+    expect(tableCellOf(doc, text('64').id)).toEqual({ tableId: t.id, row: 2, col: col('yield') });
+    expect(tableCellOf(doc, text('recryst.').id)).toEqual({ tableId: t.id, row: 2, col: col('purification') });
+    expect(tableCellOf(doc, Object.values(doc.texts).find((x) => x.ref === t.id && x.text.startsWith('solvent'))!.id)).toEqual({ tableId: t.id, row: -1, col: col('solvent') });
+    expect(tableCellOf(doc, Object.values(doc.texts).find((x) => x.ref === t.id && x.text.includes('Isolated yield'))!.id)).toBeNull();
+    expect(tableCellOf(doc, Object.values(doc.texts).find((x) => x.ref === t.id && x.text.startsWith('Table'))!.id)).toBeNull();
+  });
+});
