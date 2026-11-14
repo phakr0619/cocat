@@ -549,3 +549,63 @@ test('書き出す: 上のバーのボタンから、書き出す範囲の絵・
   await expect(dialog).toHaveCount(0);
   await expect(page.locator('.status')).toContainText('図をコピーしました');
 });
+
+test('入力欄（Ctrl+K）: 名前や SMILES から構造を置き、雛形を選び、メニューの操作を呼べる', async ({ page }) => {
+  const input = page.getByTestId('command-input');
+  await page.keyboard.press('Control+k');
+  await expect(input).toBeFocused();
+  // SMILES: そのまま置く
+  await input.fill('CC(=O)Oc1ccccc1C(=O)O');
+  await expect(page.getByTestId('command-item').first()).toContainText('SMILES');
+  await input.press('Enter');
+  expect(await page.evaluate(() => Object.keys(window.__editor!.get().doc.atoms).length)).toBe(13);
+  await expect(input).toHaveValue('');
+  // 操作: メニューの項目を名前で探して呼ぶ
+  await page.keyboard.press('Control+k');
+  await input.fill('すべて選択');
+  // 先頭は操作。手元で読めない文字を名前として読む候補は、いちばん後ろ
+  await expect(page.getByTestId('command-item').first()).toContainText('すべて選択');
+  await expect(page.getByTestId('command-item').first()).toContainText('Ctrl+A');
+  await input.press('Enter');
+  expect(await page.evaluate(() => window.__editor!.get().selection.size)).toBe(26);
+  // 見本もここから開ける
+  await page.keyboard.press('Control+k');
+  await input.fill('3段');
+  await page.getByTestId('command-item').filter({ hasText: '3段のスキーム' }).click();
+  await expect(page.getByTestId('scheme-step')).toHaveCount(3);
+  // 雛形: 選ぶと、クリックした所に置く道具になる
+  await page.keyboard.press('Control+k');
+  await input.fill('ピリジン');
+  await page.getByTestId('command-item').filter({ hasText: 'クリックした所に置く' }).filter({ hasText: 'ピリジン' }).first().click();
+  expect(await page.evaluate(() => window.__editor!.get().tool)).toBe('part');
+  // Esc で閉じて、入力を消す
+  await page.keyboard.press('Control+k');
+  await input.fill('zzzz');
+  await expect(page.getByTestId('command-list')).toContainText('名前として読む');
+  await input.press('Escape');
+  await expect(page.getByTestId('command-list')).toHaveCount(0);
+  await expect(input).toHaveValue('');
+});
+
+test('狭い画面: 幅 1024px でも上のバーは 1 行に収まる。幅 900px より狭いと、右の欄ははじめ畳んであり、開くとキャンバスに重なる', async ({ page }) => {
+  await page.setViewportSize({ width: 1024, height: 700 });
+  await page.goto('/');
+  await page.getByTestId('canvas').waitFor();
+  const bar = (await page.locator('.topbar').boundingBox())!;
+  expect(bar.height).toBeLessThan(48);
+  expect(await page.locator('.topbar').evaluate((e) => e.scrollWidth <= e.clientWidth)).toBe(true);
+  await expect(page.getByTestId('open-export')).toBeVisible();
+  await expect(page.getByTestId('command-input')).toBeVisible();
+  await expect(page.getByTestId('side-head')).toBeVisible();
+  // 幅 860px: 覚えた開け閉めが無ければ、畳んで始める
+  await page.evaluate(() => localStorage.clear());
+  await page.setViewportSize({ width: 860, height: 700 });
+  await page.reload();
+  await page.getByTestId('canvas').waitFor();
+  await expect(page.getByTestId('side-head')).toBeHidden();
+  const before = (await page.getByTestId('canvas').boundingBox())!.width;
+  await page.getByTestId('side-open').click();
+  await expect(page.getByTestId('side-head')).toBeVisible();
+  // 重なって開くので、キャンバスの幅は変わらない
+  expect((await page.getByTestId('canvas').boundingBox())!.width).toBe(before);
+});

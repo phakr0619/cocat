@@ -46,6 +46,7 @@ import { layout } from '../render/layout';
 import { download } from './IoPanel';
 import { TOOL_GROUPS, toolHint, Toolbar } from './Toolbar';
 import { Menu, PopupMenu, type MenuEntry, type MenuItem } from './Menu';
+import { CommandBar } from './CommandBar';
 import { AbbrDictionary } from './AbbrDictionary';
 import { applyAbbrs, setDocAbbrs, withUsedAbbrDefs } from './abbrStore';
 import { subscribeAbbrs } from '../chem/abbreviations';
@@ -165,7 +166,9 @@ export function App() {
   // 右の欄は畳める（キャンバスを広く使うため）。畳んだことはブラウザに置く
   const [sideOpen, setSideOpenRaw] = useState(() => {
     try {
-      return localStorage.getItem('ai-chem-editor:side') !== 'closed';
+      // 狭い画面では、右の欄はキャンバスに重なって開く。はじめは畳んでおく
+      const saved = localStorage.getItem('ai-chem-editor:side');
+      return saved ? saved !== 'closed' : window.innerWidth >= 900;
     } catch {
       return true;
     }
@@ -509,6 +512,47 @@ export function App() {
               onClick: () => store.commit(setStereoGroup(store.get().doc, store.get().selection, 'or')),
             },
   ];
+  const fileItems: MenuEntry[] = [
+            { label: '新規', title: '空の文書にする。ページの設定は変えず、元に戻すと前の文書に戻る', onClick: () => (store.commit({ ...emptyDoc(), ...(doc.page ? { page: doc.page } : {}) }, new Set()), store.set({ fileName: '' })) },
+            { label: '開く…', shortcut: 'Ctrl+O', title: `${DOC_EXT} の文書を開く`, onClick: () => fileRef.current?.click() },
+            { label: '保存', shortcut: 'Ctrl+S', title: `文書を ${DOC_EXT} で保存する`, onClick: saveDoc },
+            { label: 'SMILES・MOL・CDXML の読み込みと書き出し…', testId: 'open-io', onClick: () => setSide('io') },
+            ...(doc.page
+              ? [
+                  {
+                    label: `印刷・PDF（${PAGE_SIZES[doc.page.size].name}・${doc.page.cols * doc.page.rows} ページ）`,
+                    shortcut: 'Ctrl+P',
+                    title: 'ページを 1 枚ずつ、その大きさの紙に原寸で出す。印刷の画面で「PDF に保存」を選ぶと PDF になる',
+                    testId: 'print-pages',
+                    onClick: () => (printDoc(store.get().doc), track('print:pages')),
+                  },
+                ]
+              : [
+                  { label: '印刷・PDF（A4）', shortcut: 'Ctrl+P', title: '図を A4 の紙に収めて印刷する。印刷の画面で「PDF に保存」を選ぶと PDF になる', testId: 'print-a4', onClick: () => (printDoc(store.get().doc, 'A4'), track('print:a4')) },
+                  { label: '印刷・PDF（レター）', title: '図をレターの紙に収めて印刷する', testId: 'print-letter', onClick: () => (printDoc(store.get().doc, 'Letter'), track('print:letter')) },
+                ]),
+            { sep: true },
+            { heading: '見本を開く' },
+            ...SAMPLES.map((s) => ({ label: s.name, testId: `sample-${s.id}`, onClick: () => openSample(s.id) })),
+  ];
+  const viewItems: MenuEntry[] = [
+            { label: '全体を表示', shortcut: 'Shift+1', title: '図の全体が入るように合わせる', onClick: () => fitView() },
+            { label: '拡大', onClick: () => setZoom((z) => Math.min(6, z + 0.5)) },
+            { label: '縮小', onClick: () => setZoom((z) => (z > 1 ? z - 0.5 : z / 1.5)) },
+            { sep: true },
+            { label: showLibrary ? 'ライブラリを閉じる' : 'ライブラリを開く', onClick: toggleLibrary },
+            { label: sideOpen ? '右の欄を畳む' : '右の欄を開く', onClick: () => setSideOpen(!sideOpen) },
+  ];
+  const settingsItems: MenuEntry[] = [
+            { label: 'AI の設定…', testId: 'open-llm-settings', title: 'AI の会社とモデルを選び、API キーを入れる', onClick: () => (setShowLlm(true), track('llm:settings')) },
+            { label: '図の設定…', title: '線の太さと文字の大きさを変える', testId: 'open-draw-style', onClick: () => setShowDrawStyle(true) },
+            { label: 'ページの設定…', title: 'キャンバスの大きさを、A4 かスライドを何枚並べるかで決める', testId: 'open-page-setup', onClick: () => setShowPageSetup(true) },
+            { label: '略号の辞書…', testId: 'open-abbr-dict', title: '標準の略号と自分で足した略号を見て、略号を足す。NHFmoc、CO2tBu、BF3K のようなラベルがどう読まれるかも試せる', onClick: () => setShowAbbrDict(true) },
+  ];
+  const helpItems: MenuEntry[] = [
+            { label: 'キーの操作の一覧', testId: 'open-shortcuts', onClick: () => setShowKeys(true) },
+            { label: 'このツールについて', testId: 'open-about', title: 'ベータ版について・データの扱い・感想の送り先', onClick: () => setShowAbout(true) },
+  ];
   const colorItems: MenuEntry[] = COLORS.map(([name, hex]) => ({
     label: name,
     swatch: hex ?? '#000',
@@ -580,47 +624,10 @@ export function App() {
           value={fileName}
           onChange={(e) => store.set({ fileName: e.target.value })}
         />
-        <Menu
-          label="ファイル"
-          testId="menu-file"
-          items={[
-            { label: '新規', title: '空の文書にする。ページの設定は変えず、元に戻すと前の文書に戻る', onClick: () => (store.commit({ ...emptyDoc(), ...(doc.page ? { page: doc.page } : {}) }, new Set()), store.set({ fileName: '' })) },
-            { label: '開く…', shortcut: 'Ctrl+O', title: `${DOC_EXT} の文書を開く`, onClick: () => fileRef.current?.click() },
-            { label: '保存', shortcut: 'Ctrl+S', title: `文書を ${DOC_EXT} で保存する`, onClick: saveDoc },
-            { label: 'SMILES・MOL・CDXML の読み込みと書き出し…', testId: 'open-io', onClick: () => setSide('io') },
-            ...(doc.page
-              ? [
-                  {
-                    label: `印刷・PDF（${PAGE_SIZES[doc.page.size].name}・${doc.page.cols * doc.page.rows} ページ）`,
-                    shortcut: 'Ctrl+P',
-                    title: 'ページを 1 枚ずつ、その大きさの紙に原寸で出す。印刷の画面で「PDF に保存」を選ぶと PDF になる',
-                    testId: 'print-pages',
-                    onClick: () => (printDoc(store.get().doc), track('print:pages')),
-                  },
-                ]
-              : [
-                  { label: '印刷・PDF（A4）', shortcut: 'Ctrl+P', title: '図を A4 の紙に収めて印刷する。印刷の画面で「PDF に保存」を選ぶと PDF になる', testId: 'print-a4', onClick: () => (printDoc(store.get().doc, 'A4'), track('print:a4')) },
-                  { label: '印刷・PDF（レター）', title: '図をレターの紙に収めて印刷する', testId: 'print-letter', onClick: () => (printDoc(store.get().doc, 'Letter'), track('print:letter')) },
-                ]),
-            { sep: true },
-            { heading: '見本を開く' },
-            ...SAMPLES.map((s) => ({ label: s.name, testId: `sample-${s.id}`, onClick: () => openSample(s.id) })),
-          ]}
-        />
+        <Menu label="ファイル" testId="menu-file" items={fileItems} />
         <Menu label="編集" testId="menu-edit" items={editItems} />
         <Menu label="整える" testId="menu-arrange" items={arrangeItems} />
-        <Menu
-          label="表示"
-          testId="menu-view"
-          items={[
-            { label: '全体を表示', shortcut: 'Shift+1', title: '図の全体が入るように合わせる', onClick: () => fitView() },
-            { label: '拡大', onClick: () => setZoom((z) => Math.min(6, z + 0.5)) },
-            { label: '縮小', onClick: () => setZoom((z) => (z > 1 ? z - 0.5 : z / 1.5)) },
-            { sep: true },
-            { label: showLibrary ? 'ライブラリを閉じる' : 'ライブラリを開く', onClick: toggleLibrary },
-            { label: sideOpen ? '右の欄を畳む' : '右の欄を開く', onClick: () => setSideOpen(!sideOpen) },
-          ]}
-        />
+        <Menu label="表示" testId="menu-view" items={viewItems} />
         <input
           ref={fileRef}
           type="file"
@@ -636,13 +643,13 @@ export function App() {
         <Menu label="色" testId="menu-color" title="選んだ原子・結合・矢印・文字・図形の色を変える" items={colorItems} />
         <span className="sep" />
         <button type="button" className="icon-text" onClick={() => store.undo()} disabled={!canUndo} title="元に戻す (Ctrl+Z)">
-          ↶ 元に戻す
+          ↶<span className="wide-only"> 元に戻す</span>
         </button>
         <button type="button" className="icon-text" onClick={() => store.redo()} disabled={!canRedo} title="やり直す (Ctrl+Y)">
-          ↷ やり直す
+          ↷<span className="wide-only"> やり直す</span>
         </button>
         <span className="sep" />
-        <button type="button" className="icon-text" data-testid="open-name" onClick={() => setSide('name')} title="化合物名から構造を置く">
+        <button type="button" className="icon-text mid-only" data-testid="open-name" onClick={() => setSide('name')} title="化合物名から構造を置く">
           名前から置く
         </button>
         {hasKey && (
@@ -651,27 +658,23 @@ export function App() {
           </button>
         )}
         <span className="spacer" />
+        <CommandBar
+          store={store}
+          library={() => Object.values(projects.get().project?.compounds ?? {})}
+          menus={[
+            { name: 'ファイル', items: [...fileItems, { label: '書き出す…', onClick: () => setShowExport({ onlySelected: false }) }, { label: '実験の記録を作る', onClick: () => newRun() }] },
+            { name: '編集', items: editItems },
+            { name: '整える', items: arrangeItems },
+            { name: '表示', items: viewItems },
+            { name: '設定', items: settingsItems },
+            { name: 'ヘルプ', items: helpItems },
+          ]}
+        />
         <button type="button" className="export-button" data-testid="open-export" onClick={() => setShowExport({ onlySelected: false })} title="図を SMILES・MOL・CDXML・CDX・SVG・PNG で書き出す。画像でのコピーもここから">
           書き出す
         </button>
-        <Menu
-          label="設定"
-          testId="menu-settings"
-          items={[
-            { label: 'AI の設定…', testId: 'open-llm-settings', title: 'AI の会社とモデルを選び、API キーを入れる', onClick: () => (setShowLlm(true), track('llm:settings')) },
-            { label: '図の設定…', title: '線の太さと文字の大きさを変える', testId: 'open-draw-style', onClick: () => setShowDrawStyle(true) },
-            { label: 'ページの設定…', title: 'キャンバスの大きさを、A4 かスライドを何枚並べるかで決める', testId: 'open-page-setup', onClick: () => setShowPageSetup(true) },
-            { label: '略号の辞書…', testId: 'open-abbr-dict', title: '標準の略号と自分で足した略号を見て、略号を足す。NHFmoc、CO2tBu、BF3K のようなラベルがどう読まれるかも試せる', onClick: () => setShowAbbrDict(true) },
-          ]}
-        />
-        <Menu
-          label="ヘルプ"
-          testId="menu-help"
-          items={[
-            { label: 'キーの操作の一覧', testId: 'open-shortcuts', onClick: () => setShowKeys(true) },
-            { label: 'このツールについて', testId: 'open-about', title: 'ベータ版について・データの扱い・感想の送り先', onClick: () => setShowAbout(true) },
-          ]}
-        />
+        <Menu label="設定" testId="menu-settings" items={settingsItems} />
+        <Menu label="ヘルプ" testId="menu-help" items={helpItems} />
       </header>
       {/* ダイアログは上のバーの外に置く（バーの文字の決まりを受け継がないように） */}
       {showLlm && <LlmSettings onClose={() => setShowLlm(false)} />}

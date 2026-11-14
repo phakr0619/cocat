@@ -639,3 +639,40 @@ select.dock-cell { padding: 0 2px; border-color: var(--border); }
 .dock-out .dock-cell.w-num { width: 84px; flex: none; }
 .dock-log .dock-table td:nth-child(2) select { width: 116px; }
 .dock-log .dock-table td:nth-child(3) input, .dock-log .dock-table td:nth-child(6) input { min-width: 200px; }
+
+/* 上のバーの入力欄（Ctrl+K）: 名前・SMILES・操作をまとめて探す */
+.cmd { position: relative; flex: 0 1 320px; min-width: 150px; margin-right: 8px; }
+.topbar .cmd-input { width: 100%; height: 28px; padding: 0 56px 0 10px; border: 1px solid var(--bar-line); border-radius: 7px; background: var(--bar-2); color: var(--surface); font-size: var(--fs-s); }
+.topbar .cmd-input::placeholder { color: var(--bar-text); opacity: 0.65; }
+.topbar .cmd-input:focus { background: var(--surface); color: var(--text); }
+.cmd-key { position: absolute; right: 8px; top: 6px; font: 12px ui-monospace, monospace; color: var(--bar-text); opacity: 0.7; border: 1px solid var(--bar-line); border-radius: 4px; padding: 0 5px; pointer-events: none; }
+.cmd-input:focus + .cmd-key { display: none; }
+.cmd-list { position: absolute; top: calc(100% + 6px); right: 0; width: max(100%, 440px); max-height: 420px; overflow: auto; background: var(--surface); color: var(--text); border: 1px solid var(--border-strong); border-radius: 10px; box-shadow: 0 16px 40px rgb(16 24 40 / 0.24); padding: 4px; z-index: 40; }
+.cmd-group { font-size: var(--fs-s); color: var(--muted); font-weight: 600; padding: 6px 10px 2px; }
+.cmd-empty { padding: 10px; color: var(--muted); font-size: var(--fs-s); }
+.topbar .cmd-list button.cmd-item { display: flex; justify-content: space-between; align-items: center; gap: 12px; width: 100%; padding: 6px 10px; border: none; background: transparent; color: var(--text); font-size: var(--fs-m); text-align: left; white-space: normal; }
+.topbar .cmd-list button.cmd-item.on { background: var(--accent-soft); color: var(--accent-text); }
+.cmd-item small { flex: none; color: var(--muted); font-size: var(--fs-s); }
+
+/* 狭い画面: 上のバーを 1 行に収め、右の欄はキャンバスに重ねて開く */
+.topbar { flex-wrap: nowrap; }
+.topbar .menu-button, .topbar .brand { flex: none; }
+@media (max-width: 1320px) {
+  .topbar .wide-only, .topbar .beta { display: none; }
+  .topbar .doc-name { width: 120px; }
+  .topbar .sep { display: none; }
+  .topbar button { padding: 4px 6px; }
+}
+@media (max-width: 1100px) {
+  .topbar .mid-only { display: none; }
+  .topbar .doc-name { width: 90px; }
+  .cmd-key { display: none; }
+  .topbar .cmd-input { padding-right: 10px; }
+  .cmd { flex-basis: 200px; min-width: 110px; }
+}
+@media (max-width: 899px) {
+  .app { --side-w: 0px; }
+  .side { position: fixed; right: 0; top: 39px; bottom: 0; width: min(340px, 92vw); z-index: 15; box-shadow: -8px 0 24px rgb(16 24 40 / 0.18); }
+  .topbar .brand h1 { display: none; }
+  .dock-ops { flex-basis: 300px; }
+}
