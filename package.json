@@ -19,6 +19,8 @@
     "eval:llm-pdf": "vitest run --config tests/llm-eval/vitest.pdf.config.ts",
     "eval:llm-finish": "vitest run --config tests/llm-eval/vitest.finish.config.ts",
     "eval:llm-writeup": "vitest run --config tests/llm-eval/vitest.writeup.config.ts",
+    "eval:llm-writeup-run": "vitest run --config tests/llm-eval/vitest.writeup-run.config.ts",
+    "eval:llm-run":"vitest run --config tests/llm-eval/vitest.run.config.ts",
     "eval:llm-name": "vitest run --config tests/llm-eval/vitest.name.config.ts",
     "fetch:real-papers": "node scripts/fetch-real-papers.mjs",
     "eval:llm-real": "vitest run --config tests/llm-eval/vitest.real.config.ts",

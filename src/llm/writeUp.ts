@@ -9,6 +9,9 @@ import type { Doc } from '../chem/model';
 import { emptyDoc } from '../chem/model';
 import { analyzeFragment } from '../chem/analysis';
 import { compoundName, formatNumber as fmt, stoichMarkdown, stoichTable, stoichTsv, type StoichRow } from '../scheme/stoich';
+import { runBalance } from '../process/balance';
+import { formatAmount, formatGrams, type ProcessRun } from '../process/model';
+import { materialDerived } from '../process/report';
 import { askChecked } from './ask';
 import type { JsonSchema, LlmError, LlmProvider, LlmUsage, ThinkingLevel } from './types';
 
@@ -32,7 +35,7 @@ export interface WriteFacts {
   /** 名前の印 → そのまま書いてもよい書き方（呼び名など。数字だけの番号は含めない） */
   literals: Map<string, string[]>;
   /** 段ごとに、文章に出てくるべき名前の印と、化学量論表の行の順の名前の印 */
-  steps: { title: string; entities: string[]; rows: { entity: string; kind: StoichRow['kind']; name: string }[] }[];
+  steps: { title: string; entities: string[]; rows: { entity: string; kind: StoichRow['kind']; name: string }[]; /** 実験の記録から足した仕込み（溶媒・洗浄液など）の名前の印 */ extras?: string[]; /** 実験の記録の行（したこと・量・内温・測定と観察）。あれば、後処理や単離をここから書かせる */ record?: string[] }[];
 }
 
 const QTY_UNITS: Record<string, string> = { mg: 'mg', mmol: 'mmol', equiv: 'equiv', uL: 'µL', mw: '' };
@@ -56,8 +59,15 @@ const yieldValue = (y: number | string | undefined): number | undefined => {
 /** 名前としてそのまま書いてよいか（「3」「12a」のような番号は、ほかの数字と見分けられないので印で書かせる） */
 const literalName = (s: string | undefined): s is string => !!s && s.trim().length >= 3 && /[A-Za-z぀-鿿]/.test(s);
 
-/** スキームから、差し込みの印と値の一覧を作る */
-export function writeFacts(doc: Doc, schemeId: string): WriteFacts {
+/** 段ごとに使う実験の記録: その段から作った記録のうち、いちばん後に作った物 */
+export function runsForScheme(doc: Doc, schemeId: string): Map<string, ProcessRun> {
+  const out = new Map<string, ProcessRun>();
+  for (const r of Object.values(doc.runs ?? {})) if (r.schemeId === schemeId && r.stepId) out.set(r.stepId, r);
+  return out;
+}
+
+/** スキームから、差し込みの印と値の一覧を作る。useRuns なら、実験の記録がある段は、量・収量・収率を記録の値にし、記録の行も入れる */
+export function writeFacts(doc: Doc, schemeId: string, useRuns = false): WriteFacts {
   const scheme = doc.schemes?.[schemeId];
   const facts = new Map<string, WriteFact>();
   const literals = new Map<string, string[]>();
@@ -78,10 +88,20 @@ export function writeFacts(doc: Doc, schemeId: string): WriteFacts {
     literals.set(k, [c?.nickname, c?.number].filter(literalName).map((s) => s.trim()));
   }
 
+  const runs = useRuns ? runsForScheme(doc, schemeId) : new Map<string, ProcessRun>();
   scheme.steps.forEach((st, i) => {
     const n = i + 1;
     const p = `s${n}`;
     const rows = stoichTable(doc, st);
+    const run = runs.get(st.id);
+    const bal = run ? runBalance(run) : undefined;
+    const used = new Set<string>();
+    /** 化学量論表の行に当たる、記録の仕込みの行（基質は化合物、試薬は名前で合わせる） */
+    const materialOf = (r: StoichRow) => {
+      const m = run?.materials.find((x) => !used.has(x.id) && (r.kind === 'substrate' ? x.compoundId === r.ref : !x.compoundId && x.name.trim().toLowerCase() === r.name.trim().toLowerCase()));
+      if (m) used.add(m.id);
+      return m;
+    };
     const noBase = !st.scale || !(st.scale.value > 0) ? '最初の基質の量が入っていません（化学量論表で入れてください）' : '最初の基質の分子量が分からないので、量を出せません';
     const stepName = `${n} 段目`;
     const y = yieldValue(st.yield);
@@ -98,11 +118,28 @@ export function writeFacts(doc: Doc, schemeId: string): WriteFacts {
       }
       const q = (field: string, v: number | undefined, text: (v: number) => string, why: string) =>
         set({ key: r.kind === 'reagent' ? `${ent}.${field}` : `${p}.${ent}.${field}`, value: v !== undefined && isFinite(v) ? text(v) : null, why: v !== undefined && isFinite(v) ? undefined : why, kind: 'quantity', entity: ent, label: `${who} の ${QTY_UNITS[field] || field}` });
+      if (r.kind === 'product' && run && bal && r.ref === run.product.compoundId && bal.productG !== undefined) {
+        // 記録の得た重さ
+        const last = run.operations.at(-1)?.carry;
+        const mw = run.product.mw ?? r.mw;
+        q('mmol', mw ? (bal.productG / mw) * 1000 : undefined, mmolText, '分子量が分かりません');
+        set({ key: `${p}.${ent}.mg`, value: last ? formatAmount(last) : formatGrams(bal.productG), kind: 'quantity', entity: ent, label: `${who} の得た重さ` });
+        continue;
+      }
       if (r.kind === 'product') {
         const mmol = r.mmol !== undefined && y !== undefined ? (r.mmol * y) / 100 : undefined;
         const why = r.mmol === undefined ? noBase : '収率が数でないので、得た量を出せません';
         q('mmol', mmol, mmolText, why);
         q('mg', mmol !== undefined && r.mw ? mmol * r.mw : undefined, (v) => `${fmt(v, 1)} mg`, r.mw ? why : '分子量が分かりません');
+        continue;
+      }
+      const m = materialOf(r);
+      if (m?.amount) {
+        // 記録の入れた量。体積で入れた液体は体積のまま書く
+        const d = materialDerived(run!, m);
+        q('equiv', m.equiv ?? r.equiv, equivText, '当量がありません');
+        q('mmol', d.mmol, mmolText, '分子量が分かりません');
+        set({ key: r.kind === 'reagent' ? `${ent}.mg` : `${p}.${ent}.mg`, value: formatAmount(m.amount), kind: 'quantity', entity: ent, label: `${who} の入れた量` });
         continue;
       }
       q('equiv', r.equiv, equivText, '当量がありません');
@@ -116,14 +153,30 @@ export function writeFacts(doc: Doc, schemeId: string): WriteFacts {
     cond('solvent', st.solvent);
     cond('temp', st.temp);
     cond('time', st.time);
+    // 記録にだけある仕込み（溶媒・洗浄液など）: 名前と入れた量の印を足す。文章に出てこなくてもよい
+    const extras: string[] = [];
+    if (run)
+      for (const m of run.materials) {
+        if (used.has(m.id) || m.compoundId) continue;
+        const name = m.name.trim();
+        if (!name) continue;
+        const ent = `${p}.M${extras.length + 1}`;
+        extras.push(ent);
+        set({ key: ent, value: name, kind: 'name', label: `${stepName}の ${name}` });
+        literals.set(ent, name.length >= 2 ? [name] : []);
+        set({ key: `${ent}.amount`, value: m.amount ? formatAmount(m.amount) : null, why: '記録に量が入っていません', kind: 'quantity', entity: ent, label: `${stepName}の ${name} の入れた量` });
+      }
+    const opName = (id: string) => run?.operations.find((o) => o.id === id)?.name ?? '';
+    const record = run?.events.map((e) => [`[${opName(e.opId)}] ${e.action}`, e.amount ? `amount ${e.amount}` : '', e.temp ? `internal temperature ${e.temp}` : '', e.note ?? ''].filter(Boolean).join('; '));
+    const runYield = bal?.yieldPct;
     set({
       key: `${p}.yield`,
-      value: y !== undefined ? `${String(y)}%` : typeof st.yield === 'string' && st.yield.trim() ? st.yield.trim() : null,
+      value: runYield !== undefined ? `${runYield.toFixed(1)}%` : y !== undefined ? `${String(y)}%` : typeof st.yield === 'string' && st.yield.trim() ? st.yield.trim() : null,
       why: 'スキームに書いてありません',
       kind: 'condition',
       label: `${stepName}の収率`,
     });
-    steps.push({ title: `${st.from.map(nameOf).join(' + ')} → ${st.to.map(nameOf).join(' + ')}`, entities: [...new Set(entities)], rows: order });
+    steps.push({ title: `${st.from.map(nameOf).join(' + ')} → ${st.to.map(nameOf).join(' + ')}`, entities: [...new Set(entities)], rows: order, ...(extras.length ? { extras } : {}), ...(record?.length ? { record } : {}) });
   });
   return { facts, literals, steps };
 }
@@ -154,6 +207,13 @@ Rules:
 - Write in LANGUAGE, in the usual style of experimental sections (past tense, passive voice in English). Follow INSTRUCTION for style if given.
 - If the instruction cannot be followed with these facts, say so in questions.`;
 
+/** 実験の記録の行（RECORD）があるときだけ足す決まり */
+export const WRITEUP_RECORD_RULES = `
+- Some steps have a RECORD: the log of what was actually done. For those steps, write the procedure from the RECORD: order of addition, temperatures, work-up, isolation, drying and observations that matter. Do not write [[work-up]] or [[purification]] for things the RECORD covers.
+- Numbers in RECORD may be copied as written (temperatures, pH, washes, durations). Quantities of the materials in PLACEHOLDERS still come from their placeholders ({{s1.R1.mg}}, {{s1.M1.amount}}); do not copy those amounts from RECORD.
+- Do not write clock times, lot numbers or mass-balance figures. Leave out routine in-process weights (organic layer, concentrate, wet cake) unless they are needed to follow the procedure.
+- Materials marked [also charged] (solvents, wash solutions): always write the name placeholder followed by its amount placeholder, for example {{s1.M2}} ({{s1.M2.amount}}). Do not translate, rewrite or retype these names; the placeholder is filled with the name as the chemist entered it.`;
+
 const LANGUAGE_NAME: Record<WriteLanguage, string> = { en: 'English', ja: 'Japanese' };
 
 /** 送る本文: 言語・指示・段ごとの差し込みの一覧（「送る内容を見る」でそのまま見せる） */
@@ -176,7 +236,12 @@ export function writeUpPrompt(facts: WriteFacts, text: string, language: WriteLa
       }
       for (const f of isProduct ? ['mg', 'mmol'] : ['equiv', 'mmol', 'mg', 'uL']) show(isReagent ? `${e}.${f}` : `${p}.${e}.${f}`);
     }
+    for (const e of st.extras ?? []) {
+      show(e, 'also charged');
+      show(`${e}.amount`);
+    }
     for (const f of ['solvent', 'temp', 'time', 'yield']) show(`${p}.${f}`);
+    if (st.record?.length) lines.push(`  RECORD of step ${i + 1} (what was done, in order):`, ...st.record.map((r) => `    - ${r}`));
   });
   return lines.join('\n');
 }
@@ -220,9 +285,12 @@ const STEP_NUMBER = /\b[Ss]tep\s*\d+|\d+\s*段目|第\s*\d+\s*段/g;
 /** 文の終わり。「equiv.」「e.g.」などの略の点では切らない。日本語の句点は後ろに空白が無くても切る */
 const SENTENCE_END = /[。！？]|(?<!\d|\b(?:equiv|e\.g|i\.e|vs|approx|aq|sat|ca|cf))[.!?](?=\s|$)|\n/g;
 /** {{ }} を付け忘れた印（「s1.R1.mg」「{s1.R1.mg}」「C2」） */
-const BARE_KEY = /(?<![A-Za-z0-9.])\{?(?:s\d+\.(?:R\d+|C\d+)(?:\.\w+)?|s\d+\.(?:solvent|temp|time|yield)|C\d+(?:\.(?:formula|mw))?)\}?(?![A-Za-z0-9])/g;
+const BARE_KEY = /(?<![A-Za-z0-9.])\{?(?:s\d+\.(?:R\d+|C\d+|M\d+)(?:\.\w+)?|s\d+\.(?:solvent|temp|time|yield)|C\d+(?:\.(?:formula|mw))?)\}?(?![A-Za-z0-9])/g;
 /** 数字で書かない量（「two hours」「overnight」「二時間」）。値は差し込みで書かせる */
 const NUMBER_WORDS = /\b(?:two|three|four|five|six|seven|eight|nine|ten|twelve|twice|overnight)\b|[一二三四五六七八九十]+\s*(?:時間|分|日|当量|回)|一晩|一夜/gi;
+
+/** 言葉で書いた数 → 数字 */
+const WORD_NUMBER: Record<string, string> = { two: '2', three: '3', four: '4', five: '5', six: '6', seven: '7', eight: '8', nine: '9', ten: '10', twelve: '12', twice: '2' };
 
 /** 名前の印か（C1・s1.R1）。量の印なら、属する名前の印を返す */
 function entityOf(key: string): { entity: string; isName: boolean } | null {
@@ -230,7 +298,7 @@ function entityOf(key: string): { entity: string; isName: boolean } | null {
   if (m) return { entity: m[1], isName: !m[2] };
   m = /^(s\d+)\.(C\d+)\.\w+$/.exec(key);
   if (m) return { entity: m[2], isName: false };
-  m = /^(s\d+\.R\d+)(?:\.\w+)?$/.exec(key);
+  m = /^(s\d+\.[RM]\d+)(?:\.\w+)?$/.exec(key);
   if (m) return { entity: m[1], isName: key === m[1] };
   return null;
 }
@@ -249,7 +317,7 @@ function kanjiNumber(s: string): string {
   return String(total + digit);
 }
 /** 指示にある数字（全角・漢数字・「3対1」も拾う） */
-function givenNumbers(instruction: string): Set<string> {
+export function givenNumbers(instruction: string): Set<string> {
   const s = instruction
     .normalize('NFKC')
     .replace(/[〇零一二三四五六七八九十百]+/g, kanjiNumber)
@@ -287,14 +355,21 @@ export function fillWriteUp(facts: WriteFacts, raw: RawWriteUp, instruction = ''
   // 段落が段の数と同じなら、条件の書き方（「2 h」）はその段の段落でだけ書いてよい
   const literal = (f: WriteFact) => (f.kind === 'name' || f.kind === 'condition') && !!f.value && /\d/.test(f.value) && /[A-Za-z°぀-鿿]/.test(f.value);
   const longFirst = (a: string, b: string) => b.length - a.length;
-  const given = givenNumbers(instruction);
+  // 指示と、実験の記録の行にある数字は書いてよい
+  const given = givenNumbers([instruction, ...facts.steps.flatMap((st) => st.record ?? [])].join('\n'));
   const paragraphs = template.split(/\n\s*\n/);
   const perStep = paragraphs.length > 1 && paragraphs.length === facts.steps.length;
   paragraphs.forEach((para, i) => {
     let bare = para.replace(PLACEHOLDER, ' ').replace(/\[\[[^\]]*\]\]/g, ' ').normalize('NFKC');
     for (const m of bare.matchAll(BARE_KEY)) add({ kind: 'unknown', message: `「${m[0]}」は {{ }} の無い差し込みの印です。値が差し込まれていません` });
     bare = bare.replace(BARE_KEY, ' ').replace(STEP_NUMBER, ' ');
-    for (const m of bare.matchAll(NUMBER_WORDS)) add({ kind: 'number', message: `「${m[0]}」は、スキームの値から差し込んでいない量です。値が合っているか確かめてください` });
+    for (const m of bare.matchAll(NUMBER_WORDS)) {
+      // 指示か実験の記録にある数を、言葉で書いたもの（「4 回」→ four）はよい
+      const word = m[0].toLowerCase();
+      const asDigit = WORD_NUMBER[word] ?? (/[一二三四五六七八九十]/.test(word) ? kanjiNumber(word.replace(/[^〇零一二三四五六七八九十百]/g, '')) : undefined);
+      if (asDigit !== undefined && given.has(asDigit)) continue;
+      add({ kind: 'number', message: `「${m[0]}」は、スキームの値から差し込んでいない量です。値が合っているか確かめてください` });
+    }
     const own = (f: WriteFact) => !perStep || f.kind === 'name' || f.key.startsWith(`s${i + 1}.`);
     const lits = [...facts.facts.values()].filter(literal);
     for (const s of [...new Set(lits.filter(own).map((f) => f.value!))].sort(longFirst)) bare = bare.replace(new RegExp(escapeRe(s), 'g'), ' ');
@@ -373,12 +448,13 @@ export type WriteUpResult = { ok: true; checked: CheckedWriteUp; usage?: LlmUsag
 /** 実験項の文章を書かせ、差し込んで確かめる */
 export async function writeUp(
   llm: LlmProvider,
-  req: { doc: Doc; schemeId: string; text: string; language: WriteLanguage; thinking?: ThinkingLevel; signal?: AbortSignal },
+  req: { doc: Doc; schemeId: string; text: string; language: WriteLanguage; thinking?: ThinkingLevel; signal?: AbortSignal; /** 実験の記録がある段は、記録の量と行を使う */ useRuns?: boolean },
 ): Promise<WriteUpResult> {
-  const facts = writeFacts(req.doc, req.schemeId);
+  const facts = writeFacts(req.doc, req.schemeId, req.useRuns);
+  const withRecord = facts.steps.some((st) => st.record?.length);
   const r = await askChecked(
     llm,
-    { system: WRITEUP_SYSTEM_PROMPT, user: writeUpPrompt(facts, req.text, req.language), schema: WRITEUP_SCHEMA, thinking: req.thinking, signal: req.signal },
+    { system: withRecord ? WRITEUP_SYSTEM_PROMPT + WRITEUP_RECORD_RULES : WRITEUP_SYSTEM_PROMPT, user: writeUpPrompt(facts, req.text, req.language), schema: WRITEUP_SCHEMA, thinking: req.thinking, signal: req.signal },
     checkWriteUpShape,
   );
   if (!r.ok) return r;
@@ -386,8 +462,8 @@ export async function writeUp(
 }
 
 /** 覚えている印の入った文に、今のスキームの値を差し込み直す（LLM は呼ばない） */
-export function refillWriteUp(doc: Doc, schemeId: string, prev: CheckedWriteUp, instruction = ''): CheckedWriteUp {
-  return fillWriteUp(writeFacts(doc, schemeId), { text: prev.template, questions: prev.questions }, instruction);
+export function refillWriteUp(doc: Doc, schemeId: string, prev: CheckedWriteUp, instruction = '', useRuns = false): CheckedWriteUp {
+  return fillWriteUp(writeFacts(doc, schemeId, useRuns), { text: prev.template, questions: prev.questions }, instruction);
 }
 
 /** スキームの全段の化学量論表（LLM は呼ばない）。markdown は見出しつき、tsv は Excel に貼れる形 */

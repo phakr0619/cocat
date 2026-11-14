@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { openSample, showTab } from './helpers';
+import { openSample, setApiKey, showTab } from './helpers';
 
 // 実験の記録: 仕込み・操作の流れと重さ・操作ごとの記録を入れ、フロー図と収支を描く
 test.beforeEach(async ({ page }) => {
@@ -270,4 +270,99 @@ test('下の表の欄を開いても、画面は横にはみ出さず、右の�
     return Math.min(...xs) > vb.x && Math.max(...xs) < vb.x + vb.width && Math.min(...ys) > vb.y && Math.max(...ys) < vb.y + vb.height;
   });
   expect(fits).toBe(true);
+});
+
+// ---- AI の手伝い（Gemini は呼ばず、page.route で決まった答えを返す） ----
+const API = 'https://generativelanguage.googleapis.com/**';
+async function fakeGemini(page: Page, answer: unknown) {
+  const bodies: string[] = [];
+  await page.route(API, async (route) => {
+    bodies.push(route.request().postData() ?? '');
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      headers: { 'access-control-allow-origin': '*' },
+      body: JSON.stringify({ candidates: [{ content: { parts: [{ text: JSON.stringify(answer) }] }, finishReason: 'STOP' }] }),
+    });
+  });
+  return bodies;
+}
+
+test('メモから作る: キーがあるときだけ出る。メモに無い数字は要確認にして入れず、「記録に入れる」を押すまで記録は変わらない', async ({ page }) => {
+  await page.getByTestId('new-run').click();
+  const dock = page.getByTestId('run-dock');
+  await expect(dock.getByTestId('run-tab-memo')).toHaveCount(0);
+  await setApiKey(page);
+  const bodies = await fakeGemini(page, {
+    operations: [
+      { kind: 'reaction', name: '反応' },
+      { kind: 'wash', name: '洗浄', outputs: [{ name: '水層', amount: '61 g' }], carry: '150 g' },
+      { kind: 'concentration', name: '濃縮', carry: '18.4 g' },
+    ],
+    materials: [{ name: '1 M HCl', role: 'water', amount: '50 g', operation: 2 }],
+    events: [
+      { operation: 1, time: '9:20', action: 'EDC·HCl を入れた', amount: '12.2 g', temp: '2 → 6 °C' },
+      { operation: 2, time: '12:41', action: '1 M HCl で洗った', amount: '50 g' },
+      { operation: 3, action: '濃縮した' },
+    ],
+  });
+  await dock.getByTestId('run-tab-memo').click();
+  await dock.getByTestId('run-memo-text').fill('9:20 EDC·HCl 12.2 g を入れた。内温 2 → 6 °C。\n12:41 1 M HCl 50 g で洗った。有機層 152.0 g、水層 61 g。\n濃縮して 18.4 g。');
+  await expect(dock.getByTestId('run-memo-preview')).toContainText('MEMO:');
+  await dock.getByTestId('run-memo-run').click();
+  await expect(page.getByTestId('llm-consent')).toContainText('ロット、描いた図は送りません');
+  await page.getByTestId('llm-consent-ok').click();
+  const draft = dock.getByTestId('run-memo-draft');
+  await expect(draft.getByTestId('ai-notice')).toContainText('メモと見比べてください');
+  // 「150 g」はメモに無いので、要確認にして入れない
+  await expect(draft.getByTestId('run-memo-issues')).toContainText('「150」は、メモに無い数字です');
+  await expect(draft.getByTestId('run-memo-ops')).toContainText('出る: 水層 61 g');
+  await expect(draft.getByTestId('run-memo-ops')).not.toContainText('150 g');
+  // 送った本文に、メモが入っている
+  expect(bodies[0]).toContain('EDC·HCl 12.2 g');
+  // まだ記録は変わっていない
+  expect((await run(page)).events.length).toBe(0);
+  await draft.getByTestId('run-memo-apply').click();
+  const r = await run(page);
+  expect(r.operations.map((o) => o.name)).toEqual(['反応', '洗浄', '濃縮']);
+  expect(r.events.length).toBe(3);
+  expect(r.operations[1].carry).toBeUndefined();
+  expect(r.operations[2].carry).toEqual({ value: 18.4, unit: 'g' });
+  expect(r.materials.map((m) => m.name)).toContain('1 M HCl');
+  expect((await boxes(page)).length).toBe(3);
+  // 元に戻すと、前の記録に戻る
+  await page.getByTitle('元に戻す (Ctrl+Z)').click();
+  expect((await run(page)).events.length).toBe(0);
+});
+
+test('実験項を書く: 実験の記録を使うと、記録の量と行を送り、記録の値で書く。時刻とロットは送らない', async ({ page }) => {
+  await setApiKey(page);
+  await openSample(page, 'run');
+  const bodies = await fakeGemini(page, {
+    text: '{{C1}} ({{s1.C1.mg}}), {{C2}} ({{s1.C2.mg}}) and {{s1.R2}} ({{s1.R2.mg}}) were dissolved in {{s1.M1}} ({{s1.M1.amount}}). {{s1.R1}} ({{s1.R1.mg}}) was added in 4 portions. The mixture was washed with {{s1.M2}} ({{s1.M2.amount}}) to give {{C3}} ({{s1.C3.mg}}, {{s1.yield}}).',
+    questions: [],
+  });
+  await page.getByTestId('side-back').click();
+  await page.getByTestId('home-scheme').click();
+  await page.getByTestId('scheme-ai-write').click();
+  const panel = page.getByTestId('tts-write');
+  await expect(panel.getByTestId('tts-write-use-runs')).toBeChecked();
+  await expect(panel.getByTestId('tts-write-runs-note')).toContainText('時刻とロットは送りません');
+  await panel.locator('.tts-preview summary').click();
+  const preview = panel.getByTestId('tts-write-preview');
+  await expect(preview).toContainText('RECORD of step 1');
+  await expect(preview).toContainText('{{s1.C1.mg}} = 10 g');
+  await expect(preview).not.toContainText('09:12');
+  await expect(preview).not.toContainText('L-2311');
+  await panel.getByTestId('tts-write-run').click();
+  await expect(page.getByTestId('llm-consent-run')).toContainText('記録の行も送ります');
+  await page.getByTestId('llm-consent-ok').click();
+  await expect(panel.getByTestId('tts-write-out')).toHaveValue(/CH2Cl2 \(100 mL\)/);
+  await expect(panel.getByTestId('tts-write-out')).toHaveValue(/3 \(11\.9 g, 86\.5%\)/);
+  await expect(panel.getByTestId('tts-write-ok')).toBeVisible();
+  expect(bodies[0]).toContain('Some steps have a RECORD');
+  // 使わないことにすると、化学量論表の値に戻り、記録の行は送らない
+  await panel.getByTestId('tts-write-use-runs').uncheck();
+  await expect(preview).not.toContainText('RECORD of step 1');
+  await expect(preview).toContainText('{{s1.C1.mg}} = 10000.0 mg');
 });

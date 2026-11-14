@@ -1,0 +1,528 @@
+{
+  "model": "gemini-3.8-flash",
+  "thinking": "low",
+  "recordedAt": "2026-11-14T23-09-12",
+  "outcomes": {
+    "coupling-full": "correct",
+    "tfa-short": "correct",
+    "lioh-workup": "correct",
+    "kg-crystallization": "correct",
+    "ambiguous": "correct"
+  },
+  "raw": {
+    "coupling-full": [
+      {
+        "operations": [
+          {
+            "kind": "charge",
+            "name": "原料仕込み"
+          },
+          {
+            "kind": "reaction",
+            "name": "縮合反応"
+          },
+          {
+            "kind": "wash",
+            "name": "洗浄",
+            "outputs": [
+              {
+                "name": "水層",
+                "amount": "163.9 g"
+              }
+            ],
+            "carry": "152.0 g"
+          },
+          {
+            "kind": "concentration",
+            "name": "減圧濃縮",
+            "outputs": [
+              {
+                "name": "留出",
+                "amount": "131.0 g"
+              }
+            ],
+            "carry": "18.4 g"
+          },
+          {
+            "kind": "crystallization",
+            "name": "晶析"
+          },
+          {
+            "kind": "filtration",
+            "name": "ろ過",
+            "outputs": [
+              {
+                "name": "母液と洗液",
+                "amount": "89.2 g"
+              }
+            ],
+            "carry": "14.9 g"
+          },
+          {
+            "kind": "drying",
+            "name": "減圧乾燥",
+            "carry": "11.9 g"
+          }
+        ],
+        "materials": [
+          {
+            "name": "1 M HCl",
+            "role": "water",
+            "amount": "50 g",
+            "operation": 3
+          },
+          {
+            "name": "飽和重曹水",
+            "role": "water",
+            "amount": "50 g",
+            "operation": 3
+          },
+          {
+            "name": "食塩水",
+            "role": "water",
+            "amount": "50 g",
+            "operation": 3
+          },
+          {
+            "name": "AcOEt",
+            "role": "solvent",
+            "amount": "18 g",
+            "operation": 5
+          },
+          {
+            "name": "ヘプタン",
+            "role": "solvent",
+            "amount": "69 g",
+            "operation": 5
+          }
+        ],
+        "events": [
+          {
+            "operation": 1,
+            "time": "09:12",
+            "action": "Boc-Ala-OH、H-Gly-OMe、HOBt を CH2Cl2 に投入",
+            "amount": "100 mL",
+            "temp": "20 °C",
+            "note": "無色の溶液"
+          },
+          {
+            "operation": 2,
+            "time": "09:20",
+            "action": "氷冷して EDC·HCl を 4 回に分けて投入",
+            "amount": "12.2 g",
+            "temp": "2 → 6 °C",
+            "note": "発熱あり"
+          },
+          {
+            "operation": 2,
+            "time": "12:30",
+            "action": "HPLC 分析",
+            "note": "原料の残り 0.4 area%"
+          },
+          {
+            "operation": 3,
+            "time": "12:41",
+            "action": "1 M HCl で洗浄",
+            "amount": "50 g",
+            "note": "水層 pH 1"
+          },
+          {
+            "operation": 3,
+            "time": "12:55",
+            "action": "飽和重曹水で洗浄",
+            "amount": "50 g",
+            "note": "水層 pH 8、分離に 5 min"
+          },
+          {
+            "operation": 3,
+            "time": "13:06",
+            "action": "食塩水で洗浄",
+            "amount": "50 g",
+            "note": "有機層 152.0 g、水層は合わせて 163.9 g"
+          },
+          {
+            "operation": 4,
+            "time": "13:30",
+            "action": "減圧濃縮",
+            "temp": "35 °C",
+            "note": "留出 131.0 g、濃縮物 18.4 g"
+          },
+          {
+            "operation": 5,
+            "time": "14:10",
+            "action": "AcOEt に溶解しヘプタンを投入、冷却",
+            "note": "45 °C から 5 °C まで冷やした。25 °C で結晶が出はじめた"
+          },
+          {
+            "operation": 6,
+            "time": "16:00",
+            "action": "ろ過",
+            "note": "母液と洗液で 89.2 g、湿結晶 14.9 g"
+          },
+          {
+            "operation": 7,
+            "time": "16:20",
+            "action": "減圧乾燥",
+            "temp": "40 °C",
+            "note": "11.9 g"
+          }
+        ]
+      }
+    ],
+    "tfa-short": [
+      {
+        "operations": [
+          {
+            "kind": "charge",
+            "name": "溶解・氷冷"
+          },
+          {
+            "kind": "addition",
+            "name": "TFA滴下"
+          },
+          {
+            "kind": "reaction",
+            "name": "反応"
+          },
+          {
+            "kind": "concentration",
+            "name": "濃縮"
+          },
+          {
+            "kind": "swap",
+            "name": "トルエン共沸",
+            "carry": "5.2 g"
+          }
+        ],
+        "materials": [
+          {
+            "name": "トルエン",
+            "role": "solvent",
+            "amount": "20 mL",
+            "operation": 5
+          }
+        ],
+        "events": [
+          {
+            "operation": 1,
+            "action": "ジペプチドをジクロロに溶解し氷冷",
+            "amount": "25 mL"
+          },
+          {
+            "operation": 2,
+            "action": "TFAを滴下",
+            "amount": "15 mL",
+            "note": "10分かけて滴下"
+          },
+          {
+            "operation": 3,
+            "action": "室温に戻して撹拌",
+            "note": "1時間、TLCで原料消失"
+          },
+          {
+            "operation": 4,
+            "action": "エバポ"
+          },
+          {
+            "operation": 5,
+            "action": "トルエンで共沸",
+            "amount": "20 mL",
+            "note": "2回共沸、白い固体 5.2 g"
+          }
+        ]
+      }
+    ],
+    "lioh-workup": [
+      {
+        "operations": [
+          {
+            "kind": "charge",
+            "name": "原料溶解および試薬投入"
+          },
+          {
+            "kind": "reaction",
+            "name": "反応"
+          },
+          {
+            "kind": "quench",
+            "name": "酸中和"
+          },
+          {
+            "kind": "extraction",
+            "name": "酢酸エチル抽出",
+            "outputs": [
+              {
+                "name": "水層",
+                "amount": "131 g"
+              }
+            ]
+          },
+          {
+            "kind": "drying",
+            "name": "乾燥およびろ過"
+          },
+          {
+            "kind": "concentration",
+            "name": "濃縮",
+            "carry": "7.1 g"
+          }
+        ],
+        "materials": [
+          {
+            "name": "1 M HCl",
+            "role": "reagent",
+            "amount": "55 mL",
+            "operation": 3
+          },
+          {
+            "name": "酢酸エチル",
+            "role": "solvent",
+            "amount": "80 mL",
+            "operation": 4
+          },
+          {
+            "name": "硫酸マグネシウム",
+            "role": "other",
+            "amount": "5 g",
+            "operation": 5
+          }
+        ],
+        "events": [
+          {
+            "operation": 1,
+            "time": "10:05",
+            "action": "エステルをTHFと水に溶解し、LiOH·H2Oを投入",
+            "amount": "2.1 g",
+            "temp": "0 °C"
+          },
+          {
+            "operation": 2,
+            "time": "12:10",
+            "action": "HPLC確認",
+            "note": "原料 0.2%"
+          },
+          {
+            "operation": 3,
+            "time": "12:20",
+            "action": "1 M HClで中和",
+            "amount": "55 mL",
+            "temp": "8 °C",
+            "note": "pH 3、内温 8 °C まで上がった"
+          },
+          {
+            "operation": 4,
+            "time": "12:35",
+            "action": "酢酸エチルで2回抽出、水層を廃棄",
+            "amount": "80 mL",
+            "note": "水層 131 g"
+          },
+          {
+            "operation": 5,
+            "time": "13:00",
+            "action": "有機層を硫酸マグネシウムで乾燥、ろ過",
+            "amount": "5 g"
+          },
+          {
+            "operation": 6,
+            "time": "13:40",
+            "action": "濃縮",
+            "note": "白色固体 7.1 g"
+          }
+        ]
+      }
+    ],
+    "kg-crystallization": [
+      {
+        "operations": [
+          {
+            "kind": "charge",
+            "name": "溶解"
+          },
+          {
+            "kind": "crystallization",
+            "name": "晶析"
+          },
+          {
+            "kind": "filtration",
+            "name": "ろ過・洗浄",
+            "outputs": [
+              {
+                "name": "母液・洗液",
+                "amount": "14.9 kg"
+              }
+            ],
+            "carry": "2.61 kg"
+          },
+          {
+            "kind": "drying",
+            "name": "減圧乾燥",
+            "carry": "2.13 kg"
+          }
+        ],
+        "materials": [
+          {
+            "name": "種晶",
+            "role": "other",
+            "amount": "12 g",
+            "operation": 2
+          },
+          {
+            "name": "水",
+            "role": "water",
+            "amount": "4.8 L",
+            "operation": 2
+          },
+          {
+            "name": "エタノール/水 1:1",
+            "role": "solvent",
+            "amount": "2.4 L",
+            "operation": 3
+          }
+        ],
+        "events": [
+          {
+            "operation": 1,
+            "time": "08:30",
+            "action": "粗体をエタノールに溶かした",
+            "amount": "2.40 kg",
+            "temp": "70 °C"
+          },
+          {
+            "operation": 2,
+            "time": "09:10",
+            "action": "冷やして種晶を入れた",
+            "amount": "12 g",
+            "temp": "55 °C"
+          },
+          {
+            "operation": 2,
+            "time": "09:15",
+            "action": "熟成",
+            "temp": "55 °C",
+            "note": "1 h 熟成、スラリーになった"
+          },
+          {
+            "operation": 2,
+            "time": "10:20",
+            "action": "水を滴下",
+            "amount": "4.8 L",
+            "note": "2 h かけて滴下"
+          },
+          {
+            "operation": 2,
+            "time": "12:30",
+            "action": "冷やして撹拌",
+            "temp": "5 °C",
+            "note": "2 h 撹拌"
+          },
+          {
+            "operation": 3,
+            "time": "14:40",
+            "action": "ろ過し、エタノール/水 1:1 でケーキを洗った",
+            "amount": "2.4 L",
+            "note": "母液・洗液 14.9 kg、湿ケーキ 2.61 kg"
+          },
+          {
+            "operation": 4,
+            "time": "15:10",
+            "action": "減圧乾燥",
+            "temp": "50 °C",
+            "note": "翌朝 2.13 kg、乾燥減量 0.2%"
+          }
+        ]
+      }
+    ],
+    "ambiguous": [
+      {
+        "operations": [
+          {
+            "kind": "charge",
+            "name": "溶解・仕込み"
+          },
+          {
+            "kind": "addition",
+            "name": "TBSCl投入"
+          },
+          {
+            "kind": "reaction",
+            "name": "一晩攪拌"
+          },
+          {
+            "kind": "quench",
+            "name": "水投入"
+          },
+          {
+            "kind": "extraction",
+            "name": "ヘキサン抽出",
+            "outputs": [
+              {
+                "name": "水層"
+              }
+            ]
+          },
+          {
+            "kind": "wash",
+            "name": "食塩水洗浄",
+            "outputs": [
+              {
+                "name": "食塩水層"
+              }
+            ]
+          },
+          {
+            "kind": "concentration",
+            "name": "濃縮"
+          }
+        ],
+        "materials": [
+          {
+            "name": "水",
+            "role": "water",
+            "operation": 4
+          },
+          {
+            "name": "ヘキサン",
+            "role": "solvent",
+            "operation": 5
+          },
+          {
+            "name": "食塩水",
+            "role": "water",
+            "operation": 6
+          }
+        ],
+        "events": [
+          {
+            "operation": 1,
+            "action": "アルコールとイミダゾールをDMFに溶かした"
+          },
+          {
+            "operation": 2,
+            "action": "TBSClを入れた"
+          },
+          {
+            "operation": 3,
+            "action": "一晩反応させた"
+          },
+          {
+            "operation": 4,
+            "action": "水を適量入れた"
+          },
+          {
+            "operation": 5,
+            "action": "ヘキサンで抽出した"
+          },
+          {
+            "operation": 6,
+            "action": "食塩水で洗った"
+          },
+          {
+            "operation": 7,
+            "action": "濃縮した",
+            "note": "油状物。重さは量り忘れた。"
+          }
+        ]
+      }
+    ]
+  }
+}

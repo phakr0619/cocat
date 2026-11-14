@@ -1,6 +1,11 @@
 // 下の表の欄: 実験の記録の仕込み・操作と記録・収支を、キャンバスの下の広い表で入れる。
 // 図の箱を選ぶと、その操作の行を同じ色で示す
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
+import { applyRunDraft, runPrompt, textToRun, type RunDraft } from '../llm/textToRun';
+import { providerLabel } from '../llm/providerLabel';
+import { getLlmSettings, llmProvider, setLlmSettings, subscribeLlmSettings } from '../llm/settings';
+import { llmErrorText } from '../llm/types';
+import { AiNotice } from './AiNotice';
 import { track } from '../analytics';
 import { useEditor, type EditorStore } from '../editor/store';
 import { printPage } from '../io/print';
@@ -14,7 +19,7 @@ import {
 import { materialDerived, runEventsCsv, runReportHtml, runTables, runToTableRow, runTsv } from '../process/report';
 import { download } from './IoPanel';
 
-type Tab = 'materials' | 'log' | 'balance';
+type Tab = 'materials' | 'log' | 'balance' | 'memo';
 const HEIGHT_KEY = 'ai-chem-editor:dock-height';
 const NOTICE_KEY = 'ai-chem-editor:run-notice';
 
@@ -69,6 +74,7 @@ export function RunDock({ store, runId, onClose }: { store: EditorStore; runId: 
       return true;
     }
   });
+  const llm = useSyncExternalStore(subscribeLlmSettings, getLlmSettings);
   const [quick, setQuick] = useState('');
   const quickRef = useRef<HTMLInputElement>(null);
   const [quickOp, setQuickOp] = useState<string | null>(null);
@@ -141,7 +147,7 @@ export function RunDock({ store, runId, onClose }: { store: EditorStore; runId: 
       <div className="dock-resize" onPointerDown={startResize} role="separator" aria-orientation="horizontal" aria-label="表の欄の高さを変える" />
       <div className="dock-head">
         <div className="dock-tabs" role="tablist">
-          {([['materials', '仕込み'], ['log', '操作と記録'], ['balance', '収支']] as const).map(([id, name]) => (
+          {([['materials', '仕込み'], ['log', '操作と記録'], ['balance', '収支'], ...(llm.apiKey ? ([['memo', '✦ メモから作る']] as const) : [])] as const).map(([id, name]) => (
             <button key={id} type="button" role="tab" aria-selected={tab === id} className={tab === id ? 'on' : ''} data-testid={`run-tab-${id}`} onClick={() => setTab(id)}>
               {name}
             </button>
@@ -356,6 +362,7 @@ export function RunDock({ store, runId, onClose }: { store: EditorStore; runId: 
             </div>
           </div>
         )}
+        {tab === 'memo' && <MemoToRun store={store} runId={runId} onDone={() => setTab('log')} />}
         {tab === 'balance' && (
           <div className="dock-scroll">
             <table className="dock-table plain" data-testid="run-balance">
@@ -481,5 +488,170 @@ export function RunSummary({ store, runId, onOpenTable }: { store: EditorStore; 
       </div>
       <p className="muted">量と記録は、キャンバスの下の表で入れます。フロー図の箱を選ぶと、その操作の行が青くなります。</p>
     </section>
+  );
+}
+
+type MemoState = { state: 'idle' } | { state: 'busy'; abort: AbortController } | { state: 'error'; text: string };
+
+/** メモから作る: 実験のメモの文章から、操作・外へ出た物・重さ・記録の下書きを AI で作る。確かめて「記録に入れる」を押すまで、記録は変わらない */
+function MemoToRun({ store, runId, onDone }: { store: EditorStore; runId: string; onDone(): void }) {
+  const doc = useEditor(store, (s) => s.doc);
+  const s = useSyncExternalStore(subscribeLlmSettings, getLlmSettings);
+  const run = doc.runs?.[runId];
+  const [memo, setMemo] = useState('');
+  const [state, setState] = useState<MemoState>({ state: 'idle' });
+  const [draft, setDraft] = useState<RunDraft | null>(null);
+  const [consent, setConsent] = useState(false);
+  const abortRef = useRef<AbortController | null>(null);
+  useEffect(() => () => abortRef.current?.abort(), []);
+  if (!run) return null;
+  const send = async () => {
+    const p = llmProvider();
+    if (!p || !memo.trim()) return;
+    const abort = new AbortController();
+    abortRef.current = abort;
+    setState({ state: 'busy', abort });
+    setDraft(null);
+    track('llm:run-memo');
+    const r = await textToRun(p, { doc: store.get().doc, runId, memo, thinking: getLlmSettings().thinking, signal: abort.signal });
+    if (!r.ok) {
+      setState(r.error.kind === 'aborted' ? { state: 'idle' } : { state: 'error', text: llmErrorText(r.error, getLlmSettings().paidKey) });
+      if (r.error.kind !== 'aborted') track(`llm:error-${r.error.kind}`);
+      return;
+    }
+    setState({ state: 'idle' });
+    setDraft(r.draft);
+  };
+  const start = () => {
+    if (!getLlmSettings().consented) setConsent(true);
+    else void send();
+  };
+  const apply = () => {
+    if (!draft) return;
+    store.commit(applyRunDraft(store.get().doc, runId, draft), new Set());
+    store.set({ message: '下書きを記録に入れました。元に戻すと前の記録に戻ります' });
+    track('run:memo-apply');
+    setDraft(null);
+    setMemo('');
+    onDone();
+  };
+  const replaces = run.events.length > 0 || run.operations.some((o) => o.carry || o.outputs.some((x) => x.amount));
+  return (
+    <div className="dock-split dock-memo" data-testid="run-memo">
+      <div className="dock-scroll dock-memo-in">
+        <textarea
+          data-testid="run-memo-text"
+          aria-label="実験のメモ"
+          placeholder={'実験のメモを貼ります。例:\n9:20 氷冷して EDC·HCl 12.2 g を入れた。内温 2 → 6 °C。\n12:41 1 M HCl 50 g で洗った。有機層 152.0 g、水層 61 g。'}
+          value={memo}
+          onChange={(e) => setMemo(e.target.value)}
+        />
+        <div className="row">
+          {state.state === 'busy' ? (
+            <>
+              <span className="muted" data-testid="run-memo-busy">作っています…</span>
+              <button type="button" onClick={() => state.abort.abort()}>やめる</button>
+            </>
+          ) : (
+            <button type="button" className="primary" data-testid="run-memo-run" disabled={!memo.trim()} onClick={start}>
+              下書きを作る
+            </button>
+          )}
+        </div>
+        {!s.paidKey && providerLabel(s.provider).freeKeyUsedForTraining && <p className="warn" data-testid="run-memo-free-warning">無料のキーでは、送った内容が Google の製品の改善に使われます。秘密の内容は送らないでください。</p>}
+        {state.state === 'error' && <p className="warn" data-testid="run-memo-error">{state.text}</p>}
+        <details className="tts-preview">
+          <summary>送る内容を見る</summary>
+          <pre data-testid="run-memo-preview">{runPrompt(doc, run, memo)}</pre>
+        </details>
+      </div>
+      <div className="dock-scroll dock-memo-out">
+        {!draft && <p className="muted">メモから、操作・外へ出た物・重さ・記録の下書きを作ります。量・温度・時刻は、メモに書いてある数字だけを入れます。</p>}
+        {draft && (
+          <div data-testid="run-memo-draft">
+            <AiNotice kind="run" />
+            {draft.issues.length > 0 && (
+              <ul className="run-warnings" data-testid="run-memo-issues">
+                {draft.issues.map((i, n) => (
+                  <li key={n}>要確認: {i.message}</li>
+                ))}
+              </ul>
+            )}
+            {draft.questions.length > 0 && (
+              <ul data-testid="run-memo-questions">
+                {draft.questions.map((q, n) => (
+                  <li key={n}>{q}</li>
+                ))}
+              </ul>
+            )}
+            <ol className="memo-ops" data-testid="run-memo-ops">
+              {draft.operations.map((op, i) => (
+                <li key={i}>
+                  <b>{op.name}</b>
+                  <span className="muted">
+                    {[
+                      ...draft.materials.filter((m) => m.operation === i + 1).map((m) => `入れる: ${m.name}${m.amount ? ` ${formatAmount(m.amount)}` : ''}`),
+                      ...op.outputs.map((o) => `出る: ${o.name}${o.amount ? ` ${formatAmount(o.amount)}` : ''}`),
+                      op.carry ? `${i === draft.operations.length - 1 ? '得た重さ' : '次へ'} ${formatAmount(op.carry)}` : '',
+                    ]
+                      .filter(Boolean)
+                      .join('、')}
+                  </span>
+                  <ul>
+                    {draft.events.filter((e) => e.operation === i + 1).map((e, k) => (
+                      <li key={k}>{[e.time, e.action, e.amount, e.temp, e.note].filter(Boolean).join('　')}</li>
+                    ))}
+                  </ul>
+                </li>
+              ))}
+            </ol>
+            {replaces && <p className="warn" data-testid="run-memo-replaces">今の操作と記録は、この下書きの物に置き換わります。仕込みの行は残ります。</p>}
+            <div className="row">
+              <button type="button" className="primary" data-testid="run-memo-apply" onClick={apply}>記録に入れる</button>
+              <button type="button" data-testid="run-memo-discard" onClick={() => setDraft(null)}>やめる</button>
+            </div>
+          </div>
+        )}
+      </div>
+      {consent && (
+        <MemoConsent
+          paidKey={s.paidKey}
+          onClose={(ok) => {
+            setConsent(false);
+            if (ok) {
+              setLlmSettings({ consented: true });
+              void send();
+            }
+          }}
+        />
+      )}
+    </div>
+  );
+}
+
+/** 初めて送るときの同意（メモから作るときに送るもの） */
+function MemoConsent({ paidKey, onClose }: { paidKey: boolean; onClose(ok: boolean): void }) {
+  const ref = useRef<HTMLDialogElement>(null);
+  const ok = useRef(false);
+  useEffect(() => {
+    const d = ref.current;
+    if (d && !d.open) d.showModal();
+  }, []);
+  return (
+    <dialog ref={ref} className="about" data-testid="llm-consent" onClose={() => onClose(ok.current)}>
+      <h2>{providerLabel(getLlmSettings().provider).label}に送ります</h2>
+      <ul>
+        <li>送るのは、入力したメモと、今の仕込みの名前・量・役割、生成物の名前です。構造（SMILES）、ロット、描いた図は送りません。</li>
+        <li>送る前に、「送る内容を見る」で中身を確かめられます。</li>
+        {!paidKey && <li className="warn">無料のキーでは、送った内容が Google の製品の改善に使われ、人が読むこともあります。未発表の内容など秘密の内容は送らないでください。</li>}
+      </ul>
+      <AiNotice kind="run" />
+      <form method="dialog" className="row">
+        <button type="submit" data-testid="llm-consent-ok" onClick={() => (ok.current = true)}>
+          同意して送る
+        </button>
+        <button type="submit">やめる</button>
+      </form>
+    </dialog>
   );
 }

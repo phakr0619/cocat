@@ -4,6 +4,7 @@ import { checkPlan, confirmDraft, draftScheme, type Plan } from '../src/llm/text
 import type { LlmProvider } from '../src/llm/types';
 import { checkWriteUpShape, fillWriteUp, refillWriteUp, schemeNotebook, schemeStoichTables, writeFacts, writeUp, writeUpPrompt, WRITEUP_SYSTEM_PROMPT } from '../src/llm/writeUp';
 import { updateStoich } from '../src/scheme/ops';
+import { SAMPLES } from '../src/samples';
 import { loadRDKit } from './rdkit';
 
 beforeAll(loadRDKit);
@@ -253,5 +254,58 @@ describe('ノート用の図（LLM を呼ばない）', () => {
     expect(lines.slice(i)).toContain('｜  0 °C, 1 h');
     expect(lines.slice(i).some((l) => l.startsWith('7  ') && l.endsWith('quant.）'))).toBe(true);
     expect(lines.indexOf('｜← Boc-Ala-OH  189.2 mg（1.00 mmol, 1 equiv）')).toBeLessThan(lines.indexOf('｜← HATU  456.3 mg（1.20 mmol, 1.2 equiv）'));
+  });
+});
+
+describe('実験の記録を使って書く', () => {
+  const runDoc = () => SAMPLES.find((s) => s.id === 'run')!.build();
+  const sidOf = (d: ReturnType<typeof runDoc>) => Object.keys(d.schemes!)[0];
+
+  it('記録がある段は、入れた量・得た重さ・収率を記録の値にし、記録にだけある仕込みと記録の行を足す', () => {
+    const d = runDoc();
+    const f = writeFacts(d, sidOf(d), true);
+    const v = (k: string) => f.facts.get(k)?.value;
+    expect(v('s1.C1.mg')).toBe('10 g');
+    expect(v('s1.R1.mg')).toBe('12.2 g');
+    // 得た重さと収率は記録から（スキームの収率 85% ではない）
+    expect(v('s1.C3.mg')).toBe('11.9 g');
+    expect(v('s1.yield')).toBe('86.5%');
+    // 化学量論表に無い仕込み: 溶媒と洗浄液
+    const extras = f.steps[0].extras!.map((e) => `${v(e)}=${v(`${e}.amount`)}`);
+    expect(extras).toContain('CH2Cl2=100 mL');
+    expect(extras).toContain('1 M HCl=50 g');
+    expect(extras).toContain('ヘプタン=69 g');
+    expect(f.steps[0].record!.length).toBe(10);
+    expect(f.steps[0].record![1]).toBe('[反応] EDC·HCl を 4 回に分けて入れる; amount 12.2 g; internal temperature 2 → 6 °C; 発熱あり');
+    // 時刻とロットは入れない
+    const prompt = writeUpPrompt(f, '', 'en');
+    expect(prompt).not.toMatch(/09:12|L-2311/);
+    expect(prompt).toContain('RECORD of step 1');
+    expect(prompt).toContain('[also charged]');
+    // 記録を使わなければ、今までどおり化学量論表の値
+    expect(writeFacts(d, sidOf(d)).facts.get('s1.C1.mg')?.value).toBe('10000.0 mg');
+    expect(writeFacts(d, sidOf(d)).steps[0].record).toBeUndefined();
+  });
+
+  it('記録の行にある数字は書いてよい。記録にも指示にも無い数字は知らせる', () => {
+    const d = runDoc();
+    const f = writeFacts(d, sidOf(d), true);
+    const base = '{{C1}} ({{s1.C1.mg}}, {{s1.C1.mmol}}), {{C2}} ({{s1.C2.mg}}) and {{s1.R2}} ({{s1.R2.mg}}) were dissolved in {{s1.M1}} ({{s1.M1.amount}}). {{s1.R1}} ({{s1.R1.mg}}) was added in 4 portions at 2 → 6 °C. ';
+    const ok = fillWriteUp(f, { text: `${base}The mixture was washed with {{s1.M2}} ({{s1.M2.amount}}) to give {{C3}} ({{s1.C3.mg}}, {{s1.yield}}).`, questions: [] });
+    expect(ok.issues).toEqual([]);
+    expect(ok.text).toContain('CH2Cl2 (100 mL)');
+    expect(ok.text).toContain('3 (11.9 g, 86.5%)');
+    const bad = fillWriteUp(f, { text: `${base}After stirring for 7 h, {{C3}} ({{s1.C3.mg}}) was obtained.`, questions: [] });
+    expect(bad.issues.some((i) => i.kind === 'number' && i.message.includes('「7」'))).toBe(true);
+  });
+
+  it('記録があるときだけ、記録の決まりを指示に足して送る', async () => {
+    const d = runDoc();
+    const seen: string[] = [];
+    const llm = { id: 'gemini' as const, generateJson: async (req: { system: string }) => (seen.push(req.system), { ok: true as const, value: { text: '{{C1}} {{C2}} {{s1.R1}} {{s1.R2}} {{C3}}' } }), listModels: async () => ({ ok: true as const, value: [] }) };
+    await writeUp(llm as never, { doc: d, schemeId: sidOf(d), text: '', language: 'en', useRuns: true });
+    await writeUp(llm as never, { doc: d, schemeId: sidOf(d), text: '', language: 'en' });
+    expect(seen[0]).toContain('Some steps have a RECORD');
+    expect(seen[1]).not.toContain('Some steps have a RECORD');
   });
 });
