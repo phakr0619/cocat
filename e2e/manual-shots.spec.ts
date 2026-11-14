@@ -194,7 +194,7 @@ test('矢印の種類', async ({ page }) => {
 /** 見本を開き、キャンバスの描いた範囲だけを撮る */
 async function openSample(page: Page, id: string, zoomOut = 0) {
   await openSampleMenu(page, id);
-  for (let i = 0; i < zoomOut; i++) await page.getByRole('button', { name: '−', exact: true }).click();
+  for (let i = 0; i < zoomOut; i++) await page.getByTestId('zoom-out').click();
   await page.mouse.move(2, 2);
 }
 /** 列の中身の高さまでを撮る */
@@ -231,6 +231,8 @@ test('スキームのデータ（3段）と書式', async ({ page }) => {
   await page.mouse.move(2, 2);
   await shotDrawing(page, 'scheme-footnote');
   await page.getByTestId('scheme-panel').getByTestId('scheme-style').selectOption('acs');
+  // 3 段からは段を 1 行にまとめてあるので、開いてから化学量論表を開く
+  await page.getByTestId('scheme-step').first().getByTestId('step-summary').click();
   await page.getByTestId('scheme-panel').getByTestId('stoich').first().locator('summary').click();
   await page.getByTestId('stoich-scale').first().fill('100');
   await page.mouse.move(2, 2);
@@ -288,4 +290,33 @@ test('NMR の予測', async ({ page }) => {
   await page.getByTestId('nmr-h1').getByTestId('nmr-row').first().click();
   await page.mouse.move(2, 2);
   await page.getByTestId('nmr').screenshot({ path: `${OUT}/nmr.png` });
+});
+
+test('実験の記録', async ({ page }) => {
+  await load(page);
+  await openSampleMenu(page, 'run');
+  await page.getByTestId('run-notice').getByRole('button', { name: '分かりました' }).click();
+  await page.getByTestId('zoom-fit').click();
+  await page.mouse.move(2, 2);
+  await page.screenshot({ path: `${OUT}/run-overview.png` });
+  await page.getByTestId('run-dock').screenshot({ path: `${OUT}/run-log.png` });
+  await page.getByTestId('run-tab-materials').click();
+  await page.getByTestId('run-dock').screenshot({ path: `${OUT}/run-materials.png` });
+  await page.getByTestId('run-direction').selectOption('vertical');
+  await page.getByTestId('run-dock-close').click();
+  await page.getByTestId('zoom-fit').click();
+  await page.mouse.move(2, 2);
+  // フロー図だけを撮る（記録が置いた物の範囲）
+  const box = await page.evaluate(() => {
+    const d = window.__editor!.get().doc;
+    const id = Object.keys(d.runs!)[0];
+    const xs: number[] = [];
+    const ys: number[] = [];
+    for (const t of Object.values(d.texts)) if (t.ref === id) (xs.push(t.x, t.x + t.text.length * 5.6), ys.push(t.y - 8, t.y + 3));
+    for (const s of Object.values(d.shapes!)) if (s.ref === id) (xs.push(s.x1, s.x2), ys.push(s.y1, s.y2));
+    return { x1: Math.min(...xs) - 8, y1: Math.min(...ys) - 6, x2: Math.max(...xs) + 8, y2: Math.max(...ys) + 8 };
+  });
+  await page.getByTestId('side-collapse').click();
+  await page.getByTestId('zoom-fit').click();
+  await shot(page, 'run-flow-vertical', box);
 });

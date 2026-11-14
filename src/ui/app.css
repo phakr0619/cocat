@@ -159,7 +159,8 @@ input:focus, select:focus, textarea:focus { outline: 2px solid rgb(37 99 235 / 0
 /* キャンバスの上に重ねる物: 今の道具の案内（左下）、操作の結果の知らせ（下の中央）、拡大・縮小（右下）、畳んだ右の欄を開くつまみ（右上） */
 .tool-hint { position: absolute; left: 12px; bottom: 12px; max-width: min(46%, 520px); padding: 5px 10px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); color: var(--text-2); font-size: var(--fs-s); line-height: 1.45; pointer-events: none; z-index: 3; }
 .tool-hint:empty { display: none; }
-.status { position: absolute; left: 50%; bottom: 56px; transform: translateX(-50%); max-width: 70%; padding: 7px 14px; background: var(--bar); color: var(--bar-text); border-radius: 8px; box-shadow: 0 6px 20px rgb(16 24 40 / 0.22); font-size: var(--fs-m); z-index: 6; pointer-events: none; animation: status-fade 8s forwards; }
+/* 知らせは上に出す（下は図と今の道具の案内に重なるため） */
+.status { position: absolute; left: 50%; top: 52px; transform: translateX(-50%); max-width: 70%; padding: 7px 14px; background: var(--bar); color: var(--bar-text); border-radius: 8px; box-shadow: 0 6px 20px rgb(16 24 40 / 0.22); font-size: var(--fs-m); z-index: 6; pointer-events: none; animation: status-fade 8s forwards; }
 .status:empty { display: none; }
 @keyframes status-fade { 0%, 85% { opacity: 1; } 100% { opacity: 0; } }
 .stage-zoom { position: absolute; right: 12px; bottom: 12px; display: flex; align-items: center; gap: 2px; padding: 3px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); z-index: 3; }
