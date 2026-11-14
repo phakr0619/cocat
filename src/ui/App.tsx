@@ -22,7 +22,9 @@ import { AnalysisPanel } from './AnalysisPanel';
 import { LibraryPanel } from './LibraryPanel';
 import { ProjectStore } from '../project/store';
 import { placeCompound } from '../project/library';
-import { SchemePanel } from './SchemePanel';
+import { activeSchemeId, SchemePanel } from './SchemePanel';
+import { NextStepGhost, SchemeEditPopover } from './OnCanvasEditors';
+import type { SchemeTarget } from '../scheme/pick';
 import { TablePanel } from './TablePanel';
 import { SAMPLES } from '../samples';
 import { About } from './About';
@@ -283,6 +285,9 @@ export function App() {
   const [overlay, setOverlay] = useState<Overlay | null>(null);
   /** キャンバスでドラッグなどをしている間（選んだ物の帯を隠す） */
   const [busy, setBusy] = useState(false);
+  /** 図の上で直している段か化合物 */
+  const [schemeEdit, setSchemeEdit] = useState<SchemeTarget | null>(null);
+  const activeScheme = activeSchemeId(doc, selection);
   /** 右クリックのメニュー（画面の座標） */
   const [ctxMenu, setCtxMenu] = useState<{ x: number; y: number } | null>(null);
   /** 「書き出す」の画面 */
@@ -506,7 +511,7 @@ export function App() {
   };
   /** 選んだ物の帯を出す所（キャンバスの左上からの px）。選択の道具で選んでいて、ドラッグしていないときだけ */
   const selBar = (() => {
-    if (busy || overlay || !selection.size || (tool !== 'select' && tool !== 'lasso')) return null;
+    if (busy || overlay || schemeEdit || !selection.size || (tool !== 'select' && tool !== 'lasso')) return null;
     const r = selectionFrame(doc, selection);
     const el = stageRef.current;
     if (!r || !el) return null;
@@ -674,6 +679,11 @@ export function App() {
           onLabelEdit={openLabelEditor}
           onTextEdit={openTextEditor}
           onBusy={setBusy}
+          onSchemeEdit={(t) => {
+            if (store.get().doc.schemes?.[t.schemeId]?.pinned) return store.set({ message: '固定中のスキームです。直すときは、右の欄で固定を外してください' });
+            setSchemeEdit(t);
+            track(`scheme:edit-on-canvas-${t.kind}`, { once: true });
+          }}
           onMenu={(at, hit) => {
             // 選んでいない物の上で押したら、その物（分子なら分子全体）を選んでからメニューを出す
             const st = store.get();
@@ -697,6 +707,8 @@ export function App() {
             <button type="button" data-testid="sel-more" title="ほかの操作" aria-label="ほかの操作" onClick={(e) => { const r = e.currentTarget.getBoundingClientRect(); setCtxMenu({ x: r.left, y: r.bottom + 4 }); }}>⋯</button>
           </div>
         )}
+        {schemeEdit && <SchemeEditPopover key={`${schemeEdit.kind}:${schemeEdit.schemeId}:${schemeEdit.kind === 'step' ? schemeEdit.stepIndex : schemeEdit.compoundId}`} store={store} target={schemeEdit} view={view} onClose={() => setSchemeEdit(null)} />}
+        {side === 'scheme' && sideOpen && activeScheme && !busy && <NextStepGhost store={store} schemeId={activeScheme} view={view} />}
         {ctxMenu && <PopupMenu at={ctxMenu} label="操作" items={contextItems()} onClose={() => setCtxMenu(null)} testId="ctx-menu" />}
         {barColors && <PopupMenu at={barColors} label="色" items={colorItems} onClose={() => setBarColors(null)} testId="sel-colors" />}
         {isEmpty && <EntryCards onSample={openSample} onAi={() => openAi('create')} />}

@@ -535,3 +535,26 @@ fieldset.plain:disabled { opacity: 0.6; }
 .export-dialog .export-only-selected { display: flex; align-items: center; gap: 4px; margin: 0 0 6px; }
 .export-dialog .export-outside { color: var(--warn); margin: 0 0 6px; }
 .export-dialog output.error { display: block; color: var(--danger); margin-top: 6px; }
+
+/* 図の上で直す小さな欄 */
+.canvas-pop { position: absolute; z-index: 7; width: 330px; padding: 10px 12px; background: var(--surface); border: 1px solid var(--border-strong); border-radius: 10px; box-shadow: 0 8px 24px rgb(16 24 40 / 0.18); font-size: var(--fs-s); }
+.canvas-pop h4 { display: flex; justify-content: space-between; margin: 0 0 6px; font-size: var(--fs-m); }
+.canvas-pop button.link { border: none; background: none; color: var(--muted); padding: 0 2px; }
+.canvas-pop-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px 8px; }
+.canvas-pop-grid.two { grid-template-columns: 1fr 2fr; }
+.canvas-pop .field { display: flex; flex-direction: column; gap: 2px; color: var(--text-2); min-width: 0; }
+.canvas-pop .field input { font: var(--fs-m) system-ui, sans-serif; padding: 4px 6px; border: 1px solid var(--border-strong); border-radius: 5px; min-width: 0; }
+.canvas-pop-foot { margin: 8px 0 0; color: var(--muted); }
+.canvas-pop .row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.next-step { position: absolute; z-index: 3; transform: translateY(-50%); padding: 8px 10px; border: 1.5px dashed var(--accent-line); border-radius: 8px; background: var(--accent-soft); color: var(--accent-text); font-size: var(--fs-s); white-space: nowrap; }
+.next-step:hover:not(:disabled) { border-color: var(--accent); background: var(--accent-soft); }
+/* 右の欄の段: 1 行にまとめ、開くと入力欄 */
+.scheme-panel details.step > summary { display: flex; align-items: center; gap: 8px; cursor: pointer; list-style: none; padding: 2px 0; }
+.scheme-panel details.step > summary::-webkit-details-marker { display: none; }
+.scheme-panel details.step > summary b { flex: none; font-size: var(--fs-s); }
+.scheme-panel details.step .step-sum { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text-2); font-size: var(--fs-s); }
+.scheme-panel details.step .step-yield { flex: none; font-weight: 600; font-variant-numeric: tabular-nums; font-size: var(--fs-s); }
+.scheme-panel details.step[open] > summary { margin-bottom: 4px; }
+.scheme-panel details.step.active { border-color: var(--accent); background: var(--accent-soft); }
+.scheme-panel .step-head { justify-content: flex-end; }
+.scheme-panel .compound-replace button:disabled { display: none; }

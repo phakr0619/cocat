@@ -273,3 +273,98 @@ test('ページの設定があるときは、スキームの行の幅をペー�
   await page.getByText('書式を編集').click();
   await expect(page.getByTestId('style-page-width')).toBeVisible();
 });
+
+// ---- 図の上で直す ----
+/** スキームの物（矢印・文字）の画面の座標 */
+async function screenOf(page: import('@playwright/test').Page, pick: 'arrow' | { text: string }, nth = 0) {
+  return page.evaluate(
+    ({ pick, nth }) => {
+      const d = window.__editor!.get().doc;
+      const svg = document.querySelector('[data-testid=canvas]') as SVGSVGElement;
+      const vb = svg.viewBox.baseVal;
+      const r = svg.getBoundingClientRect();
+      const zoom = svg.clientWidth / vb.width;
+      const to = (x: number, y: number) => ({ x: r.left + (x - vb.x) * zoom, y: r.top + (y - vb.y) * zoom });
+      if (pick === 'arrow') {
+        const a = Object.values(d.arrows).filter((x) => x.ref)[nth];
+        return to((a.x1 + a.x2) / 2, a.y1);
+      }
+      const t = Object.values(d.texts).filter((x) => x.text === pick.text)[nth];
+      return to(t.x + 2, t.y - 3);
+    },
+    { pick, nth },
+  );
+}
+
+test('図の上で直す: 矢印をダブルクリックすると、そばに条件の欄が出て、右の欄を使わずに収率を直せる', async ({ page }) => {
+  await openSample(page, 'multistep');
+  // 右の欄を畳んでいても直せる
+  await page.getByTestId('side-collapse').click();
+  const at = await screenOf(page, 'arrow', 2);
+  await page.mouse.dblclick(at.x, at.y);
+  const pop = page.getByTestId('step-pop');
+  await expect(pop).toContainText('段 3');
+  await expect(pop.getByTestId('pop-yield')).toHaveValue('92');
+  await pop.getByTestId('pop-yield').fill('95');
+  await pop.getByTestId('pop-yield').press('Enter');
+  expect(await page.evaluate(() => Object.values(window.__editor!.get().doc.schemes!)[0].steps[2].yield)).toBe(95);
+  // 図の文字も変わる
+  expect(await page.evaluate(() => Object.values(window.__editor!.get().doc.texts).some((t) => t.text === '95%'))).toBe(true);
+  // 続けてほかの欄も直せる（描き直しても欄は閉じない）
+  await pop.getByTestId('pop-solvent').fill('MeOH/H2O');
+  await pop.getByTestId('pop-solvent').press('Enter');
+  expect(await page.evaluate(() => Object.values(window.__editor!.get().doc.schemes!)[0].steps[2].solvent)).toBe('MeOH/H2O');
+  await page.keyboard.press('Escape');
+  await expect(pop).toHaveCount(0);
+});
+
+test('図の上で直す: 条件の文字はその段の欄を、番号の文字は番号と呼び名の欄を出す', async ({ page }) => {
+  await openSample(page, 'multistep');
+  const tfa = await screenOf(page, { text: 'TFA' });
+  await page.mouse.dblclick(tfa.x, tfa.y);
+  await expect(page.getByTestId('step-pop')).toContainText('段 2');
+  await expect(page.getByTestId('text-input')).toHaveCount(0);
+  await page.keyboard.press('Escape');
+  const four = await screenOf(page, { text: '4' });
+  await page.mouse.dblclick(four.x, four.y);
+  const pop = page.getByTestId('compound-pop');
+  await expect(pop.getByTestId('pop-number')).toHaveValue('4');
+  await pop.getByTestId('pop-number').fill('4a');
+  await pop.getByTestId('pop-number').press('Enter');
+  await pop.getByTestId('pop-nickname').fill('アミン');
+  await pop.getByTestId('pop-nickname').press('Enter');
+  const c = await page.evaluate(() => {
+    const d = window.__editor!.get().doc;
+    const s = Object.values(d.schemes!)[0];
+    return d.compounds![s.steps[1].to[0]];
+  });
+  expect(c.number).toBe('4a');
+  expect(c.nickname).toBe('アミン');
+});
+
+test('次の段: スキームの右端の「＋ 次の段」から、SMILES で生成物を足せる', async ({ page }) => {
+  await openSample(page, 'coupling');
+  await page.getByTestId('next-step').click();
+  await page.getByTestId('next-step-text').fill('C[C@H](N)C(=O)NCC(=O)OC');
+  await page.getByTestId('next-step-add').click();
+  await expect(page.getByTestId('scheme-step')).toHaveCount(2);
+  expect(await page.evaluate(() => Object.values(window.__editor!.get().doc.schemes!)[0].steps.length)).toBe(2);
+});
+
+test('右の欄の段: 3 段からは 1 行にまとめ、キャンバスで選んだ段だけを開く', async ({ page }) => {
+  await openSample(page, 'multistep');
+  const steps = page.getByTestId('scheme-step');
+  await expect(steps).toHaveCount(3);
+  await expect(steps.nth(1).getByTestId('step-summary')).toContainText('TFA / CH2Cl2, 0 °C to rt, 1 h');
+  await expect(steps.nth(1).getByTestId('step-summary')).toContainText('quant.');
+  await expect(steps.nth(1).getByTestId('step-yield')).toBeHidden();
+  // 行を押すと開く
+  await steps.nth(1).getByTestId('step-summary').click();
+  await expect(steps.nth(1).getByTestId('step-yield')).toBeVisible();
+  // キャンバスで 3 段目の矢印を選ぶと、3 段目が開く
+  await tool(page, 'select');
+  const at = await screenOf(page, 'arrow', 2);
+  await page.mouse.click(at.x, at.y);
+  await expect(steps.nth(2).getByTestId('step-yield')).toBeVisible();
+  await expect(steps.nth(2)).toHaveClass(/active/);
+});

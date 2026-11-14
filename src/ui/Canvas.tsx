@@ -15,6 +15,8 @@ import { fragmentOf, ringPreview, rotateHandle, selectionFrame } from '../editor
 import { pageDims, pagesBox, type PageSetup } from '../chem/page';
 import { partPreview } from '../chem/partOps';
 
+import { schemeTargetOf, type SchemeTarget } from '../scheme/pick';
+
 const HILITE = '#3b82f6';
 /** 右ボタン: これより動かしたらドラッグ（表示を動かす）、動かさなければメニュー。環を回す操作と同じ 3 pt */
 const MENU_SLOP = 3;
@@ -30,9 +32,11 @@ export interface View {
 export const MIN_ZOOM = 0.1;
 export const MAX_ZOOM = 8;
 
-export function Canvas({ store, view, setView, showStereo, marks, onDropCompound, onLabelEdit, onTextEdit, onMenu, onBusy }: {
+export function Canvas({ store, view, setView, showStereo, marks, onDropCompound, onLabelEdit, onTextEdit, onMenu, onBusy, onSchemeEdit }: {
   /** 右ボタンを押しただけのとき（ドラッグしなかったとき）。at は画面の座標、hit は押した物 */
   onMenu?(at: { x: number; y: number }, hit: string | null): void;
+  /** スキームの矢印・条件の文字・番号の文字をダブルクリックした（図の上で直す） */
+  onSchemeEdit?(target: SchemeTarget): void;
   /** ドラッグなどの操作の始まりと終わり（選んだ物の帯を、操作の間は隠すため） */
   onBusy?(busy: boolean): void;
   showStereo?: boolean;
@@ -220,6 +224,11 @@ export function Canvas({ store, view, setView, showStereo, marks, onDropCompound
     const p = toDoc(e);
     const hit = hitTest(store.get().doc, lay, p);
     const t = store.get().tool;
+    // スキームの矢印・条件・番号は、データを直す小さな欄を出す（文字を直接直しても、描き直すと戻るため）
+    if (hit && onSchemeEdit && (kindOf(hit) === 'arrow' || kindOf(hit) === 'text')) {
+      const target = schemeTargetOf(store.get().doc, hit);
+      if (target) return onSchemeEdit(target);
+    }
     if ((t === 'select' || t === 'lasso') && hit && (kindOf(hit) === 'atom' || kindOf(hit) === 'bond')) {
       store.set({ selection: fragmentOf(store.get().doc, hit) });
     } else if (hit && kindOf(hit) === 'atom') onLabelEdit(hit);

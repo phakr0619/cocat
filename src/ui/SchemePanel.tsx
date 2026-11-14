@@ -11,6 +11,7 @@ import { STYLE_PRESETS, deleteMyStyle, getStyle, loadMyStyles, type SchemeStyle 
 import { StyleEditor } from './StyleEditor';
 import { NewSchemeForm } from './NewSchemeForm';
 import { StoichTable } from './StoichTable';
+import { schemeTargetOf } from '../scheme/pick';
 import { Thumb } from './LibraryPanel';
 
 /** 選択に含まれるスキームの id（無ければ文書の最初のスキーム） */
@@ -42,7 +43,20 @@ export function Field({ label, value, onCommit, testId, width }: { label: string
   );
 }
 
-const reagentsToText = (st: Step) => st.reagents.map((r) => (r.equiv !== undefined ? `${r.text} (${r.equiv} equiv)` : r.text)).join(', ');
+export const reagentsToText = (st: Step) => st.reagents.map((r) => (r.equiv !== undefined ? `${r.text} (${r.equiv} equiv)` : r.text)).join(', ');
+
+/** 試薬の欄の文字を試薬の並びにする。化学量論表で入れた分子量・密度は、同じ名前の試薬なら引き継ぐ */
+export function reagentsFromText(st: Step, v: string) {
+  const old = new Map(st.reagents.map((r) => [r.text, r]));
+  return parseReagents(v).map((r) => ({ ...r, mw: old.get(r.text)?.mw, density: old.get(r.text)?.density }));
+}
+/** 収率の欄の文字。数字なら数、「quant.」などは文字のまま */
+export const parseYield = (v: string): number | string | undefined => (v === '' ? undefined : /^\d+(\.\d+)?%?$/.test(v.trim()) ? parseFloat(v) : v);
+/** 段を 1 行にまとめた文字（「TFA / CH2Cl2, 0 °C, 1 h」） */
+export function stepSummary(st: Step): string {
+  const cond = [st.solvent, st.temp, st.time].filter(Boolean).join(', ');
+  return [st.reagents.map((r) => r.text).join(', '), cond].filter(Boolean).join(' / ');
+}
 
 export function SchemePanel({
   store,
@@ -63,6 +77,18 @@ export function SchemePanel({
   const oneSelected = selection.size > 0 && selected.length === 1 ? selected[0] : null;
   const say = (message: string) => store.set({ message });
   const [myStyles, setMyStyles] = useState<SchemeStyle[]>(() => loadMyStyles());
+  /** 開け閉めした段（段の id → 開いているか）。押していない段は、2 段までなら開き、3 段からはキャンバスで選んだ段だけ開く */
+  const [stepOpen, setStepOpen] = useState<Record<string, boolean>>({});
+  /** キャンバスで選んでいる段（矢印か条件の文字を選んでいるとき） */
+  const activeStep = (() => {
+    if (!sid) return -1;
+    for (const id of selection) {
+      if (!doc.arrows[id] && !doc.texts[id]) continue;
+      const t = schemeTargetOf(doc, id);
+      if (t?.kind === 'step' && t.schemeId === sid) return t.stepIndex;
+    }
+    return -1;
+  })();
   const docStyles = Object.values(doc.styles ?? {});
   const pin = scheme?.pinned;
   // 固定した図の化合物量論表と番号は、固定したときの写しで見せる
@@ -153,9 +179,22 @@ export function SchemePanel({
           </div>
           <StyleEditor store={store} schemeId={sid} style={pin?.style ?? getStyle(scheme.styleId, doc.styles)} onSaved={setMyStyles} />
           {scheme.steps.map((st, i) => (
-            <div className="step" key={st.id} data-testid="scheme-step">
-              <div className="step-head">
+            <details
+              className={`step${activeStep === i ? ' active' : ''}`}
+              key={st.id}
+              data-testid="scheme-step"
+              open={stepOpen[st.id] ?? (scheme.steps.length <= 2 || activeStep === i)}
+              onToggle={(e) => {
+                const open = (e.currentTarget as HTMLDetailsElement).open;
+                if (open !== (stepOpen[st.id] ?? (scheme.steps.length <= 2 || activeStep === i))) setStepOpen((m) => ({ ...m, [st.id]: open }));
+              }}
+            >
+              <summary data-testid="step-summary">
                 <b>段 {i + 1}</b>
+                <span className="step-sum">{stepSummary(st)}</span>
+                <span className="step-yield">{st.yield === undefined ? '' : typeof st.yield === 'number' ? `${st.yield}%` : st.yield}</span>
+              </summary>
+              <div className="step-head">
                 <button type="button" disabled={!oneSelected} title="選んだ分子を、この段の基質に足す。カップリングの相手など" onClick={() => oneSelected && store.commit(addSubstrate(store.get().doc, sid, i, oneSelected), new Set())}>
                   ＋基質
                 </button>
@@ -167,12 +206,7 @@ export function SchemePanel({
                   width="1 / 3"
                   testId="step-reagents"
                   value={reagentsToText(st)}
-                  onCommit={(v) => {
-                    // 化学量論表で入れた分子量・密度は、同じ名前の試薬なら引き継ぐ
-                    const old = new Map(st.reagents.map((r) => [r.text, r]));
-                    const reagents = parseReagents(v).map((r) => ({ ...r, mw: old.get(r.text)?.mw, density: old.get(r.text)?.density }));
-                    store.commit(updateStep(store.get().doc, sid, i, { reagents }));
-                  }}
+                  onCommit={(v) => store.commit(updateStep(store.get().doc, sid, i, { reagents: reagentsFromText(st, v) }))}
                 />
                 <Field label="溶媒" testId="step-solvent" value={st.solvent ?? ''} onCommit={(v) => store.commit(updateStep(store.get().doc, sid, i, { solvent: v || undefined }))} />
                 <Field label="温度" testId="step-temp" value={st.temp ?? ''} onCommit={(v) => store.commit(updateStep(store.get().doc, sid, i, { temp: v || undefined }))} />
@@ -181,12 +215,12 @@ export function SchemePanel({
                   label="収率（%）"
                   testId="step-yield"
                   value={st.yield === undefined ? '' : String(st.yield)}
-                  onCommit={(v) => store.commit(updateStep(store.get().doc, sid, i, { yield: v === '' ? undefined : /^\d+(\.\d+)?%?$/.test(v.trim()) ? parseFloat(v) : v }))}
+                  onCommit={(v) => store.commit(updateStep(store.get().doc, sid, i, { yield: parseYield(v) }))}
                 />
                 <Field label="ノート番号" testId="step-notebook" value={st.notebook ?? ''} onCommit={(v) => store.commit(updateStep(store.get().doc, sid, i, { notebook: v || undefined }))} />
               </div>
               <StoichTable store={store} doc={view} schemeId={sid} index={i} step={st} />
-            </div>
+            </details>
           ))}
           <div className="row">
             <button type="button" data-testid="add-step" disabled={!oneSelected} onClick={() => oneSelected && store.commit(addStepWithProduct(store.get().doc, sid, oneSelected), new Set())}>
