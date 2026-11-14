@@ -223,3 +223,71 @@ export function runLabel(run: ProcessRun): string {
 export function materialName(doc: Doc, m: Material): string {
   return m.compoundId && doc.compounds?.[m.compoundId] ? compoundName(doc, m.compoundId, m.name) : m.name;
 }
+
+// ---------------------------------------------------------------- 記録を持ち運ぶ（プロジェクトに入れる）
+
+/**
+ * 記録を、ほかの図に置き直せる形で取り出す。スキームとのつながりは外し、
+ * 化合物から引いていた名前は、今の番号か呼び名の文字にする
+ */
+export function packRun(doc: Doc, runId: string): ProcessRun | null {
+  const r = doc.runs?.[runId];
+  if (!r) return null;
+  const run = structuredClone(r);
+  delete run.schemeId;
+  delete run.stepId;
+  run.materials = run.materials.map((m) => {
+    const out = { ...m, name: materialName(doc, m) };
+    delete out.compoundId;
+    return out;
+  });
+  if (run.product.compoundId) run.product = { ...run.product, name: compoundName(doc, run.product.compoundId, run.product.name) };
+  delete run.product.compoundId;
+  return run;
+}
+
+/**
+ * 取り出した記録を、今の図の下に置く。id はすべて振り直す（同じ文書に何度置いてもよい）。
+ * procedureOnly なら、仕込みの名前・役割・当量と操作の流れだけを残し、量・ロット・重さ・記録の行を外して今日の日付にする（次の回のひな形）
+ */
+export function placeRun(doc: Doc, saved: ProcessRun, procedureOnly = false, today = new Date()): { doc: Doc; runId: string } {
+  let runId = '';
+  const out = edit(doc, (d) => {
+    runId = newId(d, 'e');
+    const id = () => newId(d, 'e');
+    const src = structuredClone(saved);
+    const opMap = new Map<string, string>();
+    const operations: Operation[] = src.operations.map((op) => {
+      const nid = id();
+      opMap.set(op.id, nid);
+      const o: Operation = { ...op, id: nid, outputs: op.outputs.map((x) => ({ ...x, id: id() })) };
+      if (procedureOnly) {
+        delete o.carry;
+        o.outputs = o.outputs.map(({ id: oid, name }) => ({ id: oid, name }));
+      }
+      return o;
+    });
+    const materials: Material[] = src.materials.map((m) => {
+      const n: Material = { ...m, id: id(), ...(m.opId ? { opId: opMap.get(m.opId) } : {}) };
+      if (procedureOnly) {
+        delete n.amount;
+        delete n.lot;
+        delete n.assay;
+      }
+      return n;
+    });
+    const events: RunEvent[] = procedureOnly ? [] : src.events.map((e) => ({ ...e, id: id(), opId: opMap.get(e.opId) ?? e.opId }));
+    const run: ProcessRun = {
+      ...src,
+      id: runId,
+      materials,
+      operations,
+      events,
+      origin: below(d),
+      ...(procedureOnly ? { date: `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`, product: { name: src.product.name, ...(src.product.mw ? { mw: src.product.mw } : {}) } } : {}),
+    };
+    if (procedureOnly) delete run.notebook;
+    d.runs = { ...(d.runs ?? {}), [runId]: run };
+  });
+  return { doc: renderRun(out, runId), runId };
+}

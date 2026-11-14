@@ -9,7 +9,8 @@ import { writeMolfile } from '../io/molfile';
 import { expandAllAbbr } from '../chem/abbrOps';
 import { structureFrom, type Structure } from '../scheme/model';
 import { packTable } from '../table/ops';
-import type { LibraryCompound, Part, Project, SavedFigure, SavedTable } from './model';
+import { packRun } from '../process/ops';
+import type { LibraryCompound, Part, Project, SavedFigure, SavedRun, SavedTable } from './model';
 
 export interface Identity {
   smiles: string;
@@ -207,6 +208,23 @@ export function removeSavedTable(project: Project, id: string): Project {
   return touch({ ...project, tables });
 }
 
+// ---------------------------------------------------------------- 実験の記録
+
+/** 文書の実験の記録をプロジェクトに入れる。overwriteId なら上書き */
+export function saveRun(project: Project, doc: Doc, runId: string, name: string, overwriteId?: string): { project: Project; id: string } | null {
+  const run = packRun(doc, runId);
+  if (!run) return null;
+  const id = overwriteId ?? `rn-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
+  const saved: SavedRun = { id, name: name.trim() || '実験の記録', run, savedAt: new Date().toISOString() };
+  return { project: touch({ ...project, runs: { ...(project.runs ?? {}), [id]: saved } }), id };
+}
+
+export function removeSavedRun(project: Project, id: string): Project {
+  const runs = { ...(project.runs ?? {}) };
+  delete runs[id];
+  return touch({ ...project, runs });
+}
+
 // ---------------------------------------------------------------- 部品
 
 /** 選んだ分子を部品にする（つなぐ点は R のラベルの原子） */
@@ -259,5 +277,5 @@ export function importBundle(text: string): Project {
   const data = JSON.parse(text) as { format?: string; project?: Project };
   if (data.format !== BUNDLE_FORMAT || !data.project) throw new Error('プロジェクトのファイルではありません');
   const p = data.project;
-  return { ...p, id: `prj-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`, compounds: p.compounds ?? {}, figures: p.figures ?? {}, parts: p.parts ?? {}, tables: p.tables ?? {} };
+  return { ...p, id: `prj-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`, compounds: p.compounds ?? {}, figures: p.figures ?? {}, parts: p.parts ?? {}, tables: p.tables ?? {}, runs: p.runs ?? {} };
 }

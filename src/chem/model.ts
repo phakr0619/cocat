@@ -84,6 +84,8 @@ export interface Arrow {
   noGo?: boolean;
   /** 色（「#d32f2f」など）。無ければ黒 */
   color?: string;
+  /** 線の太さ（pt）。無ければ描き方の線の太さ。実験の記録のフロー図で、重さを太さで示すときに使う */
+  weight?: number;
 }
 
 export interface TextBox {

@@ -6,9 +6,10 @@ import { emptyDoc } from '../chem/model';
 import { useEditor, type EditorStore } from '../editor/store';
 import {
   addPart, removePart, exportBundle, exportSdf, importBundle, linkedFragments, placeCompound, registerCompound, removeFigure, removeLibraryCompound,
-  removeSavedTable, saveFigure, saveTable, searchCompounds, setLink, updateLibraryInfo, updateLibraryStructure,
+  removeSavedRun, removeSavedTable, saveFigure, saveRun, saveTable, searchCompounds, setLink, updateLibraryInfo, updateLibraryStructure,
 } from '../project/library';
 import { placeTable } from '../table/ops';
+import { placeRun, runLabel } from '../process/ops';
 import { displayName, type LibraryCompound } from '../project/model';
 import { useProject, type ProjectStore } from '../project/store';
 import { structureSvg } from '../render/layout';
@@ -25,12 +26,12 @@ export function Thumb({ c }: { c: { structure: Structure } }) {
   return <div className="thumb" dangerouslySetInnerHTML={{ __html: svg }} />;
 }
 
-export function LibraryPanel({ store, projects, viewCenter }: { store: EditorStore; projects: ProjectStore; viewCenter(): P }) {
+export function LibraryPanel({ store, projects, viewCenter, onPlaceRun }: { store: EditorStore; projects: ProjectStore; viewCenter(): P; onPlaceRun?(runId: string): void }) {
   const project = useProject(projects, (s) => s.project);
   const summaries = useProject(projects, (s) => s.summaries);
   const doc = useEditor(store, (s) => s.doc);
   const selection = useEditor(store, (s) => s.selection);
-  const [tab, setTab] = useState<'compounds' | 'figures' | 'tables' | 'parts'>('compounds');
+  const [tab, setTab] = useState<'compounds' | 'figures' | 'tables' | 'runs' | 'parts'>('compounds');
   const [partName, setPartName] = useState('');
   const activePart = useEditor(store, (s) => (s.tool === 'part' ? s.part?.id : null));
   const [query, setQuery] = useState('');
@@ -124,6 +125,9 @@ export function LibraryPanel({ store, projects, viewCenter }: { store: EditorSto
         </button>
         <button type="button" role="tab" data-testid="tables-tab" aria-selected={tab === 'tables'} className={tab === 'tables' ? 'on' : ''} onClick={() => setTab('tables')}>
           表 {Object.keys(project.tables ?? {}).length}
+        </button>
+        <button type="button" role="tab" data-testid="runs-tab" aria-selected={tab === 'runs'} className={tab === 'runs' ? 'on' : ''} onClick={() => setTab('runs')}>
+          記録 {Object.keys(project.runs ?? {}).length}
         </button>
         <button type="button" role="tab" data-testid="parts-tab" aria-selected={tab === 'parts'} className={tab === 'parts' ? 'on' : ''} onClick={() => setTab('parts')}>
           部品 {Object.keys(project.parts ?? {}).length}
@@ -306,6 +310,65 @@ export function LibraryPanel({ store, projects, viewCenter }: { store: EditorSto
                   <button type="button" className="danger" onClick={() => projects.update(removeSavedTable(project, t.id))}>消す</button>
                 </li>
               ))}
+          </ul>
+        </>
+      )}
+
+      {tab === 'runs' && (
+        <>
+          <p className="muted">実験の記録をプロジェクトに入れます。入れた記録は、ほかの図に置き直せます。「手順だけ置く」は量と記録の行を外して置くので、次の回の記録に使えます。</p>
+          {Object.values(doc.runs ?? {}).length > 0 ? (
+            <ul className="fig-list">
+              {Object.values(doc.runs ?? {}).map((r) => {
+                const label = [runLabel(r), r.date].filter(Boolean).join(' ');
+                return (
+                  <li key={r.id} data-testid="doc-run">
+                    <span>{label}</span>
+                    <small>この図の記録・操作 {r.operations.length}</small>
+                    <button
+                      type="button"
+                      data-testid="save-run"
+                      onClick={() => {
+                        const res = saveRun(project, store.get().doc, r.id, label);
+                        if (!res) return;
+                        projects.update(res.project);
+                        track('run:save');
+                        say(`「${label}」をプロジェクトに入れました`);
+                      }}
+                    >
+                      入れる
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          ) : (
+            <p className="muted">この図には実験の記録がありません。右の欄の「実験の記録」で作れます。</p>
+          )}
+          <ul className="fig-list">
+            {Object.values(project.runs ?? {})
+              .sort((a, b) => b.savedAt.localeCompare(a.savedAt))
+              .map((r) => {
+                const place = (procedureOnly: boolean) => {
+                  const res = placeRun(store.get().doc, r.run, procedureOnly);
+                  store.commit(res.doc, new Set());
+                  track(procedureOnly ? 'run:place-procedure' : 'run:place');
+                  onPlaceRun?.(res.runId);
+                };
+                return (
+                  <li key={r.id} data-testid="saved-run" className="wide-item">
+                    <span>{r.name}</span>
+                    <small>{new Date(r.savedAt).toLocaleString('ja-JP')}・操作 {r.run.operations.length}・仕込み {r.run.materials.length}</small>
+                    <button type="button" data-testid="place-run" onClick={() => place(false)} title="今の図の下に置く">
+                      置く
+                    </button>
+                    <button type="button" data-testid="place-run-procedure" onClick={() => place(true)} title="量と記録の行を外して、今の図の下に置く">
+                      手順だけ置く
+                    </button>
+                    <button type="button" className="danger" onClick={() => projects.update(removeSavedRun(project, r.id))}>消す</button>
+                  </li>
+                );
+              })}
           </ul>
         </>
       )}

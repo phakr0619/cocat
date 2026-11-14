@@ -113,6 +113,10 @@ export interface ProcessRun {
     direction: FlowDirection;
     /** 矢印に重さを添える */
     showMass: boolean;
+    /** 外へ出る物に、その中の生成物の重さを添え、得た生成物に含量を添える（含量を入れた物だけ） */
+    showProduct?: boolean;
+    /** 操作から次の操作へ進む矢印の太さを、進む物の重さに合わせる */
+    widthByMass?: boolean;
   };
   /** フロー図の左上（pt） */
   origin: { x: number; y: number };

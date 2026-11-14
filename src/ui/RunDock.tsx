@@ -157,16 +157,7 @@ export function RunDock({ store, runId, onClose }: { store: EditorStore; runId: 
         <Cell label="ノート番号" placeholder="ノート番号" className="w-note" testId="run-notebook" value={run.notebook ?? ''} onCommit={(v) => commit(setRunInfo(store.get().doc, runId, { notebook: v }))} />
         <input type="date" className="dock-cell w-date" aria-label="行った日" data-testid="run-date" value={run.date ?? ''} onChange={(e) => commit(setRunInfo(store.get().doc, runId, { date: e.target.value }))} />
         <span className="spacer" />
-        <label className="dock-opt">
-          <select data-testid="run-direction" aria-label="フロー図の書式" value={run.flow.direction} onChange={(e) => (commit(setRunFlow(store.get().doc, runId, { direction: e.target.value as ProcessRun['flow']['direction'] })), track(`run:flow-${e.target.value}`, { once: true }))}>
-            <option value="horizontal">フロー図: 横に並べる</option>
-            <option value="vertical">フロー図: 縦に並べる</option>
-          </select>
-        </label>
-        <label className="dock-opt">
-          <input type="checkbox" data-testid="run-show-mass" checked={run.flow.showMass} onChange={(e) => commit(setRunFlow(store.get().doc, runId, { showMass: e.target.checked }))} />
-          重さを出す
-        </label>
+        <FlowFormat run={run} set={(patch, ev) => (commit(setRunFlow(store.get().doc, runId, patch)), ev && track(ev, { once: true }))} />
         <button type="button" className="dock-close" data-testid="run-dock-close" title="表の欄を畳む" aria-label="表の欄を畳む" onClick={onClose}>
           ▾
         </button>
@@ -653,5 +644,53 @@ function MemoConsent({ paidKey, onClose }: { paidKey: boolean; onClose(ok: boole
         <button type="submit">やめる</button>
       </form>
     </dialog>
+  );
+}
+
+/** フロー図の書式（向き・重さ・生成物の重さ・太さ）。下の表の欄の上の段に、畳んで置く */
+function FlowFormat({ run, set }: { run: ProcessRun; set(patch: Partial<ProcessRun['flow']>, event?: string): void }) {
+  const ref = useRef<HTMLDetailsElement>(null);
+  useEffect(() => {
+    const close = (e: PointerEvent) => {
+      if (ref.current?.open && !ref.current.contains(e.target as Node)) ref.current.open = false;
+    };
+    document.addEventListener('pointerdown', close);
+    return () => document.removeEventListener('pointerdown', close);
+  }, []);
+  const f = run.flow;
+  // 上の段は横へ送れる（overflow）ので、開いた欄は画面に固定して、段に切られないようにする
+  const [at, setAt] = useState<{ top: number; right: number } | null>(null);
+  return (
+    <details
+      className="dock-fmt"
+      ref={ref}
+      onToggle={(e) => {
+        const r = (e.currentTarget as HTMLDetailsElement).querySelector('summary')!.getBoundingClientRect();
+        setAt({ top: r.bottom + 4, right: window.innerWidth - r.right });
+      }}
+    >
+      <summary data-testid="run-format">フロー図: {f.direction === 'vertical' ? '縦' : '横'}</summary>
+      <div className="dock-fmt-pop" style={at ?? undefined}>
+        <label className="dock-opt">
+          向き
+          <select data-testid="run-direction" aria-label="フロー図の向き" value={f.direction} onChange={(e) => set({ direction: e.target.value as ProcessRun['flow']['direction'] }, `run:flow-${e.target.value}`)}>
+            <option value="horizontal">横に並べる</option>
+            <option value="vertical">縦に並べる</option>
+          </select>
+        </label>
+        <label className="dock-opt">
+          <input type="checkbox" data-testid="run-show-mass" checked={f.showMass} onChange={(e) => set({ showMass: e.target.checked })} />
+          重さを出す
+        </label>
+        <label className="dock-opt">
+          <input type="checkbox" data-testid="run-show-product" checked={!!f.showProduct} disabled={!f.showMass} onChange={(e) => set({ showProduct: e.target.checked }, 'run:flow-product')} />
+          外へ出る物の中の生成物の重さと、含量も出す
+        </label>
+        <label className="dock-opt">
+          <input type="checkbox" data-testid="run-width-by-mass" checked={!!f.widthByMass} onChange={(e) => set({ widthByMass: e.target.checked }, 'run:flow-width')} />
+          操作の間の矢印を、重さに合わせた太さにする
+        </label>
+      </div>
+    </details>
   );
 }

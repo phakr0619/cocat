@@ -5,7 +5,10 @@ import { exportSvg } from '../src/io/convert';
 import { runBalance } from '../src/process/balance';
 import { runBoxes, runTargetOf } from '../src/process/layout';
 import { formatGrams, parseAmount, toGrams } from '../src/process/model';
-import { addOperation, createRun, dissolveRun, moveOperation, removeOperation, removeRun, setRunFlow, updateOperation } from '../src/process/ops';
+import { addOperation, createRun, dissolveRun, moveOperation, packRun, placeRun, removeOperation, removeRun, setRunFlow, updateOperation } from '../src/process/ops';
+import { newProject } from '../src/project/model';
+import { importBundle, exportBundle, removeSavedRun, saveRun } from '../src/project/library';
+import { exportZip } from '../src/project/zip';
 import { syncRuns } from '../src/process/sync';
 import { SAMPLES } from '../src/samples';
 import { edit } from '../src/chem/model';
@@ -127,6 +130,39 @@ describe('フロー図', () => {
     expect(exportSvg(doc)).toContain('分液・洗浄');
   });
 
+  it('生成物の重さを添える書式: 含量を入れた外へ出る物に生成物の重さ、得た生成物に含量を添える', () => {
+    let doc = sample();
+    const run = only(doc);
+    const texts = () => Object.values(doc.texts).filter((t) => t.ref === run.id).map((t) => t.text);
+    expect(texts().some((t) => t.includes('生成物 '))).toBe(false);
+    doc = setRunFlow(doc, run.id, { showProduct: true });
+    expect(texts().find((t) => t.startsWith('水層'))).toContain('生成物 197 mg');
+    expect(texts().find((t) => t.startsWith('母液・洗液'))).toContain('生成物 1.1 g');
+    expect(texts().find((t) => t.startsWith('3'))).toContain('含量 99.1%');
+    // 重さを出さないときは添えない
+    doc = setRunFlow(doc, run.id, { showMass: false });
+    expect(texts().some((t) => t.includes('生成物 ') || t.includes('含量 99'))).toBe(false);
+  });
+
+  it('太さで示す書式: 操作の間の矢印の太さが、進む物の重さの順になる', () => {
+    let doc = sample();
+    const run = only(doc);
+    const weights = () => Object.values(doc.arrows).filter((a) => a.ref === run.id && a.weight).map((a) => a.weight!);
+    expect(weights()).toEqual([]);
+    doc = setRunFlow(doc, run.id, { widthByMass: true });
+    const bal = runBalance(only(doc));
+    const carries = bal.ops.slice(0, -1).map((b) => b.carryG!);
+    const w = weights();
+    expect(w.length).toBe(carries.length);
+    expect(Math.max(...w)).toBeCloseTo(5, 5);
+    // 重い流れほど太い
+    for (let i = 0; i < w.length; i++) for (let j = 0; j < w.length; j++) if (carries[i] > carries[j]) expect(w[i]).toBeGreaterThan(w[j]);
+    // 縦でも同じ。SVG では太い線になる
+    doc = setRunFlow(doc, run.id, { direction: 'vertical' });
+    expect(weights().length).toBe(carries.length);
+    expect(exportSvg(doc)).toContain('stroke-width="5"');
+  });
+
   it('操作を足す・動かす・消すと、箱の数と順が変わる。記録を消すと図も消える', () => {
     let doc = sample();
     const id = only(doc).id;
@@ -197,5 +233,58 @@ describe('作る・保存する', () => {
     old.version = 3;
     delete old.doc.runs;
     expect(parseDocFile(JSON.stringify(old)).runs).toBeUndefined();
+  });
+});
+
+describe('プロジェクトに入れる', () => {
+  it('記録を入れて、別の図に置き直せる。スキームとのつながりは外れ、名前は文字で残る', () => {
+    const doc = sample();
+    const run = only(doc);
+    const saved = saveRun(newProject('p'), doc, run.id, '縮合')!;
+    const s = saved.project.runs![saved.id];
+    expect(s.name).toBe('縮合');
+    expect(s.run.schemeId).toBeUndefined();
+    expect(s.run.materials.every((m) => !m.compoundId)).toBe(true);
+    expect(s.run.materials[0].name).toBe('1');
+    // 新しい図に置くと、同じ収支になる
+    const placed = placeRun(emptyDoc(), s.run);
+    const r2 = placed.doc.runs![placed.runId];
+    expect(runBalance(r2).productG).toBeCloseTo(runBalance(run).productG!, 6);
+    expect(runBoxes(placed.doc, placed.runId).length).toBe(5);
+    // 同じ文書にもう一度置くと、別の id の記録になり、操作と記録の行のつながりも保つ
+    const again = placeRun(placed.doc, s.run);
+    expect(again.runId).not.toBe(placed.runId);
+    const r3 = again.doc.runs![again.runId];
+    expect(r3.events.every((e) => r3.operations.some((o) => o.id === e.opId))).toBe(true);
+    expect(r3.materials.filter((m) => m.opId).every((m) => r3.operations.some((o) => o.id === m.opId))).toBe(true);
+    expect(new Set([...r2.operations, ...r3.operations].map((o) => o.id)).size).toBe(10);
+    // プロジェクトの書き出しと読み込み、消す
+    expect(importBundle(exportBundle(saved.project)).runs![saved.id].name).toBe('縮合');
+    expect(removeSavedRun(saved.project, saved.id).runs).toEqual({});
+    expect(packRun(doc, 'none')).toBeNull();
+  });
+
+  it('手順だけ置くと、量・ロット・重さ・記録の行を外し、今日の日付にする', () => {
+    const doc = sample();
+    const run = packRun(doc, only(doc).id)!;
+    const p = placeRun(emptyDoc(), run, true, new Date(2026, 10, 20));
+    const r = p.doc.runs![p.runId];
+    expect(r.date).toBe('2026-11-20');
+    expect(r.notebook).toBeUndefined();
+    expect(r.events).toEqual([]);
+    expect(r.materials.length).toBe(run.materials.length);
+    expect(r.materials.every((m) => !m.amount && !m.lot && m.assay === undefined)).toBe(true);
+    expect(r.operations.map((o) => o.name)).toEqual(run.operations.map((o) => o.name));
+    expect(r.operations.every((o) => !o.carry && o.outputs.every((x) => !x.amount))).toBe(true);
+    expect(r.product.assay).toBeUndefined();
+  });
+
+  it('プロジェクトの zip に、記録のタブ区切りと記録の行の CSV が入る', () => {
+    const doc = sample();
+    const saved = saveRun(newProject('p'), doc, only(doc).id, '縮合')!;
+    const zip = exportZip(saved.project);
+    const text = new TextDecoder().decode(zip);
+    expect(text).toContain('runs/縮合.tsv');
+    expect(text).toContain('runs/縮合-events.csv');
   });
 });

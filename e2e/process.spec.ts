@@ -66,14 +66,30 @@ test('フロー図の向き: 横は入れる物が上・出る物が下、縦は
   expect(p.boxes[1].x1).toBeGreaterThan(p.boxes[0].x2);
   expect(p.hcl.y).toBeLessThan(p.boxes[1].y1);
   expect(p.water.y).toBeGreaterThan(p.boxes[1].y2);
+  // 書式は「フロー図」の小さな欄で選ぶ
+  await page.getByTestId('run-format').click();
   await page.getByTestId('run-direction').selectOption('vertical');
+  await expect(page.getByTestId('run-format')).toHaveText('フロー図: 縦');
   p = await place();
   expect(p.boxes[1].y1).toBeGreaterThan(p.boxes[0].y2);
   expect(p.hcl.x).toBeLessThan(p.boxes[1].x1);
   expect(p.water.x).toBeGreaterThan(p.boxes[1].x2);
   expect(p.product.x).toBeGreaterThan(p.boxes[4].x2);
-  // 重さを出さない
+  // 生成物の重さを添える・太さで示す
+  await page.getByTestId('run-show-product').check();
+  expect((await runTexts(page)).find((t) => t.startsWith('水層'))).toContain('生成物 197 mg');
+  await page.getByTestId('run-width-by-mass').check();
+  const weights = await page.evaluate(() => {
+    const d = window.__editor!.get().doc;
+    const id = Object.keys(d.runs!)[0];
+    return Object.values(d.arrows).filter((a) => a.ref === id && a.weight).map((a) => a.weight!);
+  });
+  expect(weights).toHaveLength(4);
+  expect(Math.max(...weights)).toBe(5);
+  // 重さを出さない（生成物の重さも消え、選べなくなる）
   await page.getByTestId('run-show-mass').uncheck();
+  await expect(page.getByTestId('run-show-product')).toBeDisabled();
+  expect((await runTexts(page)).some((t) => t.includes('生成物 197 mg'))).toBe(false);
   expect((await runTexts(page)).some((t) => t.includes('収支'))).toBe(false);
   // 元に戻すで戻る
   await page.getByTitle('元に戻す (Ctrl+Z)').click();

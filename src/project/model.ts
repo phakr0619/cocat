@@ -1,6 +1,7 @@
 // プロジェクト: 化合物のライブラリと、保存した図を入れる箱（ブラウザの中に保存）
 import type { Doc } from '../chem/model';
 import type { Structure } from '../scheme/model';
+import type { ProcessRun } from '../process/model';
 import type { TablePackage } from '../table/ops';
 
 export interface LibraryCompound {
@@ -33,6 +34,14 @@ export interface SavedTable extends TablePackage {
   savedAt: string;
 }
 
+/** 保存した実験の記録。ほかの図に置き直せる（スキームとのつながりは外してある） */
+export interface SavedRun {
+  id: string;
+  name: string;
+  run: ProcessRun;
+  savedAt: string;
+}
+
 /** 部品: よく置く部分構造（母核・保護基）。R のラベルの原子がつなぐ点 */
 export interface Part {
   id: string;
@@ -52,6 +61,8 @@ export interface Project {
   parts?: Record<string, Part>;
   /** 無ければ空（検討表を入れる前に作ったプロジェクト） */
   tables?: Record<string, SavedTable>;
+  /** 無ければ空（実験の記録を入れる前に作ったプロジェクト） */
+  runs?: Record<string, SavedRun>;
 }
 
 export interface ProjectSummary {
@@ -63,7 +74,7 @@ export interface ProjectSummary {
 
 export function newProject(name: string, now = new Date()): Project {
   const t = now.toISOString();
-  return { id: `prj-${now.getTime().toString(36)}-${Math.random().toString(36).slice(2, 6)}`, name, createdAt: t, updatedAt: t, compounds: {}, figures: {}, parts: {}, tables: {} };
+  return { id: `prj-${now.getTime().toString(36)}-${Math.random().toString(36).slice(2, 6)}`, name, createdAt: t, updatedAt: t, compounds: {}, figures: {}, parts: {}, tables: {}, runs: {} };
 }
 
 export const summarize = (p: Project): ProjectSummary => ({ id: p.id, name: p.name, updatedAt: p.updatedAt, compoundCount: Object.keys(p.compounds).length });

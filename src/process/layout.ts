@@ -41,6 +41,8 @@ interface OpText {
   ins: string[];
   outs: { text: string; bold?: boolean }[];
   carry: string;
+  /** 次の操作へ進む物の重さ（g）。太さを重さに合わせるときに使う */
+  carryG?: number;
   closure: string;
 }
 
@@ -52,6 +54,7 @@ function opTexts(doc: Doc, run: ProcessRun, bal: RunBalance): OpText[] {
     return c?.number?.trim() || c?.nickname?.trim() || m.name || '（名前なし）';
   };
   const mass = run.flow.showMass;
+  const product = mass && run.flow.showProduct;
   return run.operations.map((op, i) => {
     const b = bal.ops[i];
     const last = i === run.operations.length - 1;
@@ -60,16 +63,18 @@ function opTexts(doc: Doc, run: ProcessRun, bal: RunBalance): OpText[] {
       .map((m) => [nameOf(m), mass ? formatAmount(m.amount) : ''].filter(Boolean).join(SEP));
     const outs: OpText['outs'] = op.outputs.map((o) => {
       const g = toGrams(o.amount, o.density) ?? (b.derivedOutputId === o.id ? b.derivedOutputG : undefined);
-      return { text: [o.name || '出た物', mass ? (o.amount ? formatAmount(o.amount) : formatGrams(g)) : ''].filter(Boolean).join(SEP) };
+      const inProduct = product && o.productAssay !== undefined && g !== undefined ? `生成物 ${formatGrams((g * o.productAssay) / 100)}` : '';
+      return { text: [o.name || '出た物', mass ? (o.amount ? formatAmount(o.amount) : formatGrams(g)) : '', inProduct].filter(Boolean).join(SEP) };
     });
     const carryText = mass ? (op.carry ? formatAmount(op.carry) : formatGrams(b.carryG)) : '';
     if (last) {
       const c = run.product.compoundId ? doc.compounds?.[run.product.compoundId] : undefined;
       const name = c?.number?.trim() || c?.nickname?.trim() || run.product.name || '生成物';
-      outs.unshift({ text: [name, carryText].filter(Boolean).join(SEP), bold: true });
+      const assay = product && run.product.assay !== undefined ? `含量 ${run.product.assay}%` : '';
+      outs.unshift({ text: [name, carryText, assay].filter(Boolean).join(SEP), bold: true });
     }
     const closure = !mass ? '' : b.closure !== undefined ? `収支 ${formatPct(b.closure)}` : b.carryDerived || b.derivedOutputId ? '差から計算' : '';
-    return { op, ins, outs, carry: last ? '' : carryText, closure };
+    return { op, ins, outs, carry: last ? '' : carryText, carryG: last ? undefined : b.carryG, closure };
   });
 }
 
@@ -102,10 +107,13 @@ export function renderRun(doc: Doc, runId: string): Doc {
         const id = newId(d, 't');
         d.texts[id] = { id, x, y, text: s, ref: runId, ...(opt.bold ? { bold: true } : {}), ...(opt.color ? { color: opt.color } : {}) };
       };
-      const arrow = (x1: number, y1: number, x2: number, y2: number, kind: 'normal' | 'line' = 'normal') => {
+      const arrow = (x1: number, y1: number, x2: number, y2: number, weight?: number) => {
         const id = newId(d, 'r');
-        d.arrows[id] = { id, x1, y1, x2, y2, kind, ref: runId };
+        d.arrows[id] = { id, x1, y1, x2, y2, kind: 'normal', ref: runId, ...(weight ? { weight } : {}) };
       };
+      // 太さを重さに合わせるとき: いちばん重い流れを 5pt、重さの分からない流れはふだんの太さ
+      const maxCarry = Math.max(0, ...ops.map((o) => o.carryG ?? 0));
+      const weightOf = (o: OpText) => (run.flow.widthByMass && maxCarry > 0 && o.carryG !== undefined && o.carryG > 0 ? +(0.6 + (4.4 * o.carryG) / maxCarry).toFixed(2) : undefined);
       const box = (x: number, y: number, w: number, h: number) => {
         const id = newId(d, 'h');
         d.shapes![id] = { id, kind: 'rect', x1: x, y1: y, x2: x + w, y2: y + h, ref: runId };
@@ -140,8 +148,8 @@ export function renderRun(doc: Doc, runId: string): Doc {
             const gap = Math.max(30, width(o.carry) + 14 - (colW - bw) / 2 - (ncolW - nbw) / 2);
             const from = cx + bw / 2 + 1;
             const to = x + colW + gap + ncolW / 2 - nbw / 2 - 1;
-            arrow(from, mid, to, mid);
-            text((from + to) / 2 - width(o.carry) / 2, mid - 4, o.carry);
+            arrow(from, mid, to, mid, weightOf(o));
+            text((from + to) / 2 - width(o.carry) / 2, mid - 4 - (weightOf(o) ?? 0) / 2, o.carry);
             x += colW + gap;
           }
         });
@@ -176,8 +184,8 @@ export function renderRun(doc: Doc, runId: string): Doc {
             const nextBh = Math.max(BOX_H, ops[i + 1].outs.length * LH + 6);
             const nextBlock = Math.max(nextBh, Math.max(ops[i + 1].ins.length, ops[i + 1].outs.length, 1) * LH);
             const nextTop = y2 + nextBlock / 2 - nextBh / 2 - 1;
-            arrow(cxm, y1, cxm, nextTop);
-            text(cxm + 6, (y1 + nextTop) / 2 + capH() / 2, o.carry);
+            arrow(cxm, y1, cxm, nextTop, weightOf(o));
+            text(cxm + 6 + (weightOf(o) ?? 0) / 2, (y1 + nextTop) / 2 + capH() / 2, o.carry);
           }
           y += blockH + 26;
         });

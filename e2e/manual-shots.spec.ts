@@ -304,7 +304,9 @@ test('実験の記録', async ({ page }) => {
   await page.getByTestId('run-dock').screenshot({ path: `${OUT}/run-log.png` });
   await page.getByTestId('run-tab-materials').click();
   await page.getByTestId('run-dock').screenshot({ path: `${OUT}/run-materials.png` });
+  await page.getByTestId('run-format').click();
   await page.getByTestId('run-direction').selectOption('vertical');
+  await page.getByTestId('run-format').click();
   await page.getByTestId('run-dock-close').click();
   await page.getByTestId('zoom-fit').click();
   await page.mouse.move(2, 2);

@@ -393,9 +393,9 @@ function drawElectrons(prims: Prim[], a: Atom, doc: Doc, adj: Adjacency, label?:
 }
 
 /** 線を、点線なら短い線に分けて描く */
-function shaft(prims: Prim[], a: P, b: P, owner: string, dashed?: boolean) {
+function shaft(prims: Prim[], a: P, b: P, owner: string, dashed?: boolean, w = lw()) {
   if (!dashed) {
-    prims.push({ k: 'line', a, b, w: lw(), owner });
+    prims.push({ k: 'line', a, b, w, owner });
     return;
   }
   const L = dist(a, b);
@@ -409,12 +409,12 @@ const HEAD_LEN = 7.2;
 const HEAD_W = 2.6;
 
 /** 塗った矢頭（head が先、d は進む向き）。half なら片側（進む向きの左）だけ */
-function arrowHead(prims: Prim[], head: P, d: P, owner: string, half = false) {
+function arrowHead(prims: Prim[], head: P, d: P, owner: string, half = false, len = HEAD_LEN, hw = HEAD_W) {
   const n = rightNormal(d);
-  const back = add(head, mul(d, -HEAD_LEN));
-  const notch = add(head, mul(d, -HEAD_LEN * 0.8));
-  if (half) prims.push({ k: 'poly', pts: [head, add(back, mul(n, -HEAD_W)), notch], owner });
-  else prims.push({ k: 'poly', pts: [head, add(back, mul(n, HEAD_W)), notch, add(back, mul(n, -HEAD_W))], owner });
+  const back = add(head, mul(d, -len));
+  const notch = add(head, mul(d, -len * 0.8));
+  if (half) prims.push({ k: 'poly', pts: [head, add(back, mul(n, -hw)), notch], owner });
+  else prims.push({ k: 'poly', pts: [head, add(back, mul(n, hw)), notch, add(back, mul(n, -hw))], owner });
 }
 
 function drawArrow(prims: Prim[], r: Arrow) {
@@ -437,8 +437,12 @@ function drawArrow(prims: Prim[], r: Arrow) {
   if (r.kind === 'line') {
     shaft(prims, tail, head, owner, r.dashed);
   } else if (r.kind === 'normal') {
-    shaft(prims, tail, add(head, mul(d, -headLen * 0.6)), owner, r.dashed);
-    arrowHead(prims, head, d, owner);
+    // 太さを決めた矢印は、矢頭も太さに合わせて大きくする
+    const w = r.weight && r.weight > 0 ? r.weight : lw();
+    const len = Math.max(headLen, w * 1.5);
+    const hw = Math.max(headW, w * 0.9);
+    shaft(prims, tail, add(head, mul(d, -len * 0.6)), owner, r.dashed, w);
+    arrowHead(prims, head, d, owner, false, len, hw);
   } else if (r.kind === 'resonance') {
     // 両向き（共鳴）
     shaft(prims, add(tail, mul(d, headLen * 0.6)), add(head, mul(d, -headLen * 0.6)), owner, r.dashed);

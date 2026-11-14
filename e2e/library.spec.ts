@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { clickAt, hoverAt, smiles, tool, importSmiles, menuItem, showTab } from './helpers';
+import { clickAt, hoverAt, smiles, tool, importSmiles, menuItem, openSample, showTab } from './helpers';
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/');
@@ -174,4 +174,33 @@ test('検討表を反応式ごとプロジェクトに入れ、新しい図に�
   await page.reload();
   await page.getByTestId('library').getByTestId('tables-tab').click();
   await expect(page.getByTestId('saved-table')).toHaveCount(1);
+});
+
+test('実験の記録をプロジェクトに入れ、新しい図に置ける。手順だけ置くと量と記録の行を外す', async ({ page }) => {
+  const lib = page.getByTestId('library');
+  await openSample(page, 'run');
+  await lib.getByTestId('runs-tab').click();
+  await expect(lib.getByTestId('doc-run')).toHaveCount(1);
+  await lib.getByTestId('save-run').click();
+  await expect(lib.getByTestId('saved-run')).toHaveCount(1);
+  await expect(lib.getByTestId('saved-run')).toContainText('操作 5');
+  // 新しい図に置くと、記録が開き、同じ収率が出る
+  await menuItem(page, 'menu-file', '新規');
+  await expect.poll(async () => Object.keys((await doc(page)).runs ?? {}).length).toBe(0);
+  await lib.getByTestId('place-run').click();
+  await expect.poll(async () => Object.keys((await doc(page)).runs ?? {}).length).toBe(1);
+  await expect(page.getByTestId('run-dock')).toBeVisible();
+  await expect(page.getByTestId('run-results')).toContainText('86.5%');
+  // 手順だけ置く
+  await lib.getByTestId('place-run-procedure').click();
+  await expect.poll(async () => Object.keys((await doc(page)).runs ?? {}).length).toBe(2);
+  const runs = Object.values((await doc(page)).runs!);
+  const blank = runs.find((r) => r.events.length === 0)!;
+  expect(blank.operations).toHaveLength(5);
+  expect(blank.materials.every((m) => !m.amount)).toBe(true);
+  // ページを開き直しても、プロジェクトに残る
+  await page.waitForTimeout(700);
+  await page.reload();
+  await page.getByTestId('library').getByTestId('runs-tab').click();
+  await expect(page.getByTestId('saved-run')).toHaveCount(1);
 });

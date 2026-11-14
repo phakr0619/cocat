@@ -712,7 +712,7 @@ export function App() {
         }
       />
       <ToolsResize width={toolsWidth.width} setWidth={toolsWidth.setWidth} />
-      {showLibrary && <LibraryPanel store={store} projects={projects} viewCenter={viewCenter} />}
+      {showLibrary && <LibraryPanel store={store} projects={projects} viewCenter={viewCenter} onPlaceRun={openRun} />}
       <main className="stage" ref={stageRef}>
         <Canvas
           store={store}
