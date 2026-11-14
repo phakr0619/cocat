@@ -161,7 +161,7 @@ test('畳んだグループの道具を選んでいるときは、見出しに�
   await head.click();
   await expect(page.locator('[data-tool="arrow-curved"]')).toBeHidden();
   await expect(head).toHaveClass(/has-active/);
-  await expect(head.getByTestId('tool-group-active')).toHaveText('↷');
+  await expect(head.getByTestId('tool-group-active').locator('svg.tool-icon')).toHaveCount(1);
   await expect(head).toHaveAttribute('title', /選んでいる道具: 電子の動き/);
   // 道具は選んだまま
   expect(await page.evaluate(() => window.__editor!.get().tool)).toBe('arrow-curved');

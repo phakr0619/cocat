@@ -292,7 +292,8 @@ export function Canvas({ store, view, setView, showStereo, marks, onDropCompound
           </g>
         ))}
       </g>
-      <g className="selection">{[...selection].map((id) => hl(id, HILITE, `s${id}`))}</g>
+      {/* 選択の印は、線とラベルが読めるように薄く描く */}
+      <g className="selection" opacity={0.55}>{[...selection].map((id) => hl(id, HILITE, `s${id}`))}</g>
       {unitFrames.length > 0 && (
         <g className="unit-frames" pointerEvents="none" data-testid="unit-frame">
           {unitFrames.map((r, i) => (
