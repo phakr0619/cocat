@@ -50,7 +50,7 @@ const now = () => {
   return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
 };
 
-export function RunDock({ store, runId, onClose, onOpenTable }: { store: EditorStore; runId: string; onClose(): void; onOpenTable(): void }) {
+export function RunDock({ store, runId, onClose }: { store: EditorStore; runId: string; onClose(): void }) {
   const doc = useEditor(store, (s) => s.doc);
   const selection = useEditor(store, (s) => s.selection);
   const run = doc.runs?.[runId];
@@ -111,19 +111,6 @@ export function RunDock({ store, runId, onClose, onOpenTable }: { store: EditorS
     track('run:event', { once: true });
     quickRef.current?.focus();
   };
-  const copyTsv = () =>
-    navigator.clipboard?.writeText(runTsv(store.get().doc, run)).then(
-      () => say('仕込み・操作と記録・収支の表をコピーしました。Excel に貼れます'),
-      () => say('コピーできませんでした'),
-    );
-  const toTable = () => {
-    const r = runToTableRow(store.get().doc, runId);
-    if (!r) return;
-    store.commit(r.doc, new Set());
-    say('検討表に、この記録の行を入れました。ほかの記録も入れると、回ごとに比べられます');
-    track('run:to-table');
-    onOpenTable();
-  };
   const startResize = (e: React.PointerEvent) => {
     const y0 = e.clientY;
     const h0 = height;
@@ -165,25 +152,15 @@ export function RunDock({ store, runId, onClose, onOpenTable }: { store: EditorS
         <input type="date" className="dock-cell w-date" aria-label="行った日" data-testid="run-date" value={run.date ?? ''} onChange={(e) => commit(setRunInfo(store.get().doc, runId, { date: e.target.value }))} />
         <span className="spacer" />
         <label className="dock-opt">
-          フロー図
-          <select data-testid="run-direction" value={run.flow.direction} onChange={(e) => (commit(setRunFlow(store.get().doc, runId, { direction: e.target.value as ProcessRun['flow']['direction'] })), track(`run:flow-${e.target.value}`, { once: true }))}>
-            <option value="horizontal">横に並べる</option>
-            <option value="vertical">縦に並べる</option>
+          <select data-testid="run-direction" aria-label="フロー図の書式" value={run.flow.direction} onChange={(e) => (commit(setRunFlow(store.get().doc, runId, { direction: e.target.value as ProcessRun['flow']['direction'] })), track(`run:flow-${e.target.value}`, { once: true }))}>
+            <option value="horizontal">フロー図: 横に並べる</option>
+            <option value="vertical">フロー図: 縦に並べる</option>
           </select>
         </label>
         <label className="dock-opt">
           <input type="checkbox" data-testid="run-show-mass" checked={run.flow.showMass} onChange={(e) => commit(setRunFlow(store.get().doc, runId, { showMass: e.target.checked }))} />
           重さを出す
         </label>
-        <button type="button" data-testid="run-pdf" title="反応式・仕込み・フロー図・記録・結果を A4 の 1 枚にまとめて印刷する。印刷の画面で「PDF に保存」を選ぶと PDF になる" onClick={() => (printPage(runReportHtml(store.get().doc, runId)), track('run:pdf'))}>
-          PDF・印刷
-        </button>
-        <button type="button" data-testid="run-copy" title="仕込み・操作と記録・収支の表を、Excel に貼れる形でコピーする" onClick={copyTsv}>
-          表をコピー
-        </button>
-        <button type="button" data-testid="run-to-table" title="この 1 回ぶんを、回ごとに比べる検討表の 1 行にする" onClick={toTable}>
-          検討表の行にする
-        </button>
         <button type="button" className="dock-close" data-testid="run-dock-close" title="表の欄を畳む" aria-label="表の欄を畳む" onClick={onClose}>
           ▾
         </button>
@@ -416,10 +393,24 @@ export function RunDock({ store, runId, onClose, onOpenTable }: { store: EditorS
 }
 
 /** 右の欄: 実験の記録の結果・生成物の行方・確かめてほしい所 */
-export function RunSummary({ store, runId }: { store: EditorStore; runId: string }) {
+export function RunSummary({ store, runId, onOpenTable }: { store: EditorStore; runId: string; onOpenTable(): void }) {
   const doc = useEditor(store, (s) => s.doc);
   const run = doc.runs?.[runId];
   if (!run) return <p className="muted">実験の記録がありません。</p>;
+  const say = (message: string) => store.set({ message });
+  const copyTsv = () =>
+    navigator.clipboard?.writeText(runTsv(store.get().doc, run)).then(
+      () => say('仕込み・操作と記録・収支の表をコピーしました。Excel に貼れます'),
+      () => say('コピーできませんでした'),
+    );
+  const toTable = () => {
+    const r = runToTableRow(store.get().doc, runId);
+    if (!r) return;
+    store.commit(r.doc, new Set());
+    say('検討表に、この記録の行を入れました。ほかの記録も入れると、回ごとに比べられます');
+    track('run:to-table');
+    onOpenTable();
+  };
   const bal = runBalance(run);
   const t = runTables(doc, run, bal);
   const select = (opId?: string) => {
@@ -472,6 +463,20 @@ export function RunSummary({ store, runId }: { store: EditorStore; runId: string
         ) : (
           <p className="muted" data-testid="run-warnings-none">ありません。</p>
         )}
+      </div>
+      <div className="card">
+        <h2>この記録から</h2>
+        <div className="row">
+        <button type="button" data-testid="run-pdf" title="反応式・仕込み・フロー図・記録・結果を A4 の 1 枚にまとめて印刷する。印刷の画面で「PDF に保存」を選ぶと PDF になる" onClick={() => (printPage(runReportHtml(store.get().doc, runId)), track('run:pdf'))}>
+            PDF・印刷
+          </button>
+          <button type="button" data-testid="run-copy" title="仕込み・操作と記録・収支の表を、Excel に貼れる形でコピーする" onClick={copyTsv}>
+            表をコピー
+          </button>
+          <button type="button" data-testid="run-to-table" title="この 1 回ぶんを、回ごとに比べる検討表の 1 行にする" onClick={toTable}>
+            検討表の行にする
+          </button>
+        </div>
       </div>
       <p className="muted">量と記録は、キャンバスの下の表で入れます。フロー図の箱を選ぶと、その操作の行が青くなります。</p>
     </section>

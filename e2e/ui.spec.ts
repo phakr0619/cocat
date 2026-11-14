@@ -85,7 +85,7 @@ test('分子と矢印を描くと、キャンバスの上に「スキームに�
   await expect.poll(async () => Object.keys((await doc(page)).schemes ?? {}).length).toBe(1);
   await expect(bar).toHaveCount(0);
   await expect(page.getByTestId('side-head')).toHaveAttribute('data-view', 'scheme');
-  await expect(page.getByTestId('scheme-panel').getByTestId('add-step')).toBeVisible();
+  await expect(page.getByTestId('scheme-panel').getByTestId('scheme-step')).toBeVisible();
 });
 
 test('上のバーのメニューは、押すと開き、外を押すか Esc で閉じる。項目にキーの操作を出す', async ({ page }) => {

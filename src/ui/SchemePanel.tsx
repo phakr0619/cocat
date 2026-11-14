@@ -12,6 +12,7 @@ import { StyleEditor } from './StyleEditor';
 import { NewSchemeForm } from './NewSchemeForm';
 import { StoichTable } from './StoichTable';
 import { schemeTargetOf } from '../scheme/pick';
+import { PopupMenu } from './Menu';
 import { Thumb } from './LibraryPanel';
 
 /** 選択に含まれるスキームの id（無ければ文書の最初のスキーム） */
@@ -82,6 +83,19 @@ export function SchemePanel({
   const [myStyles, setMyStyles] = useState<SchemeStyle[]>(() => loadMyStyles());
   /** 開け閉めした段（段の id → 開いているか）。押していない段は、2 段までなら開き、3 段からはキャンバスで選んだ段だけ開く */
   const [stepOpen, setStepOpen] = useState<Record<string, boolean>>({});
+  const [compoundOpen, setCompoundOpen] = useState<Record<string, boolean>>({});
+  const compoundIds = scheme ? [...new Set(scheme.steps.flatMap((s) => [...s.from, ...s.to]))] : [];
+  /** キャンバスで選んでいる化合物（その分子の原子を選んでいるとき） */
+  const activeCompound = (() => {
+    if (!sid) return null;
+    for (const id of selection) {
+      const ref = doc.atoms[id]?.ref;
+      if (ref?.startsWith(`${sid}:`)) return ref.split(':')[1];
+    }
+    return null;
+  })();
+  /** 固定・複製・やめるのメニューを開く所 */
+  const [more, setMore] = useState<{ x: number; y: number } | null>(null);
   /** キャンバスで選んでいる段（矢印か条件の文字を選んでいるとき） */
   const activeStep = (() => {
     if (!sid) return -1;
@@ -237,11 +251,25 @@ export function SchemePanel({
           </div>
           <h3>化合物</h3>
           <div className="compounds">
-            {[...new Set(scheme.steps.flatMap((s) => [...s.from, ...s.to]))].map((cid) => {
+            {compoundIds.map((cid) => {
               const c = view.compounds![cid];
               return (
-                <div className="grid compound" key={cid} data-testid="scheme-compound">
-                  <Thumb c={c} />
+                <details
+                  className={`compound${activeCompound === cid ? ' active' : ''}`}
+                  key={cid}
+                  data-testid="scheme-compound"
+                  open={compoundOpen[cid] ?? (compoundIds.length <= 3 || activeCompound === cid || isPlaceholder(c.structure))}
+                  onToggle={(e) => {
+                    const open = (e.currentTarget as HTMLDetailsElement).open;
+                    if (open !== (compoundOpen[cid] ?? (compoundIds.length <= 3 || activeCompound === cid || isPlaceholder(c.structure)))) setCompoundOpen((m) => ({ ...m, [cid]: open }));
+                  }}
+                >
+                  <summary data-testid="compound-summary">
+                    <Thumb c={c} />
+                    <b>{c.number?.trim() || '番号なし'}</b>
+                    <span className="step-sum">{c.nickname ?? ''}</span>
+                  </summary>
+                  <div className="grid compound">
                   <Field label="番号" testId="compound-number" value={c.number ?? ''} onCommit={(v) => store.commit(updateCompound(store.get().doc, cid, { number: v || undefined }))} />
                   <Field label="呼び名" width="3 / 4" testId="compound-nickname" value={c.nickname ?? ''} onCommit={(v) => store.commit(updateCompound(store.get().doc, cid, { nickname: v || undefined }))} />
                   <div className="compound-replace">
@@ -256,7 +284,8 @@ export function SchemePanel({
                       選んだ分子にする
                     </button>
                   </div>
-                </div>
+                  </div>
+                </details>
               );
             })}
           </div>
@@ -265,26 +294,23 @@ export function SchemePanel({
           </div>
           </fieldset>
           <div className="row">
-            {!pin && (
-              <button
-                type="button"
-                data-testid="pin-scheme"
-                onClick={() => (store.commit(pinScheme(store.get().doc, sid)), track('scheme:pin'))}
-                title="今の形で図を固定する。ほかのスキームと共有する化合物の番号・構造や書式を後で直しても、この図は変わらない"
-              >
-                固定する
-              </button>
-            )}
-            <button
-              type="button"
-              data-testid="duplicate-scheme"
-              onClick={() => (store.commit(duplicateScheme(store.get().doc, sid).doc, new Set()), track('scheme:duplicate'))}
-              title="同じ化合物で、条件だけ変えた反応を作る。化合物は共有するので、番号や構造を直すと両方が変わる"
-            >
-              スキームを複製
+            <button type="button" data-testid="scheme-more" aria-haspopup="menu" onClick={(e) => { const r = e.currentTarget.getBoundingClientRect(); setMore({ x: r.left, y: r.bottom + 4 }); }}>
+              ほかの操作 ▾
             </button>
-            <button type="button" onClick={() => store.commit(dissolveScheme(store.get().doc, sid))} title="スキームのデータを消して、ただの図に戻す">スキームをやめる</button>
           </div>
+          {more && (
+            <PopupMenu
+              at={more}
+              label="スキームの操作"
+              testId="scheme-more-menu"
+              onClose={() => setMore(null)}
+              items={[
+                ...(pin ? [] : [{ label: '固定する', testId: 'pin-scheme', title: '今の形で図を固定する。ほかのスキームと共有する化合物の番号・構造や書式を後で直しても、この図は変わらない', onClick: () => (store.commit(pinScheme(store.get().doc, sid)), track('scheme:pin')) }]),
+                { label: 'スキームを複製', testId: 'duplicate-scheme', title: '同じ化合物で、条件だけ変えた反応を作る。化合物は共有するので、番号や構造を直すと両方が変わる', onClick: () => (store.commit(duplicateScheme(store.get().doc, sid).doc, new Set()), track('scheme:duplicate')) },
+                { label: 'スキームをやめる', testId: 'dissolve-scheme', title: 'スキームのデータを消して、ただの図に戻す', onClick: () => store.commit(dissolveScheme(store.get().doc, sid)) },
+              ]}
+            />
+          )}
           <p className="muted">{pin ? '固定した図の分子をキャンバスで直しても、固定した形に戻ります。' : '分子をキャンバスで直すと、化合物のデータも直り、描き直されます。'}</p>
           {onAi && (
             <div className="scheme-ai" data-testid="scheme-ai">

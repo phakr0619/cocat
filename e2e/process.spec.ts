@@ -190,8 +190,7 @@ test('記録を出す: 1 枚のページにまとめて印刷し、表を Excel 
   await page.reload();
   await page.getByTestId('canvas').waitFor();
   await openSample(page, 'run');
-  const dock = page.getByTestId('run-dock');
-  await dock.getByTestId('run-pdf').click();
+  await page.getByTestId('run-pdf').click();
   await expect.poll(() => page.evaluate(() => (window as unknown as { __printed?: number }).__printed ?? 0)).toBe(1);
   const frame = page.frameLocator('iframe[data-testid="print-frame"]');
   await expect(frame.locator('h1')).toContainText('実験 AB-012');
@@ -200,14 +199,14 @@ test('記録を出す: 1 枚のページにまとめて印刷し、表を Excel 
   await expect(frame.locator('body')).toContainText('EDC·HCl を 4 回に分けて入れる');
   await expect(frame.locator('body')).toContainText('34.1');
   // 表をコピー
-  await dock.getByTestId('run-copy').click();
+  await page.getByTestId('run-copy').click();
   await expect(page.locator('.status')).toContainText('Excel に貼れます');
   const tsv = await page.evaluate(() => navigator.clipboard.readText());
   expect(tsv).toContain('仕込み\n役割\t名前\t分子量');
   expect(tsv).toContain('12:41\t分液・洗浄\t1 M HCl で洗う\t50 g\t20 °C\t水層 pH 1');
   expect(tsv).toContain('PMI\t34.1');
   // 検討表の行にする。2 回押しても、同じ記録の行は 1 つ
-  await dock.getByTestId('run-to-table').click();
+  await page.getByTestId('run-to-table').click();
   await expect(page.getByTestId('side-head')).toHaveAttribute('data-view', 'table');
   const table = () => page.evaluate(() => Object.values(window.__editor!.get().doc.tables!)[0]);
   let t = await table();
@@ -216,7 +215,7 @@ test('記録を出す: 1 枚のページにまとめて印刷し、表を Excel 
   expect(Object.values(t.rows[0].cells)).toEqual(['AB-012', '10 g', '11.9', '86.5', '99.1', '34.1']);
   await page.getByTestId('side-back').click();
   await page.getByTestId('home-run').click();
-  await dock.getByTestId('run-to-table').click();
+  await page.getByTestId('run-to-table').click();
   t = await table();
   expect(t.rows.length).toBe(1);
 });
@@ -248,4 +247,25 @@ test('記録を消す・フロー図だけを残す。スキームが無くて�
   await dock.getByTestId('run-tab-balance').click();
   await dock.getByTestId('run-remove').click();
   expect(await page.evaluate(() => Object.keys(window.__editor!.get().doc.shapes ?? {}).length)).toBe(0);
+});
+
+test('下の表の欄を開いても、画面は横にはみ出さず、右の欄と上のバーが見えている。別の見本に替えると図の全体が見える', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 720 });
+  await openSample(page, 'run');
+  await expect(page.getByTestId('run-dock')).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(1280);
+  await expect(page.getByTestId('open-export')).toBeInViewport();
+  await expect(page.getByTestId('run-results')).toBeInViewport();
+  // 3 段のスキームに替える: 表の欄が閉じた後の広さで、図の全体が入る
+  await openSample(page, 'multistep');
+  await expect(page.getByTestId('run-dock')).toHaveCount(0);
+  const fits = await page.evaluate(() => {
+    const d = window.__editor!.get().doc;
+    const svg = document.querySelector('[data-testid=canvas]') as SVGSVGElement;
+    const vb = svg.viewBox.baseVal;
+    const xs = Object.values(d.atoms).map((a) => a.x);
+    const ys = Object.values(d.atoms).map((a) => a.y);
+    return Math.min(...xs) > vb.x && Math.max(...xs) < vb.x + vb.width && Math.min(...ys) > vb.y && Math.max(...ys) < vb.y + vb.height;
+  });
+  expect(fits).toBe(true);
 });

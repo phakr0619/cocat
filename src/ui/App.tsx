@@ -586,9 +586,11 @@ export function App() {
     ];
   };
   // 下の表の欄を開くとキャンバスが低くなるので、図の全体が見えるように合わせ直す
+  const dockShown = useRef(false);
   useEffect(() => {
-    if (showDock) fitView();
-    // 開いたときだけ
+    // 開いたときと閉じたときだけ（はじめの描画では合わせ直さない）
+    if (showDock !== dockShown.current) fitView();
+    dockShown.current = showDock;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showDock]);
   /** 選んだ物の帯を出す所（キャンバスの左上からの px）。選択の道具で選んでいて、ドラッグしていないときだけ */
@@ -754,7 +756,7 @@ export function App() {
         {ctxMenu && <PopupMenu at={ctxMenu} label="操作" items={contextItems()} onClose={() => setCtxMenu(null)} testId="ctx-menu" />}
         {barColors && <PopupMenu at={barColors} label="色" items={colorItems} onClose={() => setBarColors(null)} testId="sel-colors" />}
         {isEmpty && <EntryCards onSample={openSample} onAi={() => openAi('create')} />}
-        <div className="tool-hint" data-testid="tool-hint">{toolHint(tool, partName)}</div>
+        <div className="tool-hint" data-testid="tool-hint" title={toolHint(tool, partName)}>{toolHint(tool, partName)}</div>
         <div className="status" data-testid="status" role="status" aria-live="polite" key={message}>{message}</div>
         <div className="stage-zoom" role="group" aria-label="拡大・縮小">
           <button type="button" data-testid="zoom-out" onClick={() => setZoom((z) => (z > 1 ? z - 0.5 : z / 1.5))} title="縮小" aria-label="縮小">
@@ -862,7 +864,7 @@ export function App() {
           />
         )}
       </main>
-      {showDock && activeRun && <RunDock store={store} runId={activeRun} onClose={() => setDockClosed(true)} onOpenTable={() => setSide('table')} />}
+      {showDock && activeRun && <RunDock store={store} runId={activeRun} onClose={() => setDockClosed(true)} />}
       <aside className="side" hidden={!sideOpen}>
         <div className="side-head" data-testid="side-head" data-view={side}>
           <b>{SIDE_TITLE[side === 'ai' ? (`ai-${aiMode}` as const) : side]}</b>
@@ -918,7 +920,7 @@ export function App() {
             <SchemePanel onNewRun={newRun} store={store} newScheme={side === 'new-scheme'} onAi={hasKey ? openAi : undefined} />
           </div>
           <div className="tab-page" hidden={side !== 'run'} data-tab="run">
-            {activeRun && <RunSummary store={store} runId={activeRun} />}
+            {activeRun && <RunSummary store={store} runId={activeRun} onOpenTable={() => setSide('table')} />}
             {activeRun && dockClosed && (
               <button type="button" data-testid="run-dock-open" onClick={() => setDockClosed(false)}>下の表を開く</button>
             )}

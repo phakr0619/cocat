@@ -179,7 +179,8 @@ test('スキームを複製して、条件だけ変える', async ({ page }) => 
   await importSmiles(page, 'CC(C)(C)OC(=O)N[C@@H](C)C(=O)O.NCC(=O)OC>>CC(C)(C)OC(=O)N[C@@H](C)C(=O)NCC(=O)OC');
   const panel = page.getByTestId('scheme-panel');
   await panel.getByRole('button', { name: '描いた反応式をスキームにする' }).click();
-  await panel.getByTestId('duplicate-scheme').click();
+  await panel.getByTestId('scheme-more').click();
+  await page.getByTestId('duplicate-scheme').click();
   await expect.poll(async () => Object.keys((await doc(page)).schemes ?? {}).length).toBe(2);
   // 複製の分子を選ぶと、複製のスキームの欄になる
   const d = await doc(page);
@@ -197,14 +198,16 @@ test('スキームを固定すると、共有する化合物の番号を直し�
   await importSmiles(page, 'CC(C)(C)OC(=O)N[C@@H](C)C(=O)O.NCC(=O)OC>>CC(C)(C)OC(=O)N[C@@H](C)C(=O)NCC(=O)OC');
   const panel = page.getByTestId('scheme-panel');
   await panel.getByRole('button', { name: '描いた反応式をスキームにする' }).click();
-  await panel.getByTestId('duplicate-scheme').click();
+  await panel.getByTestId('scheme-more').click();
+  await page.getByTestId('duplicate-scheme').click();
   await expect.poll(async () => Object.keys((await doc(page)).schemes ?? {}).length).toBe(2);
   const [first, copy] = Object.keys((await doc(page)).schemes!);
   // 最初のスキームを選んで固定する
   const atom = Object.values((await doc(page)).atoms).find((a) => a.ref?.startsWith(`${first}:`))!;
   await tool(page, 'select');
   await clickAt(page, atom.x, atom.y);
-  await panel.getByTestId('pin-scheme').click();
+  await panel.getByTestId('scheme-more').click();
+  await page.getByTestId('pin-scheme').click();
   await expect(panel.getByTestId('scheme-pinned')).toContainText('固定中');
   await expect(panel.getByTestId('compound-number').first()).toBeDisabled();
   await expect(page.getByTestId('pin-scheme')).toHaveCount(0);
@@ -367,4 +370,23 @@ test('右の欄の段: 3 段からは 1 行にまとめ、キャンバスで選�
   await page.mouse.click(at.x, at.y);
   await expect(steps.nth(2).getByTestId('step-yield')).toBeVisible();
   await expect(steps.nth(2)).toHaveClass(/active/);
+});
+
+test('右の欄の化合物: 4 つからは 1 行にまとめ、キャンバスで選んだ化合物だけを開く。固定・複製・やめるは「ほかの操作」にある', async ({ page }) => {
+  await openSample(page, 'multistep');
+  const rows = page.getByTestId('scheme-compound');
+  await expect(rows).toHaveCount(5);
+  await expect(rows.nth(2).getByTestId('compound-summary')).toContainText('3');
+  await expect(rows.nth(2).getByTestId('compound-summary')).toContainText('ジペプチド');
+  await expect(rows.nth(2).getByTestId('compound-number')).toBeHidden();
+  await rows.nth(2).getByTestId('compound-summary').click();
+  await expect(rows.nth(2).getByTestId('compound-number')).toBeVisible();
+  // 「選んだ分子を生成物にして段を足す」は、押せないときは出さない
+  await expect(page.getByTestId('add-step')).toBeHidden();
+  await page.getByTestId('scheme-more').click();
+  const menu = page.getByTestId('scheme-more-menu');
+  await expect(menu.getByTestId('pin-scheme')).toBeVisible();
+  await expect(menu.getByTestId('duplicate-scheme')).toBeVisible();
+  await menu.getByTestId('dissolve-scheme').click();
+  expect(await page.evaluate(() => Object.keys(window.__editor!.get().doc.schemes ?? {}).length)).toBe(0);
 });

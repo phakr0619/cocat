@@ -117,7 +117,7 @@ export function EntryCards({ onSample, onAi }: { onSample(id: string): void; onA
       <div className="entry-cards">
         <div className="entry-card">
           <h3>描く</h3>
-          <p>左の道具を選んで、ここをクリックします。SMILES や MOL は貼り付けでも入ります。</p>
+          <p>左の道具を選んで、ここをクリックします。名前や SMILES は、上の入力欄から置けます。</p>
         </div>
         <div className="entry-card" data-testid="welcome">
           <h3>見本を開く</h3>
