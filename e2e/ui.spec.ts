@@ -106,18 +106,20 @@ test('上のバーのメニューは、押すと開き、外を押すか Esc で
   await expect(page.getByTestId('shortcuts')).toHaveCount(0);
 });
 
-test('ライブラリの列は、はじめは閉じていて、開くと次も開いた状態で始まる。開け閉めのつまみはキャンバスの左の縁（開く所）にある', async ({ page }) => {
+test('ライブラリの列は、はじめは閉じていて、開くと次も開いた状態で始まる。開け閉めのボタンは左の道具の列のいちばん下にある', async ({ page }) => {
   await expect(page.getByTestId('library')).toHaveCount(0);
   const tab = page.getByTestId('toggle-library');
   await expect(page.locator('.topbar [data-testid=toggle-library]')).toHaveCount(0);
-  const stage = (await page.locator('.stage').boundingBox())!;
-  expect(Math.abs((await tab.boundingBox())!.x - stage.x)).toBeLessThan(1);
+  await expect(page.locator('.tools [data-testid=toggle-library]')).toBeVisible();
+  // 道具をすべて開いて列が長くなっても、ボタンは列の下に見えている
+  for (const g of ['図形', '機構']) await page.getByTestId(`tool-group-${g}`).click();
+  const tools = (await page.locator('.tools').boundingBox())!;
+  const at = (await tab.boundingBox())!;
+  expect(at.y + at.height).toBeLessThanOrEqual(tools.y + tools.height + 1);
+  expect(at.y + at.height).toBeGreaterThan(tools.y + tools.height - 20);
   await expect(tab).toHaveAccessibleName('ライブラリを開く');
   await tab.click();
   await expect(page.getByTestId('library')).toBeVisible();
-  // 開くと、つまみはライブラリの列のすぐ右（キャンバスの左の縁）に移り、閉じる向きになる
-  const lib = (await page.getByTestId('library').boundingBox())!;
-  expect(Math.abs((await tab.boundingBox())!.x - (lib.x + lib.width))).toBeLessThan(2);
   await expect(tab).toHaveAccessibleName('ライブラリを閉じる');
   await page.reload();
   await expect(page.getByTestId('library')).toBeVisible();
@@ -403,4 +405,70 @@ test('名前や SMILES から作る: 段ごとに入れてスキームにする�
   expect(Object.values(product.structure.atoms).map((a) => a.element).sort()).toEqual(['C', 'C', 'O']);
   // 描いた分子はスキームに入った（スキームの外の分子は残らない）
   expect(Object.values(d.atoms).filter((a) => !a.ref)).toHaveLength(0);
+});
+
+test('道具のキー: 何も指していないときは道具を選び、原子や結合を指しているときはその物を変える', async ({ page }) => {
+  const current = () => page.evaluate(() => window.__editor!.get().tool);
+  const box = (await page.getByTestId('canvas').boundingBox())!;
+  // 何も無い所を指して押す
+  await page.mouse.move(box.x + 60, box.y + 60);
+  for (const [key, id] of [['v', 'select'], ['2', 'double'], ['3', 'triple'], ['w', 'wedge'], ['h', 'hash'], ['a', 'benzene'], ['r', 'arrow-normal'], ['t', 'text'], ['1', 'single']] as const) {
+    await page.keyboard.press(key);
+    expect(await current()).toBe(id);
+  }
+  // 今の道具の案内に、道具の説明とキーを出す
+  await expect(page.getByTestId('tool-hint')).toContainText('単結合');
+  await expect(page.getByTestId('tool-hint')).toContainText('1 キー');
+  // 結合を 1 本描いて、その結合を指して 2 を押すと、道具は変わらず結合が二重になる
+  await page.mouse.click(box.x + 300, box.y + 300);
+  const b = await page.evaluate(() => {
+    const d = window.__editor!.get().doc;
+    const bond = Object.values(d.bonds)[0];
+    return { x: (d.atoms[bond.a1].x + d.atoms[bond.a2].x) / 2, y: (d.atoms[bond.a1].y + d.atoms[bond.a2].y) / 2 };
+  });
+  const v = await page.evaluate(() => {
+    const svg = document.querySelector('[data-testid=canvas]') as SVGSVGElement;
+    const vb = svg.viewBox.baseVal;
+    return { zoom: svg.clientWidth / vb.width, x: vb.x, y: vb.y };
+  });
+  await page.mouse.move(box.x + (b.x - v.x) * v.zoom, box.y + (b.y - v.y) * v.zoom);
+  await page.keyboard.press('2');
+  expect(await current()).toBe('single');
+  expect(await page.evaluate(() => Object.values(window.__editor!.get().doc.bonds)[0].order)).toBe(2);
+  // 道具を指すと、名前とキーの吹き出しがすぐに出る
+  await page.locator('[data-tool="benzene"]').hover();
+  await expect(page.locator('.tool-tip')).toContainText('ベンゼン');
+  await expect(page.locator('.tool-tip kbd')).toHaveText('A');
+});
+
+test('右の欄は畳める。メニューから欄を出すと開く。畳んだことは開き直しても残る', async ({ page }) => {
+  const canvasWidth = async () => (await page.getByTestId('canvas').boundingBox())!.width;
+  const before = await canvasWidth();
+  await page.getByTestId('side-collapse').click();
+  await expect(page.getByTestId('side-head')).toBeHidden();
+  expect(await canvasWidth()).toBeGreaterThan(before + 300);
+  await page.reload();
+  await page.getByTestId('canvas').waitFor();
+  await expect(page.getByTestId('side-head')).toBeHidden();
+  // 読み込みと書き出しを開くと、欄も開く
+  await showTab(page, 'io');
+  await expect(page.getByTestId('io-panel')).toBeVisible();
+  await page.getByTestId('side-collapse').click();
+  await page.getByTestId('side-open').click();
+  await expect(page.getByTestId('io-panel')).toBeVisible();
+});
+
+test('上のバーの文書の名前は、書き出しのファイル名と同じ値。拡大・縮小はキャンバスの右下にある', async ({ page }) => {
+  await importSmiles(page, 'CCO');
+  await page.getByTestId('doc-name').fill('エタノール');
+  await showTab(page, 'io');
+  await expect(page.getByTestId('export-name')).toHaveValue('エタノール');
+  const [dl] = await Promise.all([page.waitForEvent('download'), page.getByTestId('io-panel').getByRole('button', { name: 'MOL', exact: true }).click()]);
+  expect(dl.suggestedFilename()).toBe('エタノール.mol');
+  const level = page.getByTestId('zoom-level');
+  const z0 = await level.textContent();
+  await page.getByTestId('zoom-in').click();
+  await expect(level).not.toHaveText(z0!);
+  // 上のバーの中には無い
+  await expect(page.locator('.topbar').getByTestId('zoom-level')).toHaveCount(0);
 });

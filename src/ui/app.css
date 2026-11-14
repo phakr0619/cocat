@@ -45,7 +45,8 @@
 html, body, #root { height: 100%; margin: 0; }
 body { font-family: system-ui, -apple-system, 'Hiragino Sans', 'Noto Sans JP', sans-serif; font-size: 13px; color: var(--text); background: var(--bg); }
 .loading { padding: 24px; }
-.app { display: grid; grid-template-columns: var(--tools-w) 1fr var(--side-w); grid-template-rows: auto 1fr auto; height: 100%; }
+.app { display: grid; grid-template-columns: var(--tools-w) 1fr var(--side-w); grid-template-rows: auto 1fr; height: 100%; }
+.app.side-closed { --side-w: 0px; }
 
 /* 上のバー */
 .topbar { grid-column: 1 / 4; display: flex; gap: 4px; align-items: center; padding: 6px 12px; background: var(--bar); color: var(--bar-text); flex-wrap: wrap; row-gap: 4px; position: relative; z-index: 20; }
@@ -148,7 +149,28 @@ input:focus, select:focus, textarea:focus { outline: 2px solid rgb(37 99 235 / 0
 .side .row { display: flex; flex-wrap: wrap; gap: 4px; margin: 6px 0; }
 .side .muted { color: var(--muted); }
 .side button.link { border: none; background: none; color: var(--accent-text); padding: 0 2px; text-decoration: underline; text-underline-offset: 2px; }
-.status { grid-column: 1 / 4; padding: 4px 12px; background: var(--surface); border-top: 1px solid var(--border); color: var(--text-2); font-size: 12px; }
+/* キャンバスの上に重ねる物: 今の道具の案内（左下）、操作の結果の知らせ（下の中央）、拡大・縮小（右下）、畳んだ右の欄を開くつまみ（右上） */
+.tool-hint { position: absolute; left: 12px; bottom: 12px; max-width: min(46%, 520px); padding: 5px 10px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); color: var(--text-2); font-size: var(--fs-s); line-height: 1.45; pointer-events: none; z-index: 3; }
+.tool-hint:empty { display: none; }
+.status { position: absolute; left: 50%; bottom: 56px; transform: translateX(-50%); max-width: 70%; padding: 7px 14px; background: var(--bar); color: var(--bar-text); border-radius: 8px; box-shadow: 0 6px 20px rgb(16 24 40 / 0.22); font-size: var(--fs-m); z-index: 6; pointer-events: none; animation: status-fade 8s forwards; }
+.status:empty { display: none; }
+@keyframes status-fade { 0%, 85% { opacity: 1; } 100% { opacity: 0; } }
+.stage-zoom { position: absolute; right: 12px; bottom: 12px; display: flex; align-items: center; gap: 2px; padding: 3px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); z-index: 3; }
+.stage-zoom button { border-color: transparent; background: transparent; padding: 3px 8px; font-size: var(--fs-s); color: var(--text-2); }
+.stage-zoom .zoom { min-width: 52px; text-align: center; font-variant-numeric: tabular-nums; color: var(--text); font-weight: 600; }
+.side-open { position: absolute; right: 0; top: 12px; z-index: 4; padding: 6px 10px; border: 1px solid var(--border-strong); border-right: none; border-radius: 8px 0 0 8px; background: var(--surface); color: var(--text-2); font-size: var(--fs-s); box-shadow: var(--shadow); }
+.side-open:hover:not(:disabled) { background: var(--accent-soft); color: var(--accent-text); border-color: var(--accent); }
+.side[hidden] { display: none; }
+.side-head .spacer { flex: 1; }
+.side-head .side-collapse { border-color: transparent; background: transparent; padding: 2px 6px; color: var(--muted); }
+.topbar .doc-name { width: 170px; height: 26px; padding: 0 8px; margin-right: 6px; border: 1px solid transparent; border-radius: var(--radius); background: transparent; color: var(--surface); font-size: var(--fs-m); font-weight: 600; }
+.topbar .doc-name::placeholder { color: var(--bar-text); opacity: 0.6; font-weight: 400; }
+.topbar .doc-name:hover { border-color: var(--bar-line); }
+.topbar .doc-name:focus { background: var(--bar-2); }
+/* 道具の列のいちばん下（ライブラリの開け閉め）と、道具の吹き出し */
+.tools-foot { position: sticky; bottom: -8px; margin: auto -7px -8px; padding: 6px 7px 8px; background: var(--surface); border-top: 1px solid var(--border); }
+.tool-tip { position: fixed; transform: translateY(-50%); z-index: 50; display: flex; align-items: center; gap: 8px; padding: 4px 9px; background: var(--bar); color: var(--bar-text); border-radius: 6px; font-size: var(--fs-s); white-space: nowrap; pointer-events: none; box-shadow: 0 4px 12px rgb(16 24 40 / 0.25); }
+.tool-tip kbd { font: 12px ui-monospace, monospace; padding: 0 5px; border: 1px solid var(--bar-line); border-radius: 4px; }
 .overlay-text { position: absolute; width: 160px; height: 46px; font: 13px Arial, sans-serif; padding: 2px 4px; border: 1px solid var(--accent); border-radius: 3px; }
 .side .export-name { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 6px; margin: 2px 0 4px; font-size: 12px; }
 .side .export-name input { flex: 1; min-width: 0; font: 13px system-ui, sans-serif; padding: 3px 6px; border: 1px solid var(--border-strong); border-radius: 4px; }
@@ -204,7 +226,7 @@ input:focus, select:focus, textarea:focus { outline: 2px solid rgb(37 99 235 / 0
 .stoich .cell { width: 52px; font: var(--fs-m) system-ui, sans-serif; padding: 1px 2px; border: 1px solid var(--border-strong); border-radius: 2px; text-align: right; }
 .stoich .cell.density { width: 32px; margin-left: 4px; }
 .app.with-library { grid-template-columns: var(--tools-w) 250px 1fr var(--side-w); }
-.app.with-library .topbar, .app.with-library .status { grid-column: 1 / 5; }
+.app.with-library .topbar { grid-column: 1 / 5; }
 .library { background: var(--surface); border-right: 1px solid var(--border); padding: 8px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; font-size: 12px; min-width: 0; }
 .lib-head { display: flex; gap: 4px; }
 .lib-head select { flex: 1; min-width: 0; font: var(--fs-m) system-ui, sans-serif; }
@@ -427,10 +449,9 @@ fieldset.plain:disabled { opacity: 0.6; }
 .tools-resize { grid-column: 1; grid-row: 2; justify-self: end; width: 7px; margin-right: -4px; z-index: 6; cursor: col-resize; touch-action: none; }
 .tools-resize:hover, .tools-resize.active, .tools-resize:focus-visible { background: var(--accent); opacity: 0.45; outline: none; }
 /* ライブラリの開け閉め: キャンバスの左の縁に貼った縦のつまみ（ライブラリの列はここに開く） */
-.library-tab { position: absolute; left: 0; top: 12px; z-index: 4; writing-mode: vertical-rl; padding: 10px 4px; border: 1px solid var(--border-strong); border-left: none; border-radius: 0 8px 8px 0; background: var(--surface); color: var(--text-2); font-size: 12px; letter-spacing: 0.1em; box-shadow: var(--shadow); }
-.library-tab span { writing-mode: horizontal-tb; display: inline-block; margin-bottom: 4px; }
-.library-tab:hover:not(:disabled) { background: var(--accent-soft); color: var(--accent-text); border-color: var(--accent); }
-.library-tab.on { background: var(--accent-soft); color: var(--accent-text); }
+.tools button.library-tab { width: 100%; height: 30px; gap: 4px; font-size: var(--fs-s); color: var(--text-2); border-color: var(--border); }
+.tools button.library-tab:hover:not(:disabled) { background: var(--accent-soft); color: var(--accent-text); border-color: var(--accent); }
+.tools button.library-tab.on { background: var(--accent-soft); color: var(--accent-text); }
 /* 略号の辞書 */
 .abbr-dict { width: min(720px, 94vw); max-height: 86vh; overflow: auto; }
 .abbr-dict section { margin: 10px 0; }
