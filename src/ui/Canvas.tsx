@@ -16,6 +16,8 @@ import { pageDims, pagesBox, type PageSetup } from '../chem/page';
 import { partPreview } from '../chem/partOps';
 
 const HILITE = '#3b82f6';
+/** 右ボタン: これより動かしたらドラッグ（表示を動かす）、動かさなければメニュー。環を回す操作と同じ 3 pt */
+const MENU_SLOP = 3;
 
 /** 表示の位置と拡大率。x, y は画面の左上に来る文書の座標（pt） */
 export interface View {
@@ -28,7 +30,11 @@ export interface View {
 export const MIN_ZOOM = 0.1;
 export const MAX_ZOOM = 8;
 
-export function Canvas({ store, view, setView, showStereo, marks, onDropCompound, onLabelEdit, onTextEdit }: {
+export function Canvas({ store, view, setView, showStereo, marks, onDropCompound, onLabelEdit, onTextEdit, onMenu, onBusy }: {
+  /** 右ボタンを押しただけのとき（ドラッグしなかったとき）。at は画面の座標、hit は押した物 */
+  onMenu?(at: { x: number; y: number }, hit: string | null): void;
+  /** ドラッグなどの操作の始まりと終わり（選んだ物の帯を、操作の間は隠すため） */
+  onBusy?(busy: boolean): void;
   showStereo?: boolean;
   /** 分析の欄（NMR の予測）で指した原子。緑で強く示す */
   marks?: string[];
@@ -119,7 +125,7 @@ export function Canvas({ store, view, setView, showStereo, marks, onDropCompound
 
   // スペースを押している間は、ドラッグで表示を動かす（ChemDraw などと同じ）
   const spaceDown = useRef(false);
-  const pan = useRef<{ x: number; y: number; vx: number; vy: number } | null>(null);
+  const pan = useRef<{ x: number; y: number; vx: number; vy: number; right: boolean } | null>(null);
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
       const t = e.target as HTMLElement | null;
@@ -166,7 +172,7 @@ export function Canvas({ store, view, setView, showStereo, marks, onDropCompound
     // 表示を動かす: 中ボタン・スペース＋左ボタン・右ボタンのドラッグ（ホワイトボードのように手繰り寄せる）
     if (e.button === 1 || e.button === 2 || (e.button === 0 && spaceDown.current)) {
       (e.target as Element).setPointerCapture?.(e.pointerId);
-      pan.current = { x: e.clientX, y: e.clientY, vx: view.x, vy: view.y };
+      pan.current = { x: e.clientX, y: e.clientY, vx: view.x, vy: view.y, right: e.button === 2 };
       e.preventDefault();
       return;
     }
@@ -175,6 +181,7 @@ export function Canvas({ store, view, setView, showStereo, marks, onDropCompound
     const p = toDoc(e);
     const hit = hitTest(store.get().doc, lay, p);
     session.current = beginSession(ctx, p, hit, { shift: e.shiftKey, alt: e.altKey });
+    onBusy?.(true);
   };
   const onPointerMove = (e: React.PointerEvent) => {
     if (pan.current) {
@@ -195,11 +202,18 @@ export function Canvas({ store, view, setView, showStereo, marks, onDropCompound
   };
   const onPointerUp = (e: React.PointerEvent) => {
     if (pan.current) {
+      const s0 = pan.current;
       pan.current = null;
+      // 右ボタンを押してから 3 pt より動かさずに離したら、表示は動かさず、メニューを出す
+      if (s0.right && Math.hypot(e.clientX - s0.x, e.clientY - s0.y) <= MENU_SLOP * zoom) {
+        setView((v) => ({ ...v, x: s0.vx, y: s0.vy }));
+        onMenu?.({ x: e.clientX, y: e.clientY }, hitTest(store.get().doc, lay, toDoc(e)));
+      }
       return;
     }
     const s = session.current;
     session.current = null;
+    onBusy?.(false);
     if (s) s.up(toDoc(e), { shift: e.shiftKey, alt: e.altKey });
   };
   const onDoubleClick = (e: React.MouseEvent) => {

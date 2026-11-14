@@ -472,3 +472,80 @@ test('上のバーの文書の名前は、書き出しのファイル名と同�
   // 上のバーの中には無い
   await expect(page.locator('.topbar').getByTestId('zoom-level')).toHaveCount(0);
 });
+
+test('選んだ物の帯: 分子を選ぶと、そばに Clean・反転・色・画像でコピーが出る。ドラッグの間と、選択を外すと消える', async ({ page }) => {
+  await importSmiles(page, 'CC(=O)Oc1ccccc1C(=O)O');
+  await tool(page, 'select');
+  const bar = page.getByTestId('sel-bar');
+  await expect(bar).toBeVisible();
+  // 左右反転: 原子の x の並びが逆になる
+  const xs = () => page.evaluate(() => Object.values(window.__editor!.get().doc.atoms).map((a) => a.x));
+  const before = await xs();
+  await page.getByTestId('sel-flip-h').click();
+  const after = await xs();
+  expect(after.some((x, i) => Math.abs(x - before[i]) > 1)).toBe(true);
+  // 色
+  await page.getByTestId('sel-color').click();
+  await page.getByTestId('sel-colors').getByTestId('color-赤').click();
+  expect(await page.evaluate(() => Object.values(window.__editor!.get().doc.atoms).every((a) => a.color === '#d32f2f'))).toBe(true);
+  // ほかの操作から、分子量などの欄を出す
+  await page.getByTestId('sel-more').click();
+  await page.getByTestId('ctx-menu').getByTestId('ctx-analysis').click();
+  await expect(page.getByTestId('analysis')).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(bar).toHaveCount(0);
+});
+
+test('右クリック: 押しただけならメニューを出し、分子の上ならその分子を選ぶ。ドラッグすると表示を動かしてメニューは出さない', async ({ page }) => {
+  await importSmiles(page, 'c1ccccc1');
+  await page.keyboard.press('Escape');
+  const a = await page.evaluate(() => {
+    const d = window.__editor!.get().doc;
+    const at = Object.values(d.atoms)[0];
+    const svg = document.querySelector('[data-testid=canvas]') as SVGSVGElement;
+    const vb = svg.viewBox.baseVal;
+    const r = svg.getBoundingClientRect();
+    const zoom = svg.clientWidth / vb.width;
+    return { x: r.left + (at.x - vb.x) * zoom, y: r.top + (at.y - vb.y) * zoom, vx: vb.x };
+  });
+  await page.mouse.click(a.x, a.y, { button: 'right' });
+  const menu = page.getByTestId('ctx-menu');
+  await expect(menu).toBeVisible();
+  expect(await page.evaluate(() => window.__editor!.get().selection.size)).toBe(12);
+  await expect(menu.getByRole('menuitem', { name: 'Clean Structure' })).toBeVisible();
+  // 選んだ物だけ書き出す: 書き出すの画面が、選んだ物だけの状態で開く
+  await menu.getByTestId('ctx-export').click();
+  const dialog = page.getByTestId('export-dialog');
+  await expect(dialog.getByTestId('export-only-selected')).toBeChecked();
+  await dialog.getByRole('button', { name: '閉じる' }).click();
+  // 何も無い所: 選択を外し、貼り付けと全体を表示を出す
+  const box = (await page.getByTestId('canvas').boundingBox())!;
+  await page.mouse.click(box.x + 40, box.y + 200, { button: 'right' });
+  await expect(menu.getByRole('menuitem', { name: '全体を表示' })).toBeVisible();
+  expect(await page.evaluate(() => window.__editor!.get().selection.size)).toBe(0);
+  await page.keyboard.press('Escape');
+  await expect(menu).toHaveCount(0);
+  // ドラッグ: 表示が動き、メニューは出ない
+  await page.mouse.move(box.x + 40, box.y + 200);
+  await page.mouse.down({ button: 'right' });
+  await page.mouse.move(box.x + 140, box.y + 260, { steps: 4 });
+  await page.mouse.up({ button: 'right' });
+  await expect(menu).toHaveCount(0);
+  const vx = await page.evaluate(() => (document.querySelector('[data-testid=canvas]') as SVGSVGElement).viewBox.baseVal.x);
+  expect(Math.abs(vx - a.vx)).toBeGreaterThan(10);
+});
+
+test('書き出す: 上のバーのボタンから、書き出す範囲の絵・ファイル名・形式を 1 つの画面で選ぶ', async ({ page }) => {
+  await importSmiles(page, 'CCO');
+  await page.getByTestId('doc-name').fill('エタノール');
+  await page.getByTestId('open-export').click();
+  const dialog = page.getByTestId('export-dialog');
+  await expect(dialog.getByTestId('export-preview').locator('img')).toBeVisible();
+  await expect(dialog.getByTestId('export-name')).toHaveValue('エタノール');
+  const [dl] = await Promise.all([page.waitForEvent('download'), dialog.getByRole('button', { name: 'CDXML', exact: true }).click()]);
+  expect(dl.suggestedFilename()).toBe('エタノール.cdxml');
+  // 画像でコピーもここから
+  await dialog.getByTestId('export-copy-image').click();
+  await expect(dialog).toHaveCount(0);
+  await expect(page.locator('.status')).toContainText('図をコピーしました');
+});

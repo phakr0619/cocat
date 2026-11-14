@@ -15,7 +15,9 @@ import '../editor/tools3';
 import { alignCenters } from '../chem/align';
 import { cleanStructure } from '../chem/clean';
 import { setText } from '../chem/schemeOps';
-import { IoPanel } from './IoPanel';
+import { ExportDialog, IoPanel } from './IoPanel';
+import { fragmentOf, selectionFrame } from '../editor/tools2';
+import { kindOf } from '../chem/model';
 import { AnalysisPanel } from './AnalysisPanel';
 import { LibraryPanel } from './LibraryPanel';
 import { ProjectStore } from '../project/store';
@@ -39,7 +41,7 @@ import { PAGE_SIZES, pagesBox } from '../chem/page';
 import { layout } from '../render/layout';
 import { download } from './IoPanel';
 import { TOOL_GROUPS, toolHint, Toolbar } from './Toolbar';
-import { Menu } from './Menu';
+import { Menu, PopupMenu, type MenuEntry, type MenuItem } from './Menu';
 import { AbbrDictionary } from './AbbrDictionary';
 import { applyAbbrs, setDocAbbrs, withUsedAbbrDefs } from './abbrStore';
 import { subscribeAbbrs } from '../chem/abbreviations';
@@ -279,6 +281,14 @@ export function App() {
     }
   };
   const [overlay, setOverlay] = useState<Overlay | null>(null);
+  /** キャンバスでドラッグなどをしている間（選んだ物の帯を隠す） */
+  const [busy, setBusy] = useState(false);
+  /** 右クリックのメニュー（画面の座標） */
+  const [ctxMenu, setCtxMenu] = useState<{ x: number; y: number } | null>(null);
+  /** 「書き出す」の画面 */
+  const [showExport, setShowExport] = useState<{ onlySelected: boolean } | null>(null);
+  /** 選んだ物の帯の、色の一覧 */
+  const [barColors, setBarColors] = useState<{ x: number; y: number } | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const textRef = useRef<HTMLTextAreaElement>(null);
 
@@ -406,6 +416,110 @@ export function App() {
     setOverlay(null);
   };
 
+  // 操作の一覧。上のバーのメニュー、選んだ物の帯、右クリックのメニューで同じ物を使う
+  const editItems: MenuEntry[] = [
+            { label: '切り取り', shortcut: 'Ctrl+X', onClick: () => actions.cut(store) },
+            { label: 'コピー', shortcut: 'Ctrl+C', onClick: () => actions.copy(store) },
+            { label: '貼り付け', shortcut: 'Ctrl+V', title: 'ほかのアプリでコピーした SMILES・Molfile・CDXML も貼れます', onClick: () => actions.pasteMenu(store) },
+            { label: '図を画像でコピー', title: '選んだ物を、Word や PowerPoint に貼れる画像でコピーする。何も選んでいなければ図の全体をコピーする', testId: 'copy-image', onClick: () => actions.copyImage(store) },
+            { label: 'すべて選択', shortcut: 'Ctrl+A', onClick: () => actions.selectAll(store) },
+            { sep: true },
+            { label: '⇋ 左右反転', shortcut: 'Ctrl+Shift+H', onClick: () => actions.flip(store, 'h') },
+            { label: '⇵ 上下反転', shortcut: 'Ctrl+Shift+V', onClick: () => actions.flip(store, 'v') },
+  ];
+  const arrangeItems: MenuEntry[] = [
+            { label: 'Clean Structure', shortcut: 'Ctrl+Shift+K', title: '結合の長さと角度を整える', onClick: clean },
+            { label: '横にそろえる', title: '選んだ物の中心の高さをそろえる。何も選んでいなければ全部をそろえる', onClick: () => align('h') },
+            { label: '縦にそろえる', title: '選んだ物の中心の左右の位置をそろえる。何も選んでいなければ全部をそろえる', onClick: () => align('v') },
+            { sep: true },
+            { label: '略号を展開', title: 'Boc などの略号を原子と結合にする', onClick: () => actions.expandAbbrs(store) },
+            { label: '略号に縮約', title: '展開した原子と結合を、元の略号に戻す', onClick: () => actions.contractAbbrs(store) },
+            { sep: true },
+            {
+              label: '塩としてまとめる',
+              testId: 'group-salt',
+              title: '酸と塩基のように選んだ 2 つ以上の分子を、1 つの塩として扱う。分子の欄、スキーム、ライブラリでも 1 つの化合物になる',
+              disabled: !canGroupSalt(doc, selection),
+              onClick: () => (store.commit(groupSalt(store.get().doc, store.get().selection)), store.set({ message: '選んだ分子を 1 つの塩としてまとめました' })),
+            },
+            {
+              label: 'まとまりを解く',
+              testId: 'ungroup-salt',
+              title: '塩としてまとめた分子を、別々の分子に戻す',
+              disabled: !canUngroupSalt(doc, selection),
+              onClick: () => store.commit(ungroupSalt(store.get().doc, store.get().selection)),
+            },
+            { heading: '立体の表し方: 選んだ不斉中心か分子に付ける' },
+            {
+              label: '絶対配置（abs）',
+              testId: 'stereo-abs',
+              title: '描いたくさびのとおりの立体。ふつうはこの書き方',
+              disabled: !selection.size,
+              onClick: () => store.commit(setStereoGroup(store.get().doc, store.get().selection, 'abs')),
+            },
+            {
+              label: 'ラセミ（rac・&）',
+              testId: 'stereo-and',
+              title: '描いた立体とその鏡像の 1:1 の混合物。分子の下に rac と出し、一部の中心だけなら &1 と出す',
+              disabled: !selection.size,
+              onClick: () => store.commit(setStereoGroup(store.get().doc, store.get().selection, 'and')),
+            },
+            {
+              label: '相対配置（rel・or）',
+              testId: 'stereo-or',
+              title: '描いた立体かその鏡像の一方で、どちらかは決まっていない。分子の下に rel と出し、一部の中心だけなら or1 と出す',
+              disabled: !selection.size,
+              onClick: () => store.commit(setStereoGroup(store.get().doc, store.get().selection, 'or')),
+            },
+  ];
+  const colorItems: MenuEntry[] = COLORS.map(([name, hex]) => ({
+    label: name,
+    swatch: hex ?? '#000',
+    testId: `color-${name}`,
+    onClick: () => {
+      const st = store.get();
+      if (!st.selection.size) return store.set({ message: '色を変える物を選んでください' });
+      store.commit(setColor(st.doc, st.selection, hex));
+    },
+  }));
+  /** 右クリックのメニューと、選んだ物の帯の「ほかの操作」に出す項目 */
+  const contextItems = (): MenuEntry[] => {
+    const has = store.get().selection.size > 0;
+    const pick = (items: MenuEntry[], labels: string[]) => items.filter((it): it is MenuItem => 'label' in it && labels.includes(it.label));
+    if (!has)
+      return [
+        ...pick(editItems, ['貼り付け', 'すべて選択']),
+        { sep: true },
+        { label: '全体を表示', shortcut: 'Shift+1', onClick: () => fitView() },
+        { label: '書き出す…', testId: 'ctx-export', onClick: () => setShowExport({ onlySelected: false }) },
+      ];
+    return [
+      ...pick(editItems, ['切り取り', 'コピー', '貼り付け', '図を画像でコピー']),
+      { sep: true },
+      ...pick(arrangeItems, ['Clean Structure', '横にそろえる', '縦にそろえる', '略号を展開', '略号に縮約']),
+      ...pick(arrangeItems, ['塩としてまとめる', 'まとまりを解く']).filter((it) => !it.disabled),
+      { sep: true },
+      { label: '選んだ物だけ書き出す…', testId: 'ctx-export', onClick: () => setShowExport({ onlySelected: true }) },
+      { label: '分子量などを見る', testId: 'ctx-analysis', onClick: () => setSide('analysis') },
+      { label: showLibrary ? 'ライブラリに登録（左の列で）' : 'ライブラリを開く', onClick: () => !showLibrary && toggleLibrary() },
+    ];
+  };
+  /** 選んだ物の帯を出す所（キャンバスの左上からの px）。選択の道具で選んでいて、ドラッグしていないときだけ */
+  const selBar = (() => {
+    if (busy || overlay || !selection.size || (tool !== 'select' && tool !== 'lasso')) return null;
+    const r = selectionFrame(doc, selection);
+    const el = stageRef.current;
+    if (!r || !el) return null;
+    const W = 300;
+    const H = 34;
+    // 枠の上の回転のつまみ（枠より 8 pt 上）のさらに上。上に入らなければ枠の下
+    let top = (r.y1 - 8 - view.y) * zoom - 12 - H;
+    if (top < 6) top = (r.y2 - view.y) * zoom + 8;
+    if (top > el.clientHeight - H - 6) return null;
+    const left = Math.max(6, Math.min((r.x1 - view.x) * zoom, el.clientWidth - W - 6));
+    return { left, top };
+  })();
+
   return (
     <div className={`app${showLibrary ? ' with-library' : ''}${sideOpen ? '' : ' side-closed'}`} style={toolsWidth.style}>
       <header className="topbar">
@@ -450,69 +564,8 @@ export function App() {
             ...SAMPLES.map((s) => ({ label: s.name, testId: `sample-${s.id}`, onClick: () => openSample(s.id) })),
           ]}
         />
-        <Menu
-          label="編集"
-          testId="menu-edit"
-          items={[
-            { label: '切り取り', shortcut: 'Ctrl+X', onClick: () => actions.cut(store) },
-            { label: 'コピー', shortcut: 'Ctrl+C', onClick: () => actions.copy(store) },
-            { label: '貼り付け', shortcut: 'Ctrl+V', title: 'ほかのアプリでコピーした SMILES・Molfile・CDXML も貼れます', onClick: () => actions.pasteMenu(store) },
-            { label: '図を画像でコピー', title: '選んだ物を、Word や PowerPoint に貼れる画像でコピーする。何も選んでいなければ図の全体をコピーする', testId: 'copy-image', onClick: () => actions.copyImage(store) },
-            { label: 'すべて選択', shortcut: 'Ctrl+A', onClick: () => actions.selectAll(store) },
-            { sep: true },
-            { label: '⇋ 左右反転', shortcut: 'Ctrl+Shift+H', onClick: () => actions.flip(store, 'h') },
-            { label: '⇵ 上下反転', shortcut: 'Ctrl+Shift+V', onClick: () => actions.flip(store, 'v') },
-          ]}
-        />
-        <Menu
-          label="整える"
-          testId="menu-arrange"
-          items={[
-            { label: 'Clean Structure', shortcut: 'Ctrl+Shift+K', title: '結合の長さと角度を整える', onClick: clean },
-            { label: '横にそろえる', title: '選んだ物の中心の高さをそろえる。何も選んでいなければ全部をそろえる', onClick: () => align('h') },
-            { label: '縦にそろえる', title: '選んだ物の中心の左右の位置をそろえる。何も選んでいなければ全部をそろえる', onClick: () => align('v') },
-            { sep: true },
-            { label: '略号を展開', title: 'Boc などの略号を原子と結合にする', onClick: () => actions.expandAbbrs(store) },
-            { label: '略号に縮約', title: '展開した原子と結合を、元の略号に戻す', onClick: () => actions.contractAbbrs(store) },
-            { sep: true },
-            {
-              label: '塩としてまとめる',
-              testId: 'group-salt',
-              title: '酸と塩基のように選んだ 2 つ以上の分子を、1 つの塩として扱う。分子の欄、スキーム、ライブラリでも 1 つの化合物になる',
-              disabled: !canGroupSalt(doc, selection),
-              onClick: () => (store.commit(groupSalt(store.get().doc, store.get().selection)), store.set({ message: '選んだ分子を 1 つの塩としてまとめました' })),
-            },
-            {
-              label: 'まとまりを解く',
-              testId: 'ungroup-salt',
-              title: '塩としてまとめた分子を、別々の分子に戻す',
-              disabled: !canUngroupSalt(doc, selection),
-              onClick: () => store.commit(ungroupSalt(store.get().doc, store.get().selection)),
-            },
-            { heading: '立体の表し方: 選んだ不斉中心か分子に付ける' },
-            {
-              label: '絶対配置（abs）',
-              testId: 'stereo-abs',
-              title: '描いたくさびのとおりの立体。ふつうはこの書き方',
-              disabled: !selection.size,
-              onClick: () => store.commit(setStereoGroup(store.get().doc, store.get().selection, 'abs')),
-            },
-            {
-              label: 'ラセミ（rac・&）',
-              testId: 'stereo-and',
-              title: '描いた立体とその鏡像の 1:1 の混合物。分子の下に rac と出し、一部の中心だけなら &1 と出す',
-              disabled: !selection.size,
-              onClick: () => store.commit(setStereoGroup(store.get().doc, store.get().selection, 'and')),
-            },
-            {
-              label: '相対配置（rel・or）',
-              testId: 'stereo-or',
-              title: '描いた立体かその鏡像の一方で、どちらかは決まっていない。分子の下に rel と出し、一部の中心だけなら or1 と出す',
-              disabled: !selection.size,
-              onClick: () => store.commit(setStereoGroup(store.get().doc, store.get().selection, 'or')),
-            },
-          ]}
-        />
+        <Menu label="編集" testId="menu-edit" items={editItems} />
+        <Menu label="整える" testId="menu-arrange" items={arrangeItems} />
         <Menu
           label="表示"
           testId="menu-view"
@@ -537,21 +590,7 @@ export function App() {
             e.target.value = '';
           }}
         />
-        <Menu
-          label="色"
-          testId="menu-color"
-          title="選んだ原子・結合・矢印・文字・図形の色を変える"
-          items={COLORS.map(([name, hex]) => ({
-            label: name,
-            swatch: hex ?? '#000',
-            testId: `color-${name}`,
-            onClick: () => {
-              const s = store.get();
-              if (!s.selection.size) return store.set({ message: '色を変える物を選んでください' });
-              store.commit(setColor(s.doc, s.selection, hex));
-            },
-          }))}
-        />
+        <Menu label="色" testId="menu-color" title="選んだ原子・結合・矢印・文字・図形の色を変える" items={colorItems} />
         <span className="sep" />
         <button type="button" className="icon-text" onClick={() => store.undo()} disabled={!canUndo} title="元に戻す (Ctrl+Z)">
           ↶ 元に戻す
@@ -569,6 +608,9 @@ export function App() {
           </button>
         )}
         <span className="spacer" />
+        <button type="button" className="export-button" data-testid="open-export" onClick={() => setShowExport({ onlySelected: false })} title="図を SMILES・MOL・CDXML・CDX・SVG・PNG で書き出す。画像でのコピーもここから">
+          書き出す
+        </button>
         <Menu
           label="設定"
           testId="menu-settings"
@@ -591,6 +633,7 @@ export function App() {
       {/* ダイアログは上のバーの外に置く（バーの文字の決まりを受け継がないように） */}
       {showLlm && <LlmSettings onClose={() => setShowLlm(false)} />}
       {showAbout && <About onClose={() => setShowAbout(false)} />}
+      {showExport && <ExportDialog store={store} visibleRect={visibleRect} onlySelected={showExport.onlySelected} onCopyImage={() => actions.copyImage(store)} onClose={() => setShowExport(null)} />}
       {showKeys && <Shortcuts onClose={() => setShowKeys(false)} />}
       {showDrawStyle && <DrawStyleDialog store={store} onClose={() => setShowDrawStyle(false)} />}
       {showAbbrDict && <AbbrDictionary store={store} onClose={() => setShowAbbrDict(false)} />}
@@ -628,7 +671,34 @@ export function App() {
             store.commit(d, ids);
             store.set({ tool: 'select' });
           }}
-          onLabelEdit={openLabelEditor} onTextEdit={openTextEditor} />
+          onLabelEdit={openLabelEditor}
+          onTextEdit={openTextEditor}
+          onBusy={setBusy}
+          onMenu={(at, hit) => {
+            // 選んでいない物の上で押したら、その物（分子なら分子全体）を選んでからメニューを出す
+            const st = store.get();
+            if (hit && !st.selection.has(hit)) {
+              const ids = kindOf(hit) === 'atom' || kindOf(hit) === 'bond' ? fragmentOf(st.doc, hit) : new Set([hit]);
+              store.set({ selection: ids, tool: st.tool === 'lasso' ? 'lasso' : 'select' });
+            } else if (!hit && st.selection.size) store.set({ selection: new Set() });
+            setCtxMenu(at);
+            track('menu:context', { once: true });
+          }}
+        />
+        {selBar && (
+          <div className="sel-bar" data-testid="sel-bar" style={selBar} role="toolbar" aria-label="選んだ物の操作">
+            <button type="button" data-testid="sel-clean" title="結合の長さと角度を整える (Ctrl+Shift+K)" onClick={clean}>Clean</button>
+            <button type="button" data-testid="sel-flip-h" title="左右反転 (Ctrl+Shift+H)" aria-label="左右反転" onClick={() => actions.flip(store, 'h')}>⇋</button>
+            <button type="button" data-testid="sel-flip-v" title="上下反転 (Ctrl+Shift+V)" aria-label="上下反転" onClick={() => actions.flip(store, 'v')}>⇵</button>
+            <span className="sep" />
+            <button type="button" data-testid="sel-color" title="色を変える" onClick={(e) => { const r = e.currentTarget.getBoundingClientRect(); setBarColors({ x: r.left, y: r.bottom + 4 }); }}>色</button>
+            <button type="button" data-testid="sel-copy-image" title="Word や PowerPoint に貼れる画像でコピーする" onClick={() => actions.copyImage(store)}>画像でコピー</button>
+            <span className="sep" />
+            <button type="button" data-testid="sel-more" title="ほかの操作" aria-label="ほかの操作" onClick={(e) => { const r = e.currentTarget.getBoundingClientRect(); setCtxMenu({ x: r.left, y: r.bottom + 4 }); }}>⋯</button>
+          </div>
+        )}
+        {ctxMenu && <PopupMenu at={ctxMenu} label="操作" items={contextItems()} onClose={() => setCtxMenu(null)} testId="ctx-menu" />}
+        {barColors && <PopupMenu at={barColors} label="色" items={colorItems} onClose={() => setBarColors(null)} testId="sel-colors" />}
         {isEmpty && <EntryCards onSample={openSample} onAi={() => openAi('create')} />}
         <div className="tool-hint" data-testid="tool-hint">{toolHint(tool, partName)}</div>
         <div className="status" data-testid="status" role="status" aria-live="polite" key={message}>{message}</div>
