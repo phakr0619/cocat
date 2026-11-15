@@ -43,7 +43,7 @@ async function useBedrock(page: Page, key = 'bedrock-test-key') {
 test('会社を Bedrock にして、つながるか試すと、短い質問を 1 回送って成功が出る', async ({ page }) => {
   const calls = await fakeBedrock(page, { ok: true });
   const dlg = await useBedrock(page);
-  // Bedrock の欄: 地域・モデルの ID・費用の注意が出て、Gemini だけの欄は出ない
+  // Bedrock の欄: リージョン・モデルの ID・費用の注意が出て、Gemini だけの欄は出ない
   await expect(dlg.getByTestId('llm-region')).toContainText('東京（ap-northeast-1）');
   await expect(dlg.getByTestId('llm-test-note')).toContainText('料金は 1 円未満です');
   await expect(dlg.getByTestId('llm-model-custom')).toBeVisible();

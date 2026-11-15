@@ -41,7 +41,7 @@ export interface ProviderInfo {
   canListModels: boolean;
   /** 「つながるか試す」の前に出す、費用の注意（質問を送って確かめるときだけ） */
   testCostNote?: string;
-  /** 送り先の地域の表示（設定画面に、読むだけで出す） */
+  /** 送り先のリージョンの表示（設定画面に、読むだけで出す） */
   regionText?: string;
   /** 送れる画像の形式 */
   imageTypes: string[];
@@ -49,6 +49,8 @@ export interface ProviderInfo {
   maxImageFileBytes: number;
   /** 縮めずにそのまま送ってよい画像の大きさ（バイト。base64 で 4/3 倍になる） */
   keepAsIsImageBytes: number;
+  /** 縮めた後の 1 枚の上限（バイト）。超えたら JPEG にし直し、それでも超えたら送らない。無ければ上限を見ない */
+  maxSendImageBytes?: number;
   /** 送れない画像のときに出す文 */
   imageTypeText: string;
   imageSizeText: string;
@@ -167,6 +169,8 @@ export const PROVIDERS: Record<ProviderId, ProviderInfo> = {
     // Bedrock は 1 枚が 3.75 MB 程度まで。大きい画像は送る前に縮めるので、元のファイルは 20 MB まで受ける
     maxImageFileBytes: 20 * 1024 * 1024,
     keepAsIsImageBytes: 3 * 1024 * 1024,
+    // 長辺 2,048 px に縮めても、写真の PNG は 3.75 MB を超えることがある。少し余裕を見る
+    maxSendImageBytes: 3.5 * 1024 * 1024,
     imageTypeText: '送れる画像は PNG・JPEG・WebP です',
     imageSizeText: '画像が大きすぎます（20 MB まで）',
     keyHelp: {

@@ -67,9 +67,17 @@ export async function prepareImage(file: File, provider: ProviderId = 'gemini'):
     ctx.fillStyle = '#fff';
     ctx.fillRect(0, 0, fit.width, fit.height);
     ctx.drawImage(bitmap, 0, 0, fit.width, fit.height);
-    const type = file.type === 'image/png' ? 'image/png' : 'image/jpeg';
-    const blob = await new Promise<Blob | null>((res) => canvas.toBlob(res, type, 0.92));
+    let type = file.type === 'image/png' ? 'image/png' : 'image/jpeg';
+    const encode = (t: string) => new Promise<Blob | null>((res) => canvas.toBlob(res, t, 0.92));
+    let blob = await encode(type);
+    const limit = providerInfo(provider).maxSendImageBytes;
+    // 送り先の 1 枚の上限を超えたら、JPEG にし直す（PNG の写真は大きくなりやすい）
+    if (blob && limit && blob.size > limit && type !== 'image/jpeg') {
+      type = 'image/jpeg';
+      blob = await encode(type);
+    }
     if (!blob) return { ok: false, error: '画像を縮められませんでした' };
+    if (limit && blob.size > limit) return { ok: false, error: '縮めても画像が大きすぎて、送れませんでした' };
     return { ok: true, image: { name, mimeType: type, data: await blobToBase64(blob), width: fit.width, height: fit.height, bytes: blob.size } };
   } finally {
     bitmap.close();

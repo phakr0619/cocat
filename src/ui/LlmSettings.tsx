@@ -63,7 +63,7 @@ export function LlmSettings({ onClose }: { onClose(): void }) {
       </p>
       {to.regionText && (
         <p data-testid="llm-region">
-          地域: {to.regionText}
+          リージョン: {to.regionText}
         </p>
       )}
       <label className="field">
