@@ -14,7 +14,7 @@ const ok = (input: unknown = { a: 1 }, extra: object = {}) => ({
   usage: { inputTokens: 10, outputTokens: 3 },
   ...extra,
 });
-const MODEL = 'jp.anthropic.claude-haiku-5-5';
+const MODEL = 'jp.anthropic.claude-haiku-4-5-20251001-v1:0';
 const URL_ = `https://bedrock-runtime.ap-northeast-1.amazonaws.com/model/${encodeURIComponent(MODEL)}/converse`;
 
 describe('Bedrock の呼び出し', () => {
@@ -25,7 +25,7 @@ describe('Bedrock の呼び出し', () => {
     expect(r).toEqual({ ok: true, value: { a: 1 }, usage: { input: 10, output: 3 } });
     const [url, init] = f.mock.calls[0];
     expect(url).toBe(URL_);
-    expect(url).toContain('jp.anthropic.claude-haiku-5-5/converse');
+    expect(url).toContain('jp.anthropic.claude-haiku-4-5-20251001-v1%3A0/converse');
     expect(init!.method).toBe('POST');
     expect(init!.headers).toEqual({ 'content-type': 'application/json', authorization: 'Bearer KEY' });
     expect(String(url)).not.toContain('KEY');

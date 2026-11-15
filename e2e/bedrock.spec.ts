@@ -46,21 +46,24 @@ test('会社を Bedrock にして、つながるか試すと、短い質問を 1
   // Bedrock の欄: リージョン・モデルの ID・費用の注意が出て、Gemini だけの欄は出ない
   await expect(dlg.getByTestId('llm-region')).toContainText('東京（ap-northeast-1）');
   await expect(dlg.getByTestId('llm-test-note')).toContainText('料金は 1 円未満です');
-  await expect(dlg.getByTestId('llm-model-custom')).toBeVisible();
+  await expect(dlg.getByTestId('llm-model')).toHaveCount(0);
   await expect(dlg.getByTestId('llm-paid')).toHaveCount(0);
   await expect(dlg.getByTestId('llm-thinking')).toHaveCount(0);
   await expect(dlg.getByTestId('llm-free-warning')).toHaveCount(0);
-  await expect(dlg.getByTestId('llm-model').locator('option')).toHaveText(['Claude Haiku 5.5（速い・安い）', 'Claude Opus 5.5（いちばん賢い）']);
+  // モデルは ID を入れる欄で、確かめたモデルを候補に出す。既定は Haiku 4.5
+  await expect(dlg.getByTestId('llm-model-id')).toHaveValue('jp.anthropic.claude-haiku-4-5-20251001-v1:0');
+  await expect(dlg.locator('#llm-model-list option')).toHaveCount(2);
+  await expect(dlg.getByTestId('llm-model-note')).toContainText('Claude Sonnet 4.6');
   await dlg.getByTestId('llm-test').click();
   await expect(dlg.getByTestId('llm-check')).toHaveText('つながりました');
   expect(calls).toHaveLength(1);
-  expect(calls[0].url).toBe('https://bedrock-runtime.ap-northeast-1.amazonaws.com/model/jp.anthropic.claude-haiku-5-5/converse');
+  expect(calls[0].url).toBe('https://bedrock-runtime.ap-northeast-1.amazonaws.com/model/jp.anthropic.claude-haiku-4-5-20251001-v1%3A0/converse');
   expect(calls[0].auth).toBe('Bearer bedrock-test-key');
   const sent = JSON.parse(calls[0].body);
   expect(sent.toolConfig.toolChoice).toEqual({ tool: { name: 'answer' } });
 
-  // 一覧に無いモデルの ID を入れると、それを使う。会社を戻しても、Bedrock の設定は残る
-  await dlg.getByTestId('llm-model-custom').fill('jp.anthropic.claude-sonnet-x');
+  // 候補に無いモデルの ID を入れると、それを使う。会社を戻しても、Bedrock の設定は残る
+  await dlg.getByTestId('llm-model-id').fill('jp.anthropic.claude-sonnet-x');
   await dlg.getByTestId('llm-test').click();
   await expect(dlg.getByTestId('llm-check')).toHaveText('つながりました');
   expect(calls[1].url).toContain('/model/jp.anthropic.claude-sonnet-x/converse');
@@ -69,7 +72,7 @@ test('会社を Bedrock にして、つながるか試すと、短い質問を 1
   await expect(dlg.getByTestId('llm-region')).toHaveCount(0);
   await dlg.getByTestId('llm-provider').selectOption('bedrock');
   await expect(dlg.getByTestId('llm-key')).toHaveValue('bedrock-test-key');
-  await expect(dlg.getByTestId('llm-model-custom')).toHaveValue('jp.anthropic.claude-sonnet-x');
+  await expect(dlg.getByTestId('llm-model-id')).toHaveValue('jp.anthropic.claude-sonnet-x');
 });
 
 test('Bedrock の失敗（モデルが無い）は、モデルを選び直す文で出る', async ({ page }) => {
@@ -78,7 +81,7 @@ test('Bedrock の失敗（モデルが無い）は、モデルを選び直す文
   );
   const dlg = await useBedrock(page);
   await dlg.getByTestId('llm-test').click();
-  await expect(dlg.getByTestId('llm-check')).toContainText('モデルが見つからないか、このアカウントでは使えません');
+  await expect(dlg.getByTestId('llm-check')).toContainText('このモデルは、見つからないか、このアカウントではまだ使えません');
 });
 
 test('Bedrock で文章から下書きを作る: 同意の送り先も Bedrock で、答えは toolUse の入力から読む', async ({ page }) => {
@@ -99,5 +102,5 @@ test('Bedrock で文章から下書きを作る: 同意の送り先も Bedrock �
   expect(sent.inferenceConfig.maxTokens).toBe(16000);
   await expect(page.getByTestId('smiles')).toContainText('>>');
   // 使ったモデルの名前を出す
-  await expect(panel).toContainText('Claude Haiku 5.5（速い・安い）');
+  await expect(panel).toContainText('Claude Haiku 4.5（速い・安い）');
 });

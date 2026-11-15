@@ -7,7 +7,7 @@ Cocat の AI の機能（言葉から作る・言葉で直す・実験項を書�
 | 項目 | 値 |
 | --- | --- |
 | リージョン | 東京（`ap-northeast-1`）だけ |
-| モデル | Claude Haiku 5.5（`jp.anthropic.claude-haiku-5-5`）、Claude Opus 5.5（`jp.anthropic.claude-opus-5-5`）。一覧に無いモデルの ID も入れられる |
+| モデル | 使う人がモデルの ID を入れる。候補として、動作を確かめた Claude Haiku 4.5（`jp.anthropic.claude-haiku-4-5-20251001-v1:0`。既定）と Claude Sonnet 4.6（`jp.anthropic.claude-sonnet-4-6`）を出す |
 | キー | Bedrock の API キー（`Authorization: Bearer` で送る） |
 | 画像 | PNG・JPEG・WebP。HEIC・HEIF は送れない |
 | 考える深さ | 選べない（下の「答えの形」） |
@@ -18,7 +18,7 @@ Cocat の AI の機能（言葉から作る・言葉で直す・実験項を書�
 
 1. AWS のコンソールで、Bedrock の短い期限の API キーを作る（[Amazon Bedrock API keys](https://docs.aws.amazon.com/bedrock/latest/userguide/api-keys.html)）
 2. Cocat の「AI の設定」で、会社を「AWS（Amazon Bedrock）」にする
-3. モデルを選び、キーを貼る
+3. モデルの ID を入れ（候補から選んでもよい）、キーを貼る
 4. 「つながるか試す」を押す。短い問いを 1 回送るので、料金が少しかかる（1 円に満たない）
 
 短い期限のキーは長くても 12 時間で使えなくなる。切れたら作り直して貼り直す。長い期限のキーはブラウザに置く使い方には勧めない。
@@ -28,7 +28,7 @@ Cocat の AI の機能（言葉から作る・言葉で直す・実験項を書�
 | 出る文 | 見直すこと |
 | --- | --- |
 | キーが違うか、期限が切れているか… | キーの期限。キーを作った IAM の主体に、そのモデルを呼ぶ権限（`bedrock:InvokeModel`）があるか |
-| このモデルは、見つからないか、このアカウントではまだ使えません… | モデルの ID。`aws bedrock list-inference-profiles --region ap-northeast-1` で、`jp.` のプロファイルを調べられる。Anthropic のモデルは、コンソールで利用の申し込み（ユースケースの書式）が要ることがあり、出してから 15 分ほどで使えるようになる。新しいモデルは、申し込みとは別に、アカウントによっては使えないことがある |
+| このモデルは、見つからないか、このアカウントではまだ使えません… | モデルの ID。`aws bedrock list-inference-profiles --region ap-northeast-1` で、`jp.` のプロファイルを調べられる。Anthropic のモデルは、コンソールで利用の申し込み（ユースケースの書式）が要ることがあり、出してから 15 分ほどで使えるようになる。新しいモデルは、申し込みとは別に、アカウントによっては使えないことがある。Anthropic のモデルをアカウントで初めて呼ぶと、AWS Marketplace の購読が自動で行われる。組織の SCP で `aws-marketplace:ViewSubscriptions` と `aws-marketplace:Subscribe` を断っていると、購読できずに断られる |
 | AWS の使える量の上限に達しました | Service Quotas の Bedrock の上限 |
 
 組織の SCP でリージョンを絞っているときは、権限があっても断られることがある。`jp.` のプロファイルは東京と大阪へ回すので、大阪でも Bedrock の呼び出しを許す必要がある。

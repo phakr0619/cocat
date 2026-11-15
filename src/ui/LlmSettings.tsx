@@ -104,30 +104,45 @@ export function LlmSettings({ onClose }: { onClose(): void }) {
           {to.freeKeyWarning.settingsLimits}
         </p>
       )}
-      <label className="field">
-        <span>モデル</span>
-        <select data-testid="llm-model" value={s.model} onChange={(e) => setLlmSettings({ model: e.target.value })}>
-          {/* 前に選んだモデルが一覧から外れていても、それも出す */}
-          {!to.models.some((m) => m.id === s.model) && <option value={s.model}>{s.model}</option>}
-          {to.models.map((m) => (
-            <option key={m.id} value={m.id}>
-              {m.name}
-              {m.paidOnly ? ' ・有料のキーだけ' : ''}
-            </option>
-          ))}
-        </select>
-      </label>
-      {to.allowCustomModel && (
+      {to.allowCustomModel ? (
+        // モデルは使う人が決める。一覧は、Cocat で動作を確かめたモデルの候補として出す
+        <>
+          <label className="field">
+            <span>モデルの ID</span>
+            <input
+              type="text"
+              autoComplete="off"
+              spellCheck={false}
+              list="llm-model-list"
+              data-testid="llm-model-id"
+              value={s.model}
+              placeholder={to.defaultModel}
+              onChange={(e) => setLlmSettings({ model: e.target.value.trim() })}
+              onBlur={() => !s.model && setLlmSettings({ model: to.defaultModel })}
+            />
+            <datalist id="llm-model-list">
+              {to.models.map((m) => (
+                <option key={m.id} value={m.id} label={m.name} />
+              ))}
+            </datalist>
+          </label>
+          <p className="muted" data-testid="llm-model-note">
+            {`候補は、Cocat で動作を確かめたモデルです（${to.models.map((m) => m.name).join('、')}）。ほかのモデルの ID も入れられます。`}
+          </p>
+        </>
+      ) : (
         <label className="field">
-          <span>一覧に無いモデルの ID</span>
-          <input
-            type="text"
-            autoComplete="off"
-            spellCheck={false}
-            data-testid="llm-model-custom"
-            value={to.models.some((m) => m.id === s.model) ? '' : s.model}
-            onChange={(e) => setLlmSettings({ model: e.target.value.trim() || to.defaultModel })}
-          />
+          <span>モデル</span>
+          <select data-testid="llm-model" value={s.model} onChange={(e) => setLlmSettings({ model: e.target.value })}>
+            {/* 前に選んだモデルが一覧から外れていても、それも出す */}
+            {!to.models.some((m) => m.id === s.model) && <option value={s.model}>{s.model}</option>}
+            {to.models.map((m) => (
+              <option key={m.id} value={m.id}>
+                {m.name}
+                {m.paidOnly ? ' ・有料のキーだけ' : ''}
+              </option>
+            ))}
+          </select>
         </label>
       )}
       {to.hasPaidKeyOption && !s.paidKey && to.models.find((m) => m.id === s.model)?.paidOnly && (

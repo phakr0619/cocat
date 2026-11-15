@@ -42,7 +42,7 @@ describe('providerInfo: 接続の型の一覧', () => {
     const b = providerInfo('bedrock');
     expect([b.company, b.product, b.label, b.freeKeyUsedForTraining, b.hasPaidKeyOption, b.thinking]).toEqual(['AWS', 'Bedrock', 'AWS（Amazon Bedrock）', false, false, false]);
     expect([b.canListModels, b.allowCustomModel, b.keepAsIsImageBytes, b.imageTypes]).toEqual([false, true, 3 * 1024 * 1024, ['image/png', 'image/jpeg', 'image/webp']]);
-    expect(b.defaultModel).toBe('jp.anthropic.claude-haiku-5-5');
+    expect(b.defaultModel).toBe('jp.anthropic.claude-haiku-4-5-20251001-v1:0');
     expect(b.models.map((m) => m.maxTokens)).toEqual([16000, 16000]);
     expect(isProviderId('bedrock')).toBe(true);
     expect(showFreeKeyNotes({ provider: 'bedrock', paidKey: false })).toBe(false);

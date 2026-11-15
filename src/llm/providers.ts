@@ -154,13 +154,14 @@ export const PROVIDERS: Record<ProviderId, ProviderInfo> = {
     hasPaidKeyOption: false,
     thinking: false,
     thinkingMediumLabel: '',
-    // 2026-11-15 に、ap-northeast-1 の list-inference-profiles で ACTIVE を確かめた。
-    // jp. の推論プロファイルは東京と大阪に振り分けられる。ブラウザは東京のエンドポイントだけを呼ぶ
+    // モデルは使う人が ID で決める。ここは、Cocat で動作を確かめたモデルの候補（2026-11-15 に、ブラウザから本物で呼んで確かめた）。
+    // jp. の推論プロファイルは東京と大阪に振り分けられる。ブラウザは東京のエンドポイントだけを呼ぶ。
+    // 新しいモデルは、アカウントによっては使えない（Haiku 5.5・Opus 4.8 は「このアカウントでは使えない」と断られた）
     models: [
-      { id: 'jp.anthropic.claude-haiku-5-5', name: 'Claude Haiku 5.5（速い・安い）', maxTokens: 16000 },
-      { id: 'jp.anthropic.claude-opus-5-5', name: 'Claude Opus 5.5（いちばん賢い）', maxTokens: 16000 },
+      { id: 'jp.anthropic.claude-haiku-4-5-20251001-v1:0', name: 'Claude Haiku 4.5（速い・安い）', maxTokens: 16000 },
+      { id: 'jp.anthropic.claude-sonnet-4-6', name: 'Claude Sonnet 4.6（より賢い）', maxTokens: 16000 },
     ],
-    defaultModel: 'jp.anthropic.claude-haiku-5-5',
+    defaultModel: 'jp.anthropic.claude-haiku-4-5-20251001-v1:0',
     allowCustomModel: true,
     canListModels: false,
     testCostNote: '短い質問を 1 回送ります。料金は 1 円未満です。',
