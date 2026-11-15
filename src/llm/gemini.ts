@@ -7,6 +7,7 @@
 // キーはこの API にだけ送る。CSP の connect-src で、ほかへは送れないようにしてある（infra/cloudfront.tf）
 
 import { PROVIDERS } from './providers';
+import { wait } from './wait';
 import type { JsonSchema, LlmError, LlmImage, LlmModel, LlmProvider, LlmResult, ThinkingLevel } from './types';
 
 export const GEMINI_API = 'https://generativelanguage.googleapis.com/v1beta';
@@ -48,21 +49,6 @@ export function geminiError(status: number, body: GeminiError | null): LlmError 
 export const GEMINI_TIMEOUT_MS = 180_000;
 /** 503（混んでいる）のときに待ってからやり直す間（ミリ秒）。この数だけやり直す */
 export const GEMINI_RETRY_DELAYS_MS = [2_000, 6_000];
-
-function wait(ms: number, signal?: AbortSignal): Promise<boolean> {
-  return new Promise((resolve) => {
-    if (signal?.aborted) return resolve(false);
-    const t = setTimeout(() => {
-      signal?.removeEventListener('abort', onAbort);
-      resolve(true);
-    }, ms);
-    const onAbort = () => {
-      clearTimeout(t);
-      resolve(false);
-    };
-    signal?.addEventListener('abort', onAbort, { once: true });
-  });
-}
 
 export function createGemini({
   apiKey,

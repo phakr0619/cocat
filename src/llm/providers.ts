@@ -5,9 +5,15 @@
 import type { LlmErrorKind } from './types';
 
 /** 設定の provider の種類 */
-export type ProviderId = 'gemini';
+export type ProviderId = 'gemini' | 'bedrock';
 
-export type ProviderModel = { id: string; name: string; paidOnly?: boolean };
+export type ProviderModel = {
+  id: string;
+  name: string;
+  paidOnly?: boolean;
+  /** 答えの長さの上限（トークン）。無ければ呼び出しの側の既定 */
+  maxTokens?: number;
+};
 
 export interface ProviderInfo {
   id: ProviderId;
@@ -29,10 +35,20 @@ export interface ProviderInfo {
   models: ProviderModel[];
   /** 既定のモデル（models の中の 1 つ） */
   defaultModel: string;
+  /** 一覧に無いモデルの ID を、自分で入れて使えるか */
+  allowCustomModel: boolean;
+  /** 使えるモデルの一覧をキーで引けるか（引けなければ、短い質問を 1 回送って確かめる） */
+  canListModels: boolean;
+  /** 「つながるか試す」の前に出す、費用の注意（質問を送って確かめるときだけ） */
+  testCostNote?: string;
+  /** 送り先の地域の表示（設定画面に、読むだけで出す） */
+  regionText?: string;
   /** 送れる画像の形式 */
   imageTypes: string[];
   /** 受け付ける元の画像のファイルの大きさ（バイト） */
   maxImageFileBytes: number;
+  /** 縮めずにそのまま送ってよい画像の大きさ（バイト。base64 で 4/3 倍になる） */
+  keepAsIsImageBytes: number;
   /** 送れない画像のときに出す文 */
   imageTypeText: string;
   imageSizeText: string;
@@ -44,8 +60,8 @@ export interface ProviderInfo {
     /** 「キーは…この用途のために新しく作ることをおすすめします」の文 */
     advice: string;
   };
-  /** 会社ごとに言い方が変わる失敗の文（auth・quota・timeout・server・refused） */
-  errors: Record<'auth' | 'quota' | 'timeout' | 'server' | 'refused', string>;
+  /** 会社ごとに言い方が変わる失敗の文（auth・quota・timeout・server・refused・model） */
+  errors: Record<'auth' | 'quota' | 'timeout' | 'server' | 'refused' | 'model', string>;
   /** 無料のキーのときに失敗の文へ添える注意 */
   freeKeyNotes: {
     quota: string;
@@ -88,10 +104,13 @@ export const PROVIDERS: Record<ProviderId, ProviderInfo> = {
     ],
     // 2026-10-24 の時点の安定版の Flash（ai.google.dev の Models と Deprecations で確認。終了の予定は無い）
     defaultModel: 'gemini-3.8-flash',
+    allowCustomModel: false,
+    canListModels: true,
     // 2026-10-25 に ai.google.dev の Image understanding で確認。HEIC・HEIF はブラウザで描けないことが多いので、そのまま送る
     imageTypes: ['image/png', 'image/jpeg', 'image/webp', 'image/heic', 'image/heif'],
     // Gemini はリクエスト全体で 20 MB まで
     maxImageFileBytes: 20 * 1024 * 1024,
+    keepAsIsImageBytes: 4 * 1024 * 1024,
     imageTypeText: '送れる画像は PNG・JPEG・WebP・HEIC・HEIF です',
     imageSizeText: '画像が大きすぎます（20 MB まで）',
     keyHelp: {
@@ -105,6 +124,7 @@ export const PROVIDERS: Record<ProviderId, ProviderInfo> = {
       timeout: 'Gemini から時間内に答えが返りませんでした。少し待ってからやり直すか、文章を短くしてください',
       server: 'Gemini の側でエラーが起きました。少し待ってからやり直してください',
       refused: 'Gemini が答えを返しませんでした（安全のための制限）。言い方を変えてください',
+      model: 'モデルが見つからないか、このキーでは使えません。AI の設定でモデルを選び直してください',
     },
     freeKeyNotes: {
       // 無料のキーの上限（gemini-3.8-flash は 1 日 20 回、太平洋時間の 0 時に戻る。m3-llm-design.md 3章）
@@ -122,6 +142,50 @@ export const PROVIDERS: Record<ProviderId, ProviderInfo> = {
       textToSchemeLimits: '無料のキーでは、1 回に 1〜3 分かかることがあり、下書きは 1 日に 10〜20 回ほど作れます。速く多く使うには、AI Studio でキーに請求先を付けます。',
     },
     connectSrc: ['https://generativelanguage.googleapis.com'],
+  },
+  bedrock: {
+    id: 'bedrock',
+    company: 'AWS',
+    product: 'Bedrock',
+    label: 'AWS（Amazon Bedrock）',
+    freeKeyUsedForTraining: false,
+    hasPaidKeyOption: false,
+    thinking: false,
+    thinkingMediumLabel: '',
+    // 2026-11-15 に、ap-northeast-1 の list-inference-profiles で ACTIVE を確かめた。
+    // jp. の推論プロファイルは東京と大阪に振り分けられる。ブラウザは東京のエンドポイントだけを呼ぶ
+    models: [
+      { id: 'jp.anthropic.claude-haiku-5-5', name: 'Claude Haiku 5.5（速い・安い）', maxTokens: 16000 },
+      { id: 'jp.anthropic.claude-opus-5-5', name: 'Claude Opus 5.5（いちばん賢い）', maxTokens: 16000 },
+    ],
+    defaultModel: 'jp.anthropic.claude-haiku-5-5',
+    allowCustomModel: true,
+    canListModels: false,
+    testCostNote: '短い質問を 1 回送ります。料金は 1 円未満です。',
+    regionText: '東京（ap-northeast-1）',
+    imageTypes: ['image/png', 'image/jpeg', 'image/webp'],
+    // Bedrock は 1 枚が 3.75 MB 程度まで。大きい画像は送る前に縮めるので、元のファイルは 20 MB まで受ける
+    maxImageFileBytes: 20 * 1024 * 1024,
+    keepAsIsImageBytes: 3 * 1024 * 1024,
+    imageTypeText: '送れる画像は PNG・JPEG・WebP です',
+    imageSizeText: '画像が大きすぎます（20 MB まで）',
+    keyHelp: {
+      siteName: 'Amazon Bedrock の API キー（AWS の資料）',
+      url: 'https://docs.aws.amazon.com/bedrock/latest/userguide/api-keys.html',
+      advice: 'キーは、有効期間が最長 12 時間の短期の API キーをおすすめします。期限が切れたら、新しく作ります。長期のキーは、ブラウザに置いておく用途には向きません。',
+    },
+    errors: {
+      auth: 'キーが違うか、期限が切れているか、このモデルを使う権限がありません。短期のキーは最長 12 時間で切れます。組織の AWS の規則（SCP）で断られることもあります',
+      quota: 'AWS の使える量の上限に達しました。Service Quotas で上限を確かめてください',
+      timeout: 'Bedrock から時間内に答えが返りませんでした。少し待ってからやり直すか、文章を短くしてください',
+      server: 'Bedrock の側でエラーが起きました。少し待ってからやり直してください',
+      refused: 'Bedrock が答えを返しませんでした（安全のための制限）。言い方を変えてください',
+      model: 'モデルが見つからないか、このアカウントでは使えません。AI の設定でモデルの ID を確かめてください',
+    },
+    // 無料のキーの注意は Bedrock には無い（showFreeKeyNotes が false なので出さない）
+    freeKeyNotes: { quota: '', timeout: '' },
+    freeKeyWarning: { short: '', consent: '', consentRun: '', settings: '', settingsLimits: '', textToSchemeLimits: '' },
+    connectSrc: ['https://bedrock-runtime.ap-northeast-1.amazonaws.com'],
   },
 };
 

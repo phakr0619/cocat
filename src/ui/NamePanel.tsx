@@ -26,7 +26,7 @@ const sourceText = (source: NameSource, product: string) => (source === 'llm' ? 
 
 /**
  * 名前から置く（M5 の最初の段）: 手元の辞書・ライブラリ・SMILES で引き、
- * 無ければ名前だけをこのサイトのサーバーの OPSIN（規則で変換する）に送り、それでも読めなければ（キーがあれば）Gemini に送り、RDKit で確かめてから置く
+ * 無ければ名前だけをこのサイトのサーバーの OPSIN（規則で変換する）に送り、それでも読めなければ（キーがあれば）AI に送り、RDKit で確かめてから置く
  */
 export function NamePanel({ store, library, onOpenSettings }: { store: EditorStore; library(): LibraryCompound[]; onOpenSettings(): void }) {
   const s = useSyncExternalStore(subscribeLlmSettings, getLlmSettings);
@@ -60,7 +60,7 @@ export function NamePanel({ store, library, onOpenSettings }: { store: EditorSto
     place(r.smiles, 'llm', r.warnings);
   };
 
-  /** 規則（OPSIN）で読めなければ、Gemini に回す */
+  /** 規則（OPSIN）で読めなければ、AI に回す */
   const viaRules = async (n: string) => {
     const abort = new AbortController();
     setResult({ state: 'busy', abort, by: 'opsin' });

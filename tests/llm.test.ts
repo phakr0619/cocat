@@ -88,7 +88,7 @@ describe('Gemini の呼び出し', () => {
 
   it('つながらない・やめたを分ける', async () => {
     const net = createGemini({ apiKey: 'K', model: 'm', fetch: (() => Promise.reject(new TypeError('Failed to fetch'))) as typeof fetch });
-    expect(await net.listModels()).toMatchObject({ ok: false, error: { kind: 'network' } });
+    expect(await net.listModels!()).toMatchObject({ ok: false, error: { kind: 'network' } });
     const abort = createGemini({ apiKey: 'K', model: 'm', fetch: (() => Promise.reject(new DOMException('x', 'AbortError'))) as typeof fetch });
     expect(await abort.generateJson({ system: '', user: '', schema })).toMatchObject({ ok: false, error: { kind: 'aborted' } });
   });
@@ -157,7 +157,7 @@ describe('Gemini の呼び出し', () => {
           { name: 'models/gemini-3.8-live', supportedGenerationMethods: ['generateContent'] },
         ],
       })) as typeof fetch;
-    const r = await createGemini({ apiKey: 'K', model: 'm', fetch: f }).listModels();
+    const r = await createGemini({ apiKey: 'K', model: 'm', fetch: f }).listModels!();
     expect(r).toEqual({ ok: true, value: [{ id: 'gemini-a-pro', name: 'A Pro' }, { id: 'gemini-b-flash', name: 'B Flash' }] });
   });
 });

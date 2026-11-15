@@ -5,14 +5,12 @@
 import { providerInfo, PROVIDERS, type ProviderId } from './providers';
 import type { LlmImage } from './types';
 
-/** Gemini に送れる形式（値は接続の型の一覧 providers.ts にある） */
+/** 既定の会社（Gemini）に送れる形式（値は接続の型の一覧 providers.ts にある） */
 export const LLM_IMAGE_TYPES = PROVIDERS.gemini.imageTypes;
 /** 受け付ける元のファイルの大きさ（Gemini の値） */
 export const MAX_IMAGE_FILE_BYTES = PROVIDERS.gemini.maxImageFileBytes;
 /** 縮めた後の長辺（px）。Gemini 3 は画像を決まったトークン数（既定で 1120）に収めるので、これより大きく送っても読み取りは良くならない */
 export const MAX_IMAGE_SIDE = 2048;
-/** 縮めずにそのまま送ってよい大きさ（base64 で 4/3 倍になる） */
-const KEEP_AS_IS_BYTES = 4 * 1024 * 1024;
 
 /** 送る画像と、画面に出す説明 */
 export type PreparedImage = LlmImage & { name: string; width?: number; height?: number; bytes: number };
@@ -60,7 +58,7 @@ export async function prepareImage(file: File, provider: ProviderId = 'gemini'):
   try {
     const { width, height } = bitmap;
     const fit = fitSize(width, height);
-    if (fit.width === width && file.size <= KEEP_AS_IS_BYTES) return { ok: true, image: { name, mimeType: file.type, data: await blobToBase64(file), width, height, bytes: file.size } };
+    if (fit.width === width && file.size <= providerInfo(provider).keepAsIsImageBytes) return { ok: true, image: { name, mimeType: file.type, data: await blobToBase64(file), width, height, bytes: file.size } };
     const canvas = document.createElement('canvas');
     canvas.width = fit.width;
     canvas.height = fit.height;

@@ -7,7 +7,7 @@ import { providerInfo, showFreeKeyNotes, type ProviderId } from './providers';
 /** 応答の形（JSON Schema の部分集合。各社の構造化出力に渡す） */
 export type JsonSchema = { [k: string]: unknown };
 
-export type LlmErrorKind = 'auth' | 'rate' | 'quota' | 'network' | 'timeout' | 'server' | 'invalid-output' | 'refused' | 'aborted';
+export type LlmErrorKind = 'auth' | 'rate' | 'quota' | 'network' | 'timeout' | 'server' | 'invalid-output' | 'refused' | 'aborted' | 'model';
 export type LlmError = { kind: LlmErrorKind; message: string };
 
 /** 使ったトークン。output は考えた分（thinking）を含む（どちらも出力として請求される） */
@@ -34,8 +34,8 @@ export interface LlmProvider {
   id: ProviderId;
   /** 決まった形（JSON Schema）の答えを返させる。形が合っているかの検証は呼ぶ側で必ず行う */
   generateJson<T>(req: { system: string; user: string; images?: LlmImage[]; schema: JsonSchema; thinking?: ThinkingLevel; signal?: AbortSignal }): Promise<LlmResult<T>>;
-  /** 使えるモデルの一覧（キーが正しいかの確かめにも使う。利用者の文章は送らない） */
-  listModels(signal?: AbortSignal): Promise<LlmResult<LlmModel[]>>;
+  /** 使えるモデルの一覧（キーが正しいかの確かめにも使う。利用者の文章は送らない）。一覧を引けない会社には無い */
+  listModels?(signal?: AbortSignal): Promise<LlmResult<LlmModel[]>>;
 }
 
 /** 失敗の理由を、利用者が次にすることと一緒に言う。会社ごとに変わる文（キー・上限・時間切れ・サーバー・断り）は接続の型（providers.ts）から引く。無料のキーなら、時間切れと上限によくあることを添える */
@@ -46,6 +46,7 @@ export function llmErrorText(e: LlmError, s: { provider: ProviderId; paidKey: bo
     case 'auth':
     case 'server':
     case 'refused':
+    case 'model':
       return info.errors[e.kind];
     case 'quota':
       return free ? `${info.errors.quota}。${info.freeKeyNotes.quota}` : info.errors.quota;

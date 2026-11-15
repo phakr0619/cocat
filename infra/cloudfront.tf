@@ -40,8 +40,8 @@ resource "aws_cloudfront_response_headers_policy" "security" {
         "script-src 'self' 'unsafe-eval' 'wasm-unsafe-eval'",
         "style-src 'self' 'unsafe-inline'",
         "img-src 'self' data: blob:",
-        # LLM の機能（M3）: 利用者のキーで、ブラウザから Gemini の API を直接呼ぶ（src/llm/gemini.ts）
-        "connect-src 'self' https://generativelanguage.googleapis.com",
+        # LLM の機能（M3）: 利用者のキーで、ブラウザから Gemini と Amazon Bedrock（東京）の API を直接呼ぶ（src/llm/gemini.ts・bedrock.ts）
+        "connect-src 'self' https://generativelanguage.googleapis.com https://bedrock-runtime.ap-northeast-1.amazonaws.com",
         "object-src 'none'",
         "base-uri 'self'",
         "frame-ancestors 'none'",

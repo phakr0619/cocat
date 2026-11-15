@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { track } from '../analytics';
 import type { Doc } from '../chem/model';
 import { useEditor, type EditorStore } from '../editor/store';
-import { imageSummary, LLM_IMAGE_TYPES, prepareImage, type PreparedImage } from '../llm/image';
+import { imageSummary, prepareImage, type PreparedImage } from '../llm/image';
 import { isLowRes, isPdfFile, openPdf, parsePdfImageName, type OpenedPdf } from '../llm/pdf';
 import { providerInfo, showFreeKeyNotes } from '../llm/providers';
 import { getLlmSettings, llmProvider, setLlmSettings, subscribeLlmSettings } from '../llm/settings';
@@ -416,7 +416,7 @@ export function TextToSchemePanel({
               ref={fileInput}
               type="file"
               hidden
-              accept={[...LLM_IMAGE_TYPES, 'application/pdf', '.pdf'].join(',')}
+              accept={[...providerInfo(s.provider).imageTypes, 'application/pdf', '.pdf'].join(',')}
               data-testid="tts-image-input"
               multiple
               onChange={(e) => {

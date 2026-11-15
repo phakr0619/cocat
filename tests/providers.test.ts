@@ -31,7 +31,25 @@ describe('providerInfo: 接続の型の一覧', () => {
     expect(p.maxImageFileBytes).toBeGreaterThan(0);
     expect(p.keyHelp.url).toMatch(/^https:\/\//);
     expect(p.connectSrc.every((o) => /^https:\/\/[^/]+$/.test(o))).toBe(true);
-    for (const k of ['auth', 'quota', 'timeout', 'server', 'refused'] as const) expect(p.errors[k]).not.toBe('');
+    for (const k of ['auth', 'quota', 'timeout', 'server', 'refused', 'model'] as const) expect(p.errors[k]).not.toBe('');
+    expect(p.keepAsIsImageBytes).toBeGreaterThan(0);
+    expect(p.keepAsIsImageBytes).toBeLessThanOrEqual(p.maxImageFileBytes);
+    expect(p.models.every((m) => !m.maxTokens || m.maxTokens > 0)).toBe(true);
+    if (!p.canListModels) expect(p.testCostNote).toBeTruthy();
+    if (!p.hasPaidKeyOption) expect(showFreeKeyNotes({ provider: p.id, paidKey: false })).toBe(false);
+  });
+  it('bedrock は AWS（Amazon Bedrock）。東京だけ・一覧は引けない・モデルの ID を入れられる', () => {
+    const b = providerInfo('bedrock');
+    expect([b.company, b.product, b.label, b.freeKeyUsedForTraining, b.hasPaidKeyOption, b.thinking]).toEqual(['AWS', 'Bedrock', 'AWS（Amazon Bedrock）', false, false, false]);
+    expect([b.canListModels, b.allowCustomModel, b.keepAsIsImageBytes, b.imageTypes]).toEqual([false, true, 3 * 1024 * 1024, ['image/png', 'image/jpeg', 'image/webp']]);
+    expect(b.defaultModel).toBe('jp.anthropic.claude-haiku-5-5');
+    expect(b.models.map((m) => m.maxTokens)).toEqual([16000, 16000]);
+    expect(isProviderId('bedrock')).toBe(true);
+    expect(showFreeKeyNotes({ provider: 'bedrock', paidKey: false })).toBe(false);
+    expect(imageFileError({ type: 'image/heic', size: 1 }, 'bedrock')).toBe(b.imageTypeText);
+    expect(imageFileError({ type: 'image/heic', size: 1 }, 'gemini')).toBeNull();
+    expect(providerInfo('gemini').keepAsIsImageBytes).toBe(4 * 1024 * 1024);
+    expect(b.connectSrc).toEqual(['https://bedrock-runtime.ap-northeast-1.amazonaws.com']);
   });
   it('Gemini の別名と画像の値が一覧と同じ', () => {
     expect(GEMINI_MODELS).toBe(PROVIDERS.gemini.models);
