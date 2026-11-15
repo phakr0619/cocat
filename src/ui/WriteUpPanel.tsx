@@ -4,11 +4,11 @@ import { useEditor, type EditorStore } from '../editor/store';
 import { providerLabel } from '../llm/providerLabel';
 import { getLlmSettings, llmProvider, setLlmSettings, subscribeLlmSettings } from '../llm/settings';
 import { llmErrorText } from '../llm/types';
-import { refillWriteUp, schemeNotebook, schemeStoichTables, writeFacts, writeUp, writeUpPrompt, type CheckedWriteUp, type WriteLanguage } from '../llm/writeUp';
+import { refillWriteUp, runsForScheme, schemeNotebook, schemeStoichTables, writeFacts, writeUp, writeUpPrompt, type CheckedWriteUp, type WriteLanguage } from '../llm/writeUp';
 import { AiNotice } from './AiNotice';
 import { activeSchemeId } from './SchemePanel';
 
-type Draft = { schemeId: string; instruction: string; checked: CheckedWriteUp };
+type Draft = { schemeId: string; instruction: string; checked: CheckedWriteUp; /** 実験の記録の量と行を使って書いた */ useRuns?: boolean };
 /** 「作る / 直す」に切り替えて欄が消えても、書いたものは残す（文書には入れないので、ここに置く。読み込み直すと消える） */
 const kept: { table: { markdown: string; tsv: string } | null; notebook: string | null; text: string; language: WriteLanguage; draft: Draft | null; out: string } = {
   table: null,
@@ -46,12 +46,16 @@ export function WriteUpPanel({ store }: { store: EditorStore }) {
   // 「書く」から切り替えて欄が消えたら、書いている途中の呼び出しもやめる
   const abortRef = useRef<AbortController | null>(null);
   useEffect(() => () => abortRef.current?.abort(), []);
-  const facts = useMemo(() => (sid ? writeFacts(doc, sid) : null), [doc, sid]);
+  /** 実験の記録がある段は、記録の量と行を使って書く（記録が無ければ出さない） */
+  const [useRuns, setUseRuns] = useState(true);
+  const hasRuns = !!sid && runsForScheme(doc, sid).size > 0;
+  const withRuns = hasRuns && useRuns;
+  const facts = useMemo(() => (sid ? writeFacts(doc, sid, withRuns) : null), [doc, sid, withRuns]);
   /** 下書きの後にスキームの量や条件を変えたか（数字を入れ直すと変わるか） */
   const stale = useMemo(() => {
     if (!draft) return false;
     if (!doc.schemes?.[draft.schemeId]) return true;
-    return refillWriteUp(doc, draft.schemeId, draft.checked, draft.instruction).text !== draft.checked.text;
+    return refillWriteUp(doc, draft.schemeId, draft.checked, draft.instruction, draft.useRuns).text !== draft.checked.text;
   }, [doc, draft]);
   useEffect(() => {
     if (run.state !== 'busy') return;
@@ -77,7 +81,7 @@ export function WriteUpPanel({ store }: { store: EditorStore }) {
     setRun({ state: 'busy', abort, started });
     setSeconds(0);
     track('llm:write-up');
-    const r = await writeUp(llm, { doc: d0, schemeId: target, text, language, thinking: getLlmSettings().thinking, signal: abort.signal });
+    const r = await writeUp(llm, { doc: d0, schemeId: target, text, language, thinking: getLlmSettings().thinking, signal: abort.signal, useRuns: withRuns });
     setSeconds(Math.round((Date.now() - started) / 1000));
     if (!r.ok) {
       setRun(r.error.kind === 'aborted' ? { state: 'idle' } : { state: 'error', text: llmErrorText(r.error, getLlmSettings().paidKey) });
@@ -85,7 +89,7 @@ export function WriteUpPanel({ store }: { store: EditorStore }) {
       return;
     }
     setRun({ state: 'idle' });
-    setDraft({ schemeId: target, instruction: text, checked: r.checked });
+    setDraft({ schemeId: target, instruction: text, checked: r.checked, useRuns: withRuns });
     setOut(r.checked.text);
   };
   const start = () => {
@@ -157,6 +161,13 @@ export function WriteUpPanel({ store }: { store: EditorStore }) {
         placeholder="指示は話し言葉でも書けます。例: 反応液を重曹水で洗って、硫酸ナトリウムで乾燥。濃縮後、カラム精製。ヘキサク 3 対 1。書かなければ、後処理と精製は [[…]] の書き足す所になります"
         onChange={(e) => setText(e.target.value)}
       />
+      {hasRuns && (
+        <label className="check" data-testid="tts-write-use-runs-label">
+          <input type="checkbox" data-testid="tts-write-use-runs" checked={useRuns} onChange={(e) => setUseRuns(e.target.checked)} />
+          実験の記録を使う
+        </label>
+      )}
+      {withRuns && <p className="muted" data-testid="tts-write-runs-note">量・収量・収率を実験の記録の値にし、記録の行から後処理と単離を書きます。記録の行も送ります。時刻とロットは送りません。</p>}
       <div className="row">
         <label className="field">
           <span>言語</span>
@@ -236,7 +247,7 @@ export function WriteUpPanel({ store }: { store: EditorStore }) {
               onClick={() => {
                 const d = store.get().doc;
                 if (!d.schemes?.[draft.schemeId]) return;
-                const checked = refillWriteUp(d, draft.schemeId, draft.checked, draft.instruction);
+                const checked = refillWriteUp(d, draft.schemeId, draft.checked, draft.instruction, draft.useRuns);
                 setDraft({ ...draft, checked });
                 setOut(checked.text);
               }}
@@ -252,6 +263,7 @@ export function WriteUpPanel({ store }: { store: EditorStore }) {
       {consent && (
         <WriteUpConsent
           paidKey={s.paidKey}
+          withRuns={withRuns}
           onClose={(ok) => {
             setConsent(false);
             if (ok) {
@@ -266,7 +278,7 @@ export function WriteUpPanel({ store }: { store: EditorStore }) {
 }
 
 /** 初めて送るときの同意（書くときに送るもの） */
-function WriteUpConsent({ paidKey, onClose }: { paidKey: boolean; onClose(ok: boolean): void }) {
+function WriteUpConsent({ paidKey, withRuns, onClose }: { paidKey: boolean; withRuns?: boolean; onClose(ok: boolean): void }) {
   const ref = useRef<HTMLDialogElement>(null);
   const ok = useRef(false);
   useEffect(() => {
@@ -278,6 +290,7 @@ function WriteUpConsent({ paidKey, onClose }: { paidKey: boolean; onClose(ok: bo
       <h2>{providerLabel(getLlmSettings().provider).label}に送ります</h2>
       <ul>
         <li>送るのは、入力した指示の文と、選んでいる反応スキームの化合物の番号・呼び名・分子式・分子量、試薬と条件、化学量論表の量です。構造（SMILES）と、描いた図のほかの部分は送りません。</li>
+        {withRuns && <li data-testid="llm-consent-run">実験の記録を使うので、その仕込みの名前と量、操作の名前、記録の行も送ります。記録の行は、したこと・量・内温・測定と観察です。時刻とロットは送りません。</li>}
         <li>送る前に、「送る内容を見る」で中身を確かめられます。</li>
         {!paidKey && <li className="warn">無料のキーでは、送った内容が Google の製品の改善に使われ、人が読むこともあります。未発表の構造など秘密の内容は送らないでください。</li>}
       </ul>

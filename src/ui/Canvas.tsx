@@ -15,7 +15,13 @@ import { fragmentOf, ringPreview, rotateHandle, selectionFrame } from '../editor
 import { pageDims, pagesBox, type PageSetup } from '../chem/page';
 import { partPreview } from '../chem/partOps';
 
+import { schemeTargetOf, type SchemeTarget } from '../scheme/pick';
+import { runTargetOf } from '../process/layout';
+import { tableCellOf, type TableCellTarget } from '../table/pick';
+
 const HILITE = '#3b82f6';
+/** 右ボタン: これより動かしたらドラッグ（表示を動かす）、動かさなければメニュー。環を回す操作と同じ 3 pt */
+const MENU_SLOP = 3;
 
 /** 表示の位置と拡大率。x, y は画面の左上に来る文書の座標（pt） */
 export interface View {
@@ -28,7 +34,17 @@ export interface View {
 export const MIN_ZOOM = 0.1;
 export const MAX_ZOOM = 8;
 
-export function Canvas({ store, view, setView, showStereo, marks, onDropCompound, onLabelEdit, onTextEdit }: {
+export function Canvas({ store, view, setView, showStereo, marks, onDropCompound, onLabelEdit, onTextEdit, onMenu, onBusy, onSchemeEdit, onRunEdit, onTableEdit }: {
+  /** 右ボタンを押しただけのとき（ドラッグしなかったとき）。at は画面の座標、hit は押した物 */
+  onMenu?(at: { x: number; y: number }, hit: string | null): void;
+  /** スキームの矢印・条件の文字・番号の文字をダブルクリックした（図の上で直す） */
+  onSchemeEdit?(target: SchemeTarget): void;
+  /** 検討表のセルか見出しの文字をダブルクリックした（下の表のそのセルへ入る） */
+  onTableEdit?(target: TableCellTarget): void;
+  /** 実験の記録のフロー図の物をダブルクリックした（下の表を開く） */
+  onRunEdit?(runId: string): void;
+  /** ドラッグなどの操作の始まりと終わり（選んだ物の帯を、操作の間は隠すため） */
+  onBusy?(busy: boolean): void;
   showStereo?: boolean;
   /** 分析の欄（NMR の予測）で指した原子。緑で強く示す */
   marks?: string[];
@@ -119,7 +135,7 @@ export function Canvas({ store, view, setView, showStereo, marks, onDropCompound
 
   // スペースを押している間は、ドラッグで表示を動かす（ChemDraw などと同じ）
   const spaceDown = useRef(false);
-  const pan = useRef<{ x: number; y: number; vx: number; vy: number } | null>(null);
+  const pan = useRef<{ x: number; y: number; vx: number; vy: number; right: boolean } | null>(null);
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
       const t = e.target as HTMLElement | null;
@@ -166,7 +182,7 @@ export function Canvas({ store, view, setView, showStereo, marks, onDropCompound
     // 表示を動かす: 中ボタン・スペース＋左ボタン・右ボタンのドラッグ（ホワイトボードのように手繰り寄せる）
     if (e.button === 1 || e.button === 2 || (e.button === 0 && spaceDown.current)) {
       (e.target as Element).setPointerCapture?.(e.pointerId);
-      pan.current = { x: e.clientX, y: e.clientY, vx: view.x, vy: view.y };
+      pan.current = { x: e.clientX, y: e.clientY, vx: view.x, vy: view.y, right: e.button === 2 };
       e.preventDefault();
       return;
     }
@@ -175,6 +191,7 @@ export function Canvas({ store, view, setView, showStereo, marks, onDropCompound
     const p = toDoc(e);
     const hit = hitTest(store.get().doc, lay, p);
     session.current = beginSession(ctx, p, hit, { shift: e.shiftKey, alt: e.altKey });
+    onBusy?.(true);
   };
   const onPointerMove = (e: React.PointerEvent) => {
     if (pan.current) {
@@ -195,17 +212,39 @@ export function Canvas({ store, view, setView, showStereo, marks, onDropCompound
   };
   const onPointerUp = (e: React.PointerEvent) => {
     if (pan.current) {
+      const s0 = pan.current;
       pan.current = null;
+      // 右ボタンを押してから 3 pt より動かさずに離したら、表示は動かさず、メニューを出す
+      if (s0.right && Math.hypot(e.clientX - s0.x, e.clientY - s0.y) <= MENU_SLOP * zoom) {
+        setView((v) => ({ ...v, x: s0.vx, y: s0.vy }));
+        onMenu?.({ x: e.clientX, y: e.clientY }, hitTest(store.get().doc, lay, toDoc(e)));
+      }
       return;
     }
     const s = session.current;
     session.current = null;
+    onBusy?.(false);
     if (s) s.up(toDoc(e), { shift: e.shiftKey, alt: e.altKey });
   };
   const onDoubleClick = (e: React.MouseEvent) => {
     const p = toDoc(e);
     const hit = hitTest(store.get().doc, lay, p);
     const t = store.get().tool;
+    // 実験の記録のフロー図は、下の表で直す
+    if (hit && onRunEdit) {
+      const run = runTargetOf(store.get().doc, hit);
+      if (run) return onRunEdit(run.runId);
+    }
+    // 検討表の文字は、下の表のそのセルで直す（図の文字を直接直しても、描き直すと戻るため）
+    if (hit && onTableEdit && kindOf(hit) === 'text') {
+      const cell = tableCellOf(store.get().doc, hit);
+      if (cell) return onTableEdit(cell);
+    }
+    // スキームの矢印・条件・番号は、データを直す小さな欄を出す（文字を直接直しても、描き直すと戻るため）
+    if (hit && onSchemeEdit && (kindOf(hit) === 'arrow' || kindOf(hit) === 'text')) {
+      const target = schemeTargetOf(store.get().doc, hit);
+      if (target) return onSchemeEdit(target);
+    }
     if ((t === 'select' || t === 'lasso') && hit && (kindOf(hit) === 'atom' || kindOf(hit) === 'bond')) {
       store.set({ selection: fragmentOf(store.get().doc, hit) });
     } else if (hit && kindOf(hit) === 'atom') onLabelEdit(hit);
@@ -292,7 +331,8 @@ export function Canvas({ store, view, setView, showStereo, marks, onDropCompound
           </g>
         ))}
       </g>
-      <g className="selection">{[...selection].map((id) => hl(id, HILITE, `s${id}`))}</g>
+      {/* 選択の印は、線とラベルが読めるように薄く描く */}
+      <g className="selection" opacity={0.55}>{[...selection].map((id) => hl(id, HILITE, `s${id}`))}</g>
       {unitFrames.length > 0 && (
         <g className="unit-frames" pointerEvents="none" data-testid="unit-frame">
           {unitFrames.map((r, i) => (

@@ -54,6 +54,9 @@ test('分子を選んでスキームを組み立て、条件・番号・書式�
   await panel.getByRole('button', { name: '番号を振る' }).click();
   await expect(panel.getByTestId('compound-number')).toHaveCount(3);
   await expect(panel.getByTestId('compound-number').first()).toHaveValue('1');
+  // 化合物は、選んでいる物だけ開いている。ほかは 1 行の要約で、押すと開く
+  await expect(panel.getByTestId('compound-nickname').nth(2)).toBeHidden();
+  await panel.getByTestId('compound-summary').nth(2).click();
   await panel.getByTestId('compound-nickname').nth(2).fill('ジペプチド');
   await panel.getByTestId('compound-nickname').nth(2).press('Enter');
 
@@ -165,8 +168,9 @@ test('化学量論表: 基質の量を入れると、試薬の量と理論収量
   await panel.getByTestId('step-reagents').fill('TFA (10 equiv)');
   await panel.getByTestId('step-reagents').press('Enter');
   await panel.getByText('化学量論表').click();
-  await panel.getByTestId('stoich-scale').fill('189.21');
-  const table = panel.getByTestId('stoich-table');
+  // 表は、開くとキャンバスの下の欄に出る
+  await page.getByTestId('stoich-dock').getByTestId('stoich-scale').fill('189.21');
+  const table = page.getByTestId('stoich-dock').getByTestId('stoich-table');
   // Boc-Ala-OH 189.21 → 1.000 mmol、TFA 10 当量 → 10.000 mmol・1140.2 mg・765.7 µL、Ala（89.09）の理論収量 89.1 mg
   await expect(table.locator('tbody tr').nth(0)).toContainText('1.000');
   await expect(table.locator('tbody tr').nth(1)).toContainText('10.000');
@@ -179,7 +183,8 @@ test('スキームを複製して、条件だけ変える', async ({ page }) => 
   await importSmiles(page, 'CC(C)(C)OC(=O)N[C@@H](C)C(=O)O.NCC(=O)OC>>CC(C)(C)OC(=O)N[C@@H](C)C(=O)NCC(=O)OC');
   const panel = page.getByTestId('scheme-panel');
   await panel.getByRole('button', { name: '描いた反応式をスキームにする' }).click();
-  await panel.getByTestId('duplicate-scheme').click();
+  await panel.getByTestId('scheme-more').click();
+  await page.getByTestId('duplicate-scheme').click();
   await expect.poll(async () => Object.keys((await doc(page)).schemes ?? {}).length).toBe(2);
   // 複製の分子を選ぶと、複製のスキームの欄になる
   const d = await doc(page);
@@ -197,14 +202,16 @@ test('スキームを固定すると、共有する化合物の番号を直し�
   await importSmiles(page, 'CC(C)(C)OC(=O)N[C@@H](C)C(=O)O.NCC(=O)OC>>CC(C)(C)OC(=O)N[C@@H](C)C(=O)NCC(=O)OC');
   const panel = page.getByTestId('scheme-panel');
   await panel.getByRole('button', { name: '描いた反応式をスキームにする' }).click();
-  await panel.getByTestId('duplicate-scheme').click();
+  await panel.getByTestId('scheme-more').click();
+  await page.getByTestId('duplicate-scheme').click();
   await expect.poll(async () => Object.keys((await doc(page)).schemes ?? {}).length).toBe(2);
   const [first, copy] = Object.keys((await doc(page)).schemes!);
   // 最初のスキームを選んで固定する
   const atom = Object.values((await doc(page)).atoms).find((a) => a.ref?.startsWith(`${first}:`))!;
   await tool(page, 'select');
   await clickAt(page, atom.x, atom.y);
-  await panel.getByTestId('pin-scheme').click();
+  await panel.getByTestId('scheme-more').click();
+  await page.getByTestId('pin-scheme').click();
   await expect(panel.getByTestId('scheme-pinned')).toContainText('固定中');
   await expect(panel.getByTestId('compound-number').first()).toBeDisabled();
   await expect(page.getByTestId('pin-scheme')).toHaveCount(0);
@@ -272,4 +279,118 @@ test('ページの設定があるときは、スキームの行の幅をペー�
   expect(await rows()).toBeLessThan(narrow);
   await page.getByText('書式を編集').click();
   await expect(page.getByTestId('style-page-width')).toBeVisible();
+});
+
+// ---- 図の上で直す ----
+/** スキームの物（矢印・文字）の画面の座標 */
+async function screenOf(page: import('@playwright/test').Page, pick: 'arrow' | { text: string }, nth = 0) {
+  return page.evaluate(
+    ({ pick, nth }) => {
+      const d = window.__editor!.get().doc;
+      const svg = document.querySelector('[data-testid=canvas]') as SVGSVGElement;
+      const vb = svg.viewBox.baseVal;
+      const r = svg.getBoundingClientRect();
+      const zoom = svg.clientWidth / vb.width;
+      const to = (x: number, y: number) => ({ x: r.left + (x - vb.x) * zoom, y: r.top + (y - vb.y) * zoom });
+      if (pick === 'arrow') {
+        const a = Object.values(d.arrows).filter((x) => x.ref)[nth];
+        return to((a.x1 + a.x2) / 2, a.y1);
+      }
+      const t = Object.values(d.texts).filter((x) => x.text === pick.text)[nth];
+      return to(t.x + 2, t.y - 3);
+    },
+    { pick, nth },
+  );
+}
+
+test('図の上で直す: 矢印をダブルクリックすると、そばに条件の欄が出て、右の欄を使わずに収率を直せる', async ({ page }) => {
+  await openSample(page, 'multistep');
+  // 右の欄を畳んでいても直せる
+  await page.getByTestId('side-collapse').click();
+  const at = await screenOf(page, 'arrow', 2);
+  await page.mouse.dblclick(at.x, at.y);
+  const pop = page.getByTestId('step-pop');
+  await expect(pop).toContainText('段 3');
+  await expect(pop.getByTestId('pop-yield')).toHaveValue('92');
+  await pop.getByTestId('pop-yield').fill('95');
+  await pop.getByTestId('pop-yield').press('Enter');
+  expect(await page.evaluate(() => Object.values(window.__editor!.get().doc.schemes!)[0].steps[2].yield)).toBe(95);
+  // 図の文字も変わる
+  expect(await page.evaluate(() => Object.values(window.__editor!.get().doc.texts).some((t) => t.text === '95%'))).toBe(true);
+  // 続けてほかの欄も直せる（描き直しても欄は閉じない）
+  await pop.getByTestId('pop-solvent').fill('MeOH/H2O');
+  await pop.getByTestId('pop-solvent').press('Enter');
+  expect(await page.evaluate(() => Object.values(window.__editor!.get().doc.schemes!)[0].steps[2].solvent)).toBe('MeOH/H2O');
+  await page.keyboard.press('Escape');
+  await expect(pop).toHaveCount(0);
+});
+
+test('図の上で直す: 条件の文字はその段の欄を、番号の文字は番号と呼び名の欄を出す', async ({ page }) => {
+  await openSample(page, 'multistep');
+  const tfa = await screenOf(page, { text: 'TFA' });
+  await page.mouse.dblclick(tfa.x, tfa.y);
+  await expect(page.getByTestId('step-pop')).toContainText('段 2');
+  await expect(page.getByTestId('text-input')).toHaveCount(0);
+  await page.keyboard.press('Escape');
+  const four = await screenOf(page, { text: '4' });
+  await page.mouse.dblclick(four.x, four.y);
+  const pop = page.getByTestId('compound-pop');
+  await expect(pop.getByTestId('pop-number')).toHaveValue('4');
+  await pop.getByTestId('pop-number').fill('4a');
+  await pop.getByTestId('pop-number').press('Enter');
+  await pop.getByTestId('pop-nickname').fill('アミン');
+  await pop.getByTestId('pop-nickname').press('Enter');
+  const c = await page.evaluate(() => {
+    const d = window.__editor!.get().doc;
+    const s = Object.values(d.schemes!)[0];
+    return d.compounds![s.steps[1].to[0]];
+  });
+  expect(c.number).toBe('4a');
+  expect(c.nickname).toBe('アミン');
+});
+
+test('次の段: スキームの右端の「＋ 次の段」から、SMILES で生成物を足せる', async ({ page }) => {
+  await openSample(page, 'coupling');
+  await page.getByTestId('next-step').click();
+  await page.getByTestId('next-step-text').fill('C[C@H](N)C(=O)NCC(=O)OC');
+  await page.getByTestId('next-step-add').click();
+  await expect(page.getByTestId('scheme-step')).toHaveCount(2);
+  expect(await page.evaluate(() => Object.values(window.__editor!.get().doc.schemes!)[0].steps.length)).toBe(2);
+});
+
+test('右の欄の段: 3 段からは 1 行にまとめ、キャンバスで選んだ段だけを開く', async ({ page }) => {
+  await openSample(page, 'multistep');
+  const steps = page.getByTestId('scheme-step');
+  await expect(steps).toHaveCount(3);
+  await expect(steps.nth(1).getByTestId('step-summary')).toContainText('TFA / CH2Cl2, 0 °C to rt, 1 h');
+  await expect(steps.nth(1).getByTestId('step-summary')).toContainText('quant.');
+  await expect(steps.nth(1).getByTestId('step-yield')).toBeHidden();
+  // 行を押すと開く
+  await steps.nth(1).getByTestId('step-summary').click();
+  await expect(steps.nth(1).getByTestId('step-yield')).toBeVisible();
+  // キャンバスで 3 段目の矢印を選ぶと、3 段目が開く
+  await tool(page, 'select');
+  const at = await screenOf(page, 'arrow', 2);
+  await page.mouse.click(at.x, at.y);
+  await expect(steps.nth(2).getByTestId('step-yield')).toBeVisible();
+  await expect(steps.nth(2)).toHaveClass(/active/);
+});
+
+test('右の欄の化合物: 4 つからは 1 行にまとめ、キャンバスで選んだ化合物だけを開く。固定・複製・やめるは「ほかの操作」にある', async ({ page }) => {
+  await openSample(page, 'multistep');
+  const rows = page.getByTestId('scheme-compound');
+  await expect(rows).toHaveCount(5);
+  await expect(rows.nth(2).getByTestId('compound-summary')).toContainText('3');
+  await expect(rows.nth(2).getByTestId('compound-summary')).toContainText('ジペプチド');
+  await expect(rows.nth(2).getByTestId('compound-number')).toBeHidden();
+  await rows.nth(2).getByTestId('compound-summary').click();
+  await expect(rows.nth(2).getByTestId('compound-number')).toBeVisible();
+  // 「選んだ分子を生成物にして段を足す」は、押せないときは出さない
+  await expect(page.getByTestId('add-step')).toBeHidden();
+  await page.getByTestId('scheme-more').click();
+  const menu = page.getByTestId('scheme-more-menu');
+  await expect(menu.getByTestId('pin-scheme')).toBeVisible();
+  await expect(menu.getByTestId('duplicate-scheme')).toBeVisible();
+  await menu.getByTestId('dissolve-scheme').click();
+  expect(await page.evaluate(() => Object.keys(window.__editor!.get().doc.schemes ?? {}).length)).toBe(0);
 });

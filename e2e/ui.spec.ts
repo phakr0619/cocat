@@ -1,6 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
-import { canon, importSmiles, menuItem, openSample, showTab, tool } from './helpers';
+import { canon, importSmiles, menuItem, openSample, showTab, tool, createFromHome } from './helpers';
 
 // 画面の使い勝手: タブ・メニュー・はじめに・何も無いときの案内・化合物の小さな絵・検討表の行のドラッグ
 test.beforeEach(async ({ page }) => {
@@ -19,7 +19,34 @@ test('何も描いていないときだけ案内を出し、案内はキャン�
   await expect(page.getByTestId('empty-hint')).toBeVisible();
 });
 
+test('右の欄は、空の文書では出さず、右の端のつまみで開ける。何も選んでいなければ「この文書」で、作る物は「＋ 作る」にまとめる', async ({ page }) => {
+  await expect(page.getByTestId('empty-hint')).toBeVisible();
+  await expect(page.getByTestId('side-home')).toBeHidden();
+  await expect(page.getByTestId('new-scheme')).toBeHidden();
+  await page.getByTestId('side-open').click();
+  await expect(page.getByTestId('side-home')).toBeVisible();
+  await expect(page.getByTestId('new-scheme')).toBeHidden();
+  await page.getByTestId('side-new').click();
+  for (const id of ['new-scheme', 'new-table', 'new-run']) await expect(page.getByTestId(id)).toBeVisible();
+  await page.getByTestId('new-table').click();
+  await expect(page.getByTestId('side-head')).toHaveAttribute('data-view', 'table');
+});
+
+test('上の段: 色は「整える」に、名前から構造を置くは「ファイル」にあり、設定とヘルプはアイコン', async ({ page }) => {
+  await expect(page.getByTestId('menu-color')).toHaveCount(0);
+  await expect(page.getByTestId('open-name')).toBeHidden();
+  await expect(page.getByRole('button', { name: '設定' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'ヘルプ' })).toBeVisible();
+  await page.getByTestId('menu-arrange').click();
+  await expect(page.getByTestId('color-赤')).toBeVisible();
+  await page.keyboard.press('Escape');
+  await page.getByTestId('menu-file').click();
+  await page.getByTestId('open-name').click();
+  await expect(page.getByTestId('side-head')).toHaveAttribute('data-view', 'name');
+});
+
 test('右の欄は、何も選んでいなければ「この文書」。押した物の欄を出し、見本を開くと中身に合う欄を出す', async ({ page }) => {
+  await page.getByTestId('side-open').click();
   await expect(page.getByTestId('side-head')).toHaveAttribute('data-view', 'home');
   await expect(page.getByTestId('side-home')).toBeVisible();
   await expect(page.getByTestId('tts')).toBeHidden();
@@ -59,7 +86,7 @@ test('何も描いていないときは、キャンバスに 3 つの入口を�
 test('「＋ 反応スキーム」で、何も無いところからスキームを始められる。スキームがあっても新しく始める', async ({ page }) => {
   await openSample(page, 'coupling');
   await page.getByTestId('side-back').click();
-  await page.getByTestId('new-scheme').click();
+  await createFromHome(page, 'new-scheme');
   await expect(page.getByTestId('side-head')).toHaveAttribute('data-view', 'new-scheme');
   const panel = page.getByTestId('scheme-panel');
   await expect(panel.getByRole('button', { name: '描いた反応式をスキームにする' })).toBeVisible();
@@ -85,7 +112,7 @@ test('分子と矢印を描くと、キャンバスの上に「スキームに�
   await expect.poll(async () => Object.keys((await doc(page)).schemes ?? {}).length).toBe(1);
   await expect(bar).toHaveCount(0);
   await expect(page.getByTestId('side-head')).toHaveAttribute('data-view', 'scheme');
-  await expect(page.getByTestId('scheme-panel').getByTestId('add-step')).toBeVisible();
+  await expect(page.getByTestId('scheme-panel').getByTestId('scheme-step')).toBeVisible();
 });
 
 test('上のバーのメニューは、押すと開き、外を押すか Esc で閉じる。項目にキーの操作を出す', async ({ page }) => {
@@ -97,7 +124,7 @@ test('上のバーのメニューは、押すと開き、外を押すか Esc で
   await expect(list).toHaveCount(0);
   await page.getByTestId('menu-arrange').click();
   await expect(page.getByRole('menu', { name: '整える' })).toBeVisible();
-  await page.getByTestId('canvas').click({ position: { x: 400, y: 400 } });
+  await page.getByTestId('canvas').click({ position: { x: 700, y: 120 } });
   await expect(page.getByRole('menu', { name: '整える' })).toHaveCount(0);
   // キーの操作の一覧
   await menuItem(page, 'menu-help', 'キーの操作の一覧');
@@ -106,18 +133,20 @@ test('上のバーのメニューは、押すと開き、外を押すか Esc で
   await expect(page.getByTestId('shortcuts')).toHaveCount(0);
 });
 
-test('ライブラリの列は、はじめは閉じていて、開くと次も開いた状態で始まる。開け閉めのつまみはキャンバスの左の縁（開く所）にある', async ({ page }) => {
+test('ライブラリの列は、はじめは閉じていて、開くと次も開いた状態で始まる。開け閉めのボタンは左の道具の列のいちばん下にある', async ({ page }) => {
   await expect(page.getByTestId('library')).toHaveCount(0);
   const tab = page.getByTestId('toggle-library');
   await expect(page.locator('.topbar [data-testid=toggle-library]')).toHaveCount(0);
-  const stage = (await page.locator('.stage').boundingBox())!;
-  expect(Math.abs((await tab.boundingBox())!.x - stage.x)).toBeLessThan(1);
+  await expect(page.locator('.tools [data-testid=toggle-library]')).toBeVisible();
+  // 道具をすべて開いて列が長くなっても、ボタンは列の下に見えている
+  for (const g of ['図形', '機構']) await page.getByTestId(`tool-group-${g}`).click();
+  const tools = (await page.locator('.tools').boundingBox())!;
+  const at = (await tab.boundingBox())!;
+  expect(at.y + at.height).toBeLessThanOrEqual(tools.y + tools.height + 1);
+  expect(at.y + at.height).toBeGreaterThan(tools.y + tools.height - 20);
   await expect(tab).toHaveAccessibleName('ライブラリを開く');
   await tab.click();
   await expect(page.getByTestId('library')).toBeVisible();
-  // 開くと、つまみはライブラリの列のすぐ右（キャンバスの左の縁）に移り、閉じる向きになる
-  const lib = (await page.getByTestId('library').boundingBox())!;
-  expect(Math.abs((await tab.boundingBox())!.x - (lib.x + lib.width))).toBeLessThan(2);
   await expect(tab).toHaveAccessibleName('ライブラリを閉じる');
   await page.reload();
   await expect(page.getByTestId('library')).toBeVisible();
@@ -161,7 +190,7 @@ test('畳んだグループの道具を選んでいるときは、見出しに�
   await head.click();
   await expect(page.locator('[data-tool="arrow-curved"]')).toBeHidden();
   await expect(head).toHaveClass(/has-active/);
-  await expect(head.getByTestId('tool-group-active')).toHaveText('↷');
+  await expect(head.getByTestId('tool-group-active').locator('svg.tool-icon')).toHaveCount(1);
   await expect(head).toHaveAttribute('title', /選んでいる道具: 電子の動き/);
   // 道具は選んだまま
   expect(await page.evaluate(() => window.__editor!.get().tool)).toBe('arrow-curved');
@@ -204,7 +233,7 @@ test('反応スキームの欄の化合物に、構造の小さな絵を出す',
 
 test('検討表の行を、つまみのドラッグで並べ替える', async ({ page }) => {
   await showTab(page, 'table');
-  const panel = page.getByTestId('table-panel');
+  const panel = page.locator('[data-table-ui]');
   await panel.getByTestId('new-conditions-table').click();
   const solvents = panel.getByTestId('cell-solvent');
   for (const [i, v] of ['DMF', 'THF', 'MeCN'].entries()) {
@@ -366,7 +395,7 @@ test('サービスの名前は Cocat。タブの題・上のバー・「この�
 });
 
 test('名前や SMILES から作る: 段ごとに入れてスキームにする。空の欄と読めない名前は枠にし、描いた分子で埋められる', async ({ page }) => {
-  await page.getByTestId('new-scheme').click();
+  await createFromHome(page, 'new-scheme');
   const form = page.getByTestId('new-scheme-form');
   await form.locator('summary').click();
   await form.getByTestId('new-scheme-substrate-1').fill('CCO');
@@ -403,4 +432,209 @@ test('名前や SMILES から作る: 段ごとに入れてスキームにする�
   expect(Object.values(product.structure.atoms).map((a) => a.element).sort()).toEqual(['C', 'C', 'O']);
   // 描いた分子はスキームに入った（スキームの外の分子は残らない）
   expect(Object.values(d.atoms).filter((a) => !a.ref)).toHaveLength(0);
+});
+
+test('道具のキー: 何も指していないときは道具を選び、原子や結合を指しているときはその物を変える', async ({ page }) => {
+  const current = () => page.evaluate(() => window.__editor!.get().tool);
+  const box = (await page.getByTestId('canvas').boundingBox())!;
+  // 何も無い所を指して押す
+  await page.mouse.move(box.x + 60, box.y + 60);
+  for (const [key, id] of [['v', 'select'], ['2', 'double'], ['3', 'triple'], ['w', 'wedge'], ['h', 'hash'], ['a', 'benzene'], ['r', 'arrow-normal'], ['t', 'text'], ['1', 'single']] as const) {
+    await page.keyboard.press(key);
+    expect(await current()).toBe(id);
+  }
+  // 今の道具の案内に、道具の説明とキーを出す
+  await expect(page.getByTestId('tool-hint')).toContainText('単結合');
+  await expect(page.getByTestId('tool-hint')).toContainText('1 キー');
+  // 結合を 1 本描いて、その結合を指して 2 を押すと、道具は変わらず結合が二重になる
+  await page.mouse.click(box.x + 300, box.y + 300);
+  const b = await page.evaluate(() => {
+    const d = window.__editor!.get().doc;
+    const bond = Object.values(d.bonds)[0];
+    return { x: (d.atoms[bond.a1].x + d.atoms[bond.a2].x) / 2, y: (d.atoms[bond.a1].y + d.atoms[bond.a2].y) / 2 };
+  });
+  const v = await page.evaluate(() => {
+    const svg = document.querySelector('[data-testid=canvas]') as SVGSVGElement;
+    const vb = svg.viewBox.baseVal;
+    return { zoom: svg.clientWidth / vb.width, x: vb.x, y: vb.y };
+  });
+  await page.mouse.move(box.x + (b.x - v.x) * v.zoom, box.y + (b.y - v.y) * v.zoom);
+  await page.keyboard.press('2');
+  expect(await current()).toBe('single');
+  expect(await page.evaluate(() => Object.values(window.__editor!.get().doc.bonds)[0].order)).toBe(2);
+  // 道具を指すと、名前とキーの吹き出しがすぐに出る
+  await page.locator('[data-tool="benzene"]').hover();
+  await expect(page.locator('.tool-tip')).toContainText('ベンゼン');
+  await expect(page.locator('.tool-tip kbd')).toHaveText('A');
+});
+
+test('右の欄は畳める。メニューから欄を出すと開く。畳んだことは開き直しても残る', async ({ page }) => {
+  const canvasWidth = async () => (await page.getByTestId('canvas').boundingBox())!.width;
+  await page.getByTestId('side-open').click();
+  const before = await canvasWidth();
+  await page.getByTestId('side-collapse').click();
+  await expect(page.getByTestId('side-head')).toBeHidden();
+  expect(await canvasWidth()).toBeGreaterThanOrEqual(before + 300);
+  await page.reload();
+  await page.getByTestId('canvas').waitFor();
+  await expect(page.getByTestId('side-head')).toBeHidden();
+  // 読み込みと書き出しを開くと、欄も開く
+  await showTab(page, 'io');
+  await expect(page.getByTestId('io-panel')).toBeVisible();
+  await page.getByTestId('side-collapse').click();
+  await page.getByTestId('side-open').click();
+  await expect(page.getByTestId('io-panel')).toBeVisible();
+});
+
+test('上のバーの文書の名前は、書き出しのファイル名と同じ値。拡大・縮小はキャンバスの右下にある', async ({ page }) => {
+  await importSmiles(page, 'CCO');
+  await page.getByTestId('doc-name').fill('エタノール');
+  await showTab(page, 'io');
+  await expect(page.getByTestId('export-name')).toHaveValue('エタノール');
+  const [dl] = await Promise.all([page.waitForEvent('download'), page.getByTestId('io-panel').getByRole('button', { name: 'MOL', exact: true }).click()]);
+  expect(dl.suggestedFilename()).toBe('エタノール.mol');
+  const level = page.getByTestId('zoom-level');
+  const z0 = await level.textContent();
+  await page.getByTestId('zoom-in').click();
+  await expect(level).not.toHaveText(z0!);
+  // 上のバーの中には無い
+  await expect(page.locator('.topbar').getByTestId('zoom-level')).toHaveCount(0);
+});
+
+test('選んだ物の帯: 分子を選ぶと、そばに Clean・反転・色・画像でコピーが出る。ドラッグの間と、選択を外すと消える', async ({ page }) => {
+  await importSmiles(page, 'CC(=O)Oc1ccccc1C(=O)O');
+  await tool(page, 'select');
+  const bar = page.getByTestId('sel-bar');
+  await expect(bar).toBeVisible();
+  // 左右反転: 原子の x の並びが逆になる
+  const xs = () => page.evaluate(() => Object.values(window.__editor!.get().doc.atoms).map((a) => a.x));
+  const before = await xs();
+  await page.getByTestId('sel-flip-h').click();
+  const after = await xs();
+  expect(after.some((x, i) => Math.abs(x - before[i]) > 1)).toBe(true);
+  // 色
+  await page.getByTestId('sel-color').click();
+  await page.getByTestId('sel-colors').getByTestId('color-赤').click();
+  expect(await page.evaluate(() => Object.values(window.__editor!.get().doc.atoms).every((a) => a.color === '#d32f2f'))).toBe(true);
+  // ほかの操作から、分子量などの欄を出す
+  await page.getByTestId('sel-more').click();
+  await page.getByTestId('ctx-menu').getByTestId('ctx-analysis').click();
+  await expect(page.getByTestId('analysis')).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(bar).toHaveCount(0);
+});
+
+test('右クリック: 押しただけならメニューを出し、分子の上ならその分子を選ぶ。ドラッグすると表示を動かしてメニューは出さない', async ({ page }) => {
+  await importSmiles(page, 'c1ccccc1');
+  await page.keyboard.press('Escape');
+  const a = await page.evaluate(() => {
+    const d = window.__editor!.get().doc;
+    const at = Object.values(d.atoms)[0];
+    const svg = document.querySelector('[data-testid=canvas]') as SVGSVGElement;
+    const vb = svg.viewBox.baseVal;
+    const r = svg.getBoundingClientRect();
+    const zoom = svg.clientWidth / vb.width;
+    return { x: r.left + (at.x - vb.x) * zoom, y: r.top + (at.y - vb.y) * zoom, vx: vb.x };
+  });
+  await page.mouse.click(a.x, a.y, { button: 'right' });
+  const menu = page.getByTestId('ctx-menu');
+  await expect(menu).toBeVisible();
+  expect(await page.evaluate(() => window.__editor!.get().selection.size)).toBe(12);
+  await expect(menu.getByRole('menuitem', { name: 'Clean Structure' })).toBeVisible();
+  // 選んだ物だけ書き出す: 書き出すの画面が、選んだ物だけの状態で開く
+  await menu.getByTestId('ctx-export').click();
+  const dialog = page.getByTestId('export-dialog');
+  await expect(dialog.getByTestId('export-only-selected')).toBeChecked();
+  await dialog.getByRole('button', { name: '閉じる' }).click();
+  // 何も無い所: 選択を外し、貼り付けと全体を表示を出す
+  const box = (await page.getByTestId('canvas').boundingBox())!;
+  await page.mouse.click(box.x + 40, box.y + 200, { button: 'right' });
+  await expect(menu.getByRole('menuitem', { name: '全体を表示' })).toBeVisible();
+  expect(await page.evaluate(() => window.__editor!.get().selection.size)).toBe(0);
+  await page.keyboard.press('Escape');
+  await expect(menu).toHaveCount(0);
+  // ドラッグ: 表示が動き、メニューは出ない
+  await page.mouse.move(box.x + 40, box.y + 200);
+  await page.mouse.down({ button: 'right' });
+  await page.mouse.move(box.x + 140, box.y + 260, { steps: 4 });
+  await page.mouse.up({ button: 'right' });
+  await expect(menu).toHaveCount(0);
+  const vx = await page.evaluate(() => (document.querySelector('[data-testid=canvas]') as SVGSVGElement).viewBox.baseVal.x);
+  expect(Math.abs(vx - a.vx)).toBeGreaterThan(10);
+});
+
+test('書き出す: 上のバーのボタンから、書き出す範囲の絵・ファイル名・形式を 1 つの画面で選ぶ', async ({ page }) => {
+  await importSmiles(page, 'CCO');
+  await page.getByTestId('doc-name').fill('エタノール');
+  await page.getByTestId('open-export').click();
+  const dialog = page.getByTestId('export-dialog');
+  await expect(dialog.getByTestId('export-preview').locator('img')).toBeVisible();
+  await expect(dialog.getByTestId('export-name')).toHaveValue('エタノール');
+  const [dl] = await Promise.all([page.waitForEvent('download'), dialog.getByRole('button', { name: 'CDXML', exact: true }).click()]);
+  expect(dl.suggestedFilename()).toBe('エタノール.cdxml');
+  // 画像でコピーもここから
+  await dialog.getByTestId('export-copy-image').click();
+  await expect(dialog).toHaveCount(0);
+  await expect(page.locator('.status')).toContainText('図をコピーしました');
+});
+
+test('入力欄（Ctrl+K）: 名前や SMILES から構造を置き、雛形を選び、メニューの操作を呼べる', async ({ page }) => {
+  const input = page.getByTestId('command-input');
+  await page.keyboard.press('Control+k');
+  await expect(input).toBeFocused();
+  // SMILES: そのまま置く
+  await input.fill('CC(=O)Oc1ccccc1C(=O)O');
+  await expect(page.getByTestId('command-item').first()).toContainText('SMILES');
+  await input.press('Enter');
+  expect(await page.evaluate(() => Object.keys(window.__editor!.get().doc.atoms).length)).toBe(13);
+  await expect(input).toHaveValue('');
+  // 操作: メニューの項目を名前で探して呼ぶ
+  await page.keyboard.press('Control+k');
+  await input.fill('すべて選択');
+  // 先頭は操作。手元で読めない文字を名前として読む候補は、いちばん後ろ
+  await expect(page.getByTestId('command-item').first()).toContainText('すべて選択');
+  await expect(page.getByTestId('command-item').first()).toContainText('Ctrl+A');
+  await input.press('Enter');
+  expect(await page.evaluate(() => window.__editor!.get().selection.size)).toBe(26);
+  // 見本もここから開ける
+  await page.keyboard.press('Control+k');
+  await input.fill('3段');
+  await page.getByTestId('command-item').filter({ hasText: '3段のスキーム' }).click();
+  await expect(page.getByTestId('scheme-step')).toHaveCount(3);
+  // 雛形: 選ぶと、クリックした所に置く道具になる
+  await page.keyboard.press('Control+k');
+  await input.fill('ピリジン');
+  await page.getByTestId('command-item').filter({ hasText: 'クリックした所に置く' }).filter({ hasText: 'ピリジン' }).first().click();
+  expect(await page.evaluate(() => window.__editor!.get().tool)).toBe('part');
+  // Esc で閉じて、入力を消す
+  await page.keyboard.press('Control+k');
+  await input.fill('zzzz');
+  await expect(page.getByTestId('command-list')).toContainText('名前として読む');
+  await input.press('Escape');
+  await expect(page.getByTestId('command-list')).toHaveCount(0);
+  await expect(input).toHaveValue('');
+});
+
+test('狭い画面: 幅 1024px でも上のバーは 1 行に収まる。幅 900px より狭いと、右の欄ははじめ畳んであり、開くとキャンバスに重なる', async ({ page }) => {
+  await page.setViewportSize({ width: 1024, height: 700 });
+  await page.goto('/');
+  await page.getByTestId('canvas').waitFor();
+  const bar = (await page.locator('.topbar').boundingBox())!;
+  expect(bar.height).toBeLessThan(48);
+  expect(await page.locator('.topbar').evaluate((e) => e.scrollWidth <= e.clientWidth)).toBe(true);
+  await expect(page.getByTestId('open-export')).toBeVisible();
+  await expect(page.getByTestId('command-input')).toBeVisible();
+  await page.getByTestId('side-open').click();
+  await expect(page.getByTestId('side-head')).toBeVisible();
+  // 幅 860px: 覚えた開け閉めが無ければ、畳んで始める
+  await page.evaluate(() => localStorage.clear());
+  await page.setViewportSize({ width: 860, height: 700 });
+  await page.reload();
+  await page.getByTestId('canvas').waitFor();
+  await expect(page.getByTestId('side-head')).toBeHidden();
+  const before = (await page.getByTestId('canvas').boundingBox())!.width;
+  await page.getByTestId('side-open').click();
+  await expect(page.getByTestId('side-head')).toBeVisible();
+  // 重なって開くので、キャンバスの幅は変わらない
+  expect((await page.getByTestId('canvas').boundingBox())!.width).toBe(before);
 });

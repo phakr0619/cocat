@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { track } from '../analytics';
 import { detectFormat, exportCdx, exportCdxml, exportMol, exportPng, exportSmiles, exportSvg, importText, labelReportText } from '../io/convert';
 import type { LabelReport } from '../io/cdxml';
@@ -36,7 +36,17 @@ export function download(name: string, data: Blob | string, type: string) {
 /** 開き直した図の名前（「発表 スライド 3」） */
 const figureName = (file: string, f: SlideFigure) => `${baseNameOf(file)}${f.slides.length ? ` スライド ${f.slides[0]}` : ''}`;
 
-export function IoPanel({ store, visibleRect }: { store: EditorStore; visibleRect?: Rect | null }) {
+export function IoPanel({ store, visibleRect, part = 'both', preview = false, testId = 'io-panel', initialOnlySelected = false }: {
+  store: EditorStore;
+  visibleRect?: Rect | null;
+  /** 出す部分。書き出しの画面では書き出しだけを出す */
+  part?: 'both' | 'import' | 'export';
+  /** 書き出す範囲の絵を出す */
+  preview?: boolean;
+  testId?: string;
+  /** はじめから「選んだ物だけ」にする */
+  initialOnlySelected?: boolean;
+}) {
   const [text, setText] = useState('');
   const [error, setError] = useState('');
   /** pptx の中に Cocat の図が 2 つ以上あったとき、選ぶ画面に出すもの */
@@ -96,7 +106,7 @@ export function IoPanel({ store, visibleRect }: { store: EditorStore; visibleRec
 
   const hasSelection = useEditor(store, (s) => s.selection.size > 0);
   /** 選んだ物だけを書き出す（選んでいるときだけ効く） */
-  const [onlySelected, setOnlySelected] = useState(false);
+  const [onlySelected, setOnlySelected] = useState(initialOnlySelected);
   const selectedOnly = hasSelection && onlySelected;
   const current = useEditor(store, (s) => s.doc);
   /** 全体を書き出すとき、表示の外にある物の数（見えていない物まで書き出さないように知らせる） */
@@ -110,7 +120,8 @@ export function IoPanel({ store, visibleRect }: { store: EditorStore; visibleRec
   };
 
   return (
-    <section data-testid="io-panel">
+    <section data-testid={testId}>
+      {part !== 'export' && <>
       <h2>読み込み（SMILES / MOL / CDXML / CDX）</h2>
       <textarea
         data-testid="import-text"
@@ -175,7 +186,10 @@ export function IoPanel({ store, visibleRect }: { store: EditorStore; visibleRec
         </label>
       </div>
       <p className="muted" data-testid="reopen-help">PowerPoint のファイル（.pptx）や、Cocat で書き出した PNG を開くと、Cocat からコピーして貼った図を開き直せます。</p>
-      <h2>書き出し</h2>
+      </>}
+      {part !== 'import' && <>
+      {part === 'both' && <h2>書き出し</h2>}
+      {preview && <ExportPreview doc={selectedOnly ? extract(current, store.get().selection) : current} />}
       <p className="muted export-scope" data-testid="export-scope">
         {selectedOnly ? '選んだ物だけを書き出します。' : hasSelection ? 'キャンバス全体を書き出します。' : 'キャンバス全体を書き出します。分子などを選ぶと、選んだ物だけにもできます。'}
       </p>
@@ -209,6 +223,7 @@ export function IoPanel({ store, visibleRect }: { store: EditorStore; visibleRec
         <button type="button" onClick={run(() => download(out('.svg'), exportSvg(doc()), 'image/svg+xml'))}>SVG</button>
         <button type="button" title="図のデータを中に入れ、あとで Cocat で開き直せるようにする" onClick={run(async () => download(out('.png'), await pngWithData(await exportPng(doc()), whole(), doc()), 'image/png'))}>PNG</button>
       </div>
+      </>}
       {error && <output className="error" data-testid="io-error">{error}</output>}
       {picking && (
         <SlideFigurePicker
@@ -222,5 +237,44 @@ export function IoPanel({ store, visibleRect }: { store: EditorStore; visibleRec
         />
       )}
     </section>
+  );
+}
+
+/** 書き出す範囲の絵。形式を選ぶ前に、何が書き出されるかを見せる */
+function ExportPreview({ doc }: { doc: Doc }) {
+  const src = useMemo(() => {
+    try {
+      const empty = !Object.keys(doc.atoms).length && !Object.keys(doc.arrows).length && !Object.keys(doc.texts).length && !Object.keys(doc.shapes ?? {}).length;
+      return empty ? null : `data:image/svg+xml;charset=utf-8,${encodeURIComponent(exportSvg(doc))}`;
+    } catch {
+      return null;
+    }
+  }, [doc]);
+  return (
+    <div className="export-preview" data-testid="export-preview">
+      {src ? <img src={src} alt="書き出す範囲の絵" /> : <span className="muted">書き出す物がありません</span>}
+    </div>
+  );
+}
+
+/** 「書き出す」の画面: 書き出す範囲の絵・範囲・ファイル名・形式を 1 つにまとめる */
+export function ExportDialog({ store, visibleRect, onlySelected, onCopyImage, onClose }: { store: EditorStore; visibleRect?: Rect | null; onlySelected?: boolean; onCopyImage(): void; onClose(): void }) {
+  const ref = useRef<HTMLDialogElement>(null);
+  useEffect(() => {
+    const d = ref.current;
+    if (d && !d.open) d.showModal();
+  }, []);
+  return (
+    <dialog ref={ref} className="about export-dialog" data-testid="export-dialog" onClose={onClose} onClick={(e) => e.target === ref.current && ref.current?.close()}>
+      <h2>書き出す</h2>
+      <IoPanel store={store} visibleRect={visibleRect} part="export" preview testId="export-panel" initialOnlySelected={onlySelected} />
+      <div className="row export-foot">
+        <button type="button" data-testid="export-copy-image" title="Word や PowerPoint に貼れる画像でコピーする" onClick={() => (onCopyImage(), ref.current?.close())}>
+          画像でコピー
+        </button>
+        <span className="spacer" />
+        <button type="button" onClick={() => ref.current?.close()}>閉じる</button>
+      </div>
+    </dialog>
   );
 }

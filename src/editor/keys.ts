@@ -3,11 +3,16 @@ import { findAbbr } from '../chem/abbreviations';
 import { isElement } from '../chem/elements';
 import { kindOf } from '../chem/model';
 import { changeCharge, deleteItems, setAbbr, setBondOrder, setElement } from '../chem/ops';
-import type { EditorStore } from './store';
+import type { EditorStore, Tool } from './store';
 
 /** 原子にカーソルを合わせて押すキー → 元素（または略号） */
 export const ATOM_KEYS: Record<string, string> = {
   c: 'C', n: 'N', o: 'O', s: 'S', f: 'F', p: 'P', b: 'Br', l: 'Cl', i: 'I', h: 'H', k: 'K', m: 'Me', e: 'Et',
+};
+
+/** 何も指していないときに押すキー → 道具。原子や結合を指しているときは、同じキーでその物を変える（1 2 3 は結合の次数、W H はくさび） */
+export const TOOL_KEYS: Record<string, Tool> = {
+  v: 'select', '1': 'single', '2': 'double', '3': 'triple', w: 'wedge', h: 'hash', a: 'benzene', r: 'arrow-normal', t: 'text',
 };
 
 export interface KeyActions {
@@ -58,7 +63,13 @@ export function handleKey(store: EditorStore, e: KeyboardEvent, actions: KeyActi
     return true;
   }
   const hover = s.hover;
-  if (!hover) return false;
+  if (!hover) {
+    // 何も指していないときは、キーで道具を選ぶ
+    const t = e.shiftKey || e.altKey ? undefined : TOOL_KEYS[key.toLowerCase()];
+    if (!t) return false;
+    store.set({ tool: t, selection: t === 'select' ? s.selection : new Set() });
+    return true;
+  }
   if (kindOf(hover) === 'atom') {
     if (key === 'Enter') {
       actions.openLabelEditor(hover);

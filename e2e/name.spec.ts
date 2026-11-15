@@ -32,6 +32,7 @@ async function fakeOpsin(page: Page, answers: unknown[]) {
 async function open(page: Page) {
   await page.goto('/');
   await page.getByTestId('canvas').waitFor();
+  await page.getByTestId('menu-file').click();
   await page.getByTestId('open-name').click();
 }
 

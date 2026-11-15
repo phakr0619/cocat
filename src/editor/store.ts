@@ -4,6 +4,7 @@ import type { Doc } from '../chem/model';
 import { emptyDoc } from '../chem/model';
 import { syncSchemes } from '../scheme/sync';
 import { syncTables } from '../table/sync';
+import { syncRuns } from '../process/sync';
 import type { BondTool } from '../chem/ops';
 import type { Structure } from '../scheme/model';
 
@@ -58,7 +59,7 @@ export class EditorStore {
     const s = this.state;
     if (doc === s.doc) return;
     // スキームの分子・表の母核を直したら、データへ戻して描き直す
-    doc = syncTables(s.doc, syncSchemes(s.doc, doc));
+    doc = syncRuns(s.doc, syncTables(s.doc, syncSchemes(s.doc, doc)));
     const past = [...s.past, s.doc].slice(-HISTORY_LIMIT);
     // カーソルの下の物が残っていれば、続けてキーで編集できるように保つ
     const hover = s.hover && exists(doc, s.hover) ? s.hover : null;
@@ -73,7 +74,7 @@ export class EditorStore {
   /** base から doc への変更を1回分として履歴に積む */
   commitFrom(base: Doc, doc: Doc, selection?: Set<string>) {
     const s = this.state;
-    doc = syncTables(base, syncSchemes(base, doc));
+    doc = syncRuns(base, syncTables(base, syncSchemes(base, doc)));
     const past = [...s.past, base].slice(-HISTORY_LIMIT);
     this.set({ doc, past, future: [], selection: selection ?? pruneSelection(s.selection, doc) });
   }

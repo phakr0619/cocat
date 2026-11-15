@@ -23,7 +23,7 @@ interface StepInput {
 const emptyStep = (): StepInput => ({ substrates: ['', ''], reagents: '', solvent: '', temp: '', time: '', yield: '', product: '' });
 
 /** 入れた文字から構造の SMILES を引く。読めなければ null。SMILES で入れたときは isSmiles（名前ではないので、呼び名にしない） */
-async function resolve(text: string): Promise<{ smiles: string; isSmiles: boolean } | null> {
+export async function resolveName(text: string): Promise<{ smiles: string; isSmiles: boolean } | null> {
   const local = resolveLocally(text);
   if (local) return { smiles: local.smiles, isSmiles: local.source === 'smiles' };
   const op = await opsinName(text).catch(() => null);
@@ -47,7 +47,7 @@ export function NewSchemeForm({ store }: { store: EditorStore }) {
         compounds.push({ ref, name: label });
         return ref;
       }
-      const r = await resolve(t);
+      const r = await resolveName(t);
       if (!r) unread.push(t);
       compounds.push({ ref, ...(r?.isSmiles ? {} : { name: t }), smiles: r?.smiles ?? null });
       return ref;

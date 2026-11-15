@@ -84,6 +84,8 @@ export interface Arrow {
   noGo?: boolean;
   /** 色（「#d32f2f」など）。無ければ黒 */
   color?: string;
+  /** 線の太さ（pt）。無ければ描き方の線の太さ。実験の記録のフロー図で、重さを太さで示すときに使う */
+  weight?: number;
 }
 
 export interface TextBox {
@@ -121,6 +123,8 @@ export interface Shape {
   y1: number;
   x2: number;
   y2: number;
+  /** 実験の記録のフロー図が置いた箱なら、その記録の id */
+  ref?: string;
   /** 色（「#d32f2f」など）。無ければ黒 */
   color?: string;
 }
@@ -155,14 +159,16 @@ export interface Doc {
   styles?: Record<string, import('../scheme/style').SchemeStyle>;
   /** 検討表のデータ（src/table/model.ts） */
   tables?: Record<string, import('../table/model').StudyTable>;
+  /** 実験の記録のデータ（src/process/model.ts）。無ければ空 */
+  runs?: Record<string, import('../process/model').ProcessRun>;
   /** この文書で使った、利用者の辞書の略号（名前 → * で結合する SMILES）。別の PC で開いても読めるように持つ */
   abbrDefs?: Record<string, string>;
 }
 
 export const emptyDoc = (): Doc => ({ atoms: {}, bonds: {}, arrows: {}, texts: {}, pluses: {}, groups: {}, nextId: 1, compounds: {}, schemes: {}, tables: {} });
 
-/** id の頭の文字で種類が分かる: a 原子, b 結合, r 矢印, t 文字, p ＋記号, h 図形, g 略号, c 化合物, s スキーム, x スキームの段, m 検討表, k 表の列と行, u まとまり（原子の unit） */
-export function newId(doc: Doc, prefix: 'a' | 'b' | 'r' | 't' | 'p' | 'h' | 'g' | 'c' | 's' | 'x' | 'm' | 'k' | 'u'): string {
+/** id の頭の文字で種類が分かる: a 原子, b 結合, r 矢印, t 文字, p ＋記号, h 図形, g 略号, c 化合物, s スキーム, x スキームの段, m 検討表, k 表の列と行, u まとまり（原子の unit）, e 実験の記録とその中の行 */
+export function newId(doc: Doc, prefix: 'a' | 'b' | 'r' | 't' | 'p' | 'h' | 'g' | 'c' | 's' | 'x' | 'm' | 'k' | 'u' | 'e'): string {
   return `${prefix}${doc.nextId++}`;
 }
 

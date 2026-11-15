@@ -3,6 +3,8 @@ import { writeCdxml } from '../io/cdxml';
 import { exportSvg } from '../io/convert';
 import { serializeDoc, DOC_EXT } from '../io/docfile';
 import { makeZip, type ZipEntry } from '../io/zip';
+import { emptyDoc } from '../chem/model';
+import { runEventsCsv, runTsv } from '../process/report';
 import { tableCsv, tableXlsx } from '../table/ops';
 import { exportBundle, exportSdf } from './library';
 import type { Project } from './model';
@@ -65,6 +67,12 @@ export function exportZip(project: Project, now = new Date()): Uint8Array {
     const n = tname(t.name);
     entries.push({ name: `tables/${n}.xlsx`, data: tableXlsx(t.table, now) });
     entries.push({ name: `tables/${n}.csv`, data: `﻿${tableCsv(t.table)}` });
+  }
+  const rname = namer();
+  for (const r of Object.values(project.runs ?? {})) {
+    const n = rname(r.name);
+    entries.push({ name: `runs/${n}.tsv`, data: `﻿${runTsv(emptyDoc(), r.run)}` });
+    entries.push({ name: `runs/${n}-events.csv`, data: `﻿${runEventsCsv(emptyDoc(), r.run)}` });
   }
   return makeZip(entries, now);
 }

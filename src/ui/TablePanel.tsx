@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { track } from '../analytics';
 import type { Doc } from '../chem/model';
 import { useEditor, type EditorStore } from '../editor/store';
 import { freeFragments } from '../scheme/ops';
-import { COLUMN_KINDS, cellText, type ColumnKind } from '../table/model';
+import { COLUMN_KINDS, cellText, type ColumnKind, type StudyTable } from '../table/model';
 import {
   addColumn, addRow, createTable, dissolveTable, moveColumn, moveRow, moveRowTo, pasteRows, removeColumn, removeRow, removeTable, schemeFromRow, setCell,
   setNotes, setTableInfo, tableCsv, tableTsv, tableXlsx, updateColumn,
@@ -51,7 +52,7 @@ function Cell({ value, onCommit, testId, placeholder }: { value: string; onCommi
   );
 }
 
-export function TablePanel({ store, onCreated }: { store: EditorStore; onCreated?: () => void }) {
+export function TablePanel({ store, onCreated, gridHost }: { store: EditorStore; onCreated?: () => void; /** 行と列の表を出す所（キャンバスの下の表の欄）。無ければこの欄の中に出す */ gridHost?: HTMLElement | null }) {
   const doc = useEditor(store, (s) => s.doc);
   const selection = useEditor(store, (s) => s.selection);
   const [chosen, setChosen] = useState<string | null>(null);
@@ -90,8 +91,128 @@ export function TablePanel({ store, onCreated }: { store: EditorStore; onCreated
     );
   };
 
+  /** 行と列の表（セルの入力・行の操作・行と列を足す・コピー）。下の表の欄があれば、そこに出す */
+  const grid = (tid: string, table: StudyTable) => (
+    <>
+          <p className="muted hint">セルの終わりに「^b」と書くと、注 b の記号 ᵇ を付けます。例: 85^b、rt^a,c</p>
+      <div className="table-wrap">
+        <table className="study">
+          <thead>
+            <tr>
+              <th />
+              {table.columns.map((c) => (
+                <th key={c.id} title={COLUMN_KINDS.find((k) => k.kind === c.kind)?.name}>
+                  {c.label}
+                  {c.unit ? ` (${c.unit})` : ''}
+                </th>
+              ))}
+              <th />
+            </tr>
+          </thead>
+          <tbody>
+            {table.rows.map((r, ri) => (
+              <tr
+                key={r.id}
+                data-testid="table-row"
+                className={dragOver === ri && dragRow.current !== null && dragRow.current !== ri ? (dragRow.current < ri ? 'drop-below' : 'drop-above') : undefined}
+                onDragOver={(e) => {
+                  if (dragRow.current === null) return;
+                  e.preventDefault();
+                  if (dragOver !== ri) setDragOver(ri);
+                }}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  const from = dragRow.current;
+                  if (from !== null && from !== ri) commit((d) => moveRowTo(d, tid, table.rows[from].id, ri));
+                  dragRow.current = null;
+                  setDragOver(null);
+                }}
+              >
+                <td className="drag-cell">
+                  <span
+                    className="drag-handle"
+                    draggable
+                    data-testid="row-drag"
+                    title="ドラッグで行を並べ替える"
+                    onDragStart={(e) => {
+                      e.dataTransfer.effectAllowed = 'move';
+                      e.dataTransfer.setData('text/plain', r.id);
+                      dragRow.current = ri;
+                    }}
+                    onDragEnd={() => {
+                      dragRow.current = null;
+                      setDragOver(null);
+                    }}
+                  >
+                    ⠿
+                  </span>
+                </td>
+                {table.columns.map((c) => (
+                  <td key={c.id}>
+                    {c.kind === 'entry' ? (
+                      <Cell value={r.cells[c.id] ?? ''} placeholder={cellText(table, ri, c)} onCommit={(v) => commit((d) => setCell(d, tid, r.id, c.id, v))} />
+                    ) : (
+                      <Cell value={r.cells[c.id] ?? ''} testId={`cell-${c.kind}`} onCommit={(v) => commit((d) => setCell(d, tid, r.id, c.id, v))} />
+                    )}
+                  </td>
+                ))}
+                <td className="row-actions">
+                  <button type="button" title="上へ" onClick={() => commit((d) => moveRow(d, tid, r.id, -1))}>↑</button>
+                  <button type="button" title="下へ" onClick={() => commit((d) => moveRow(d, tid, r.id, 1))}>↓</button>
+                  <button type="button" title="この行を複製" onClick={() => commit((d) => addRow(d, tid, r.id))}>⧉</button>
+                  <button type="button" title="この行を消す" onClick={() => commit((d) => removeRow(d, tid, r.id))}>×</button>
+                  {table.schemeId && (
+                    <button
+                      type="button"
+                      data-testid="row-to-scheme"
+                      title="この行の条件で反応式を作り、表の下に置く"
+                      onClick={() => {
+                        const out = schemeFromRow(store.get().doc, tid, r.id);
+                        if (out) {
+                          store.commit(out.doc, new Set());
+                          track('table:row-to-scheme');
+                        }
+                      }}
+                    >
+                      →式
+                    </button>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="row">
+        <button type="button" data-testid="add-row" onClick={() => commit((d) => addRow(d, tid))}>行を足す</button>
+        <select
+          data-testid="add-column"
+          value=""
+          onChange={(e) => {
+            if (e.target.value) commit((d) => addColumn(d, tid, e.target.value as ColumnKind));
+          }}
+        >
+          <option value="">列を足す…</option>
+          {COLUMN_KINDS.map((k) => (
+            <option key={k.kind} value={k.kind}>{k.name}</option>
+          ))}
+        </select>
+        <button type="button" onClick={copy} title="タブ区切りでコピーする。Excel に貼れる">コピー</button>
+        <button type="button" onClick={() => download(`table-${table.number ?? tid}.csv`, `﻿${tableCsv(table)}`, 'text/csv')} title="CSV で保存する。Excel で開ける">CSV</button>
+        <button
+          type="button"
+          data-testid="table-xlsx"
+          onClick={() => download(`table-${table.number ?? tid}.xlsx`, new Blob([tableXlsx(table) as BlobPart], { type: XLSX_TYPE }), XLSX_TYPE)}
+          title="Excel のファイル（.xlsx）で保存する。題・見出し・注も入り、数は数として入る"
+        >
+          Excel
+        </button>
+      </div>
+    </>
+  );
+
   return (
-    <section className="table-panel" data-testid="table-panel">
+    <section className="table-panel" data-testid="table-panel" data-table-ui>
       <h2>検討表</h2>
       <div className="row">
         <button type="button" className="primary" data-testid="new-conditions-table" onClick={() => create('conditions')} title={sid ? 'スキームの反応式を表の上に描く' : '反応式なしで表を作る。先にスキームを作ると、表の上に反応式を描ける'}>
@@ -128,120 +249,7 @@ export function TablePanel({ store, onCreated }: { store: EditorStore; onCreated
             <Field label="番号" testId="table-number" value={table.number ?? ''} onCommit={(v) => commit((d) => setTableInfo(d, tid, { number: v.trim() || undefined }))} />
             <Field label="題" width="2 / 4" testId="table-title" value={table.title ?? ''} onCommit={(v) => commit((d) => setTableInfo(d, tid, { title: v.trim() || undefined }))} />
           </div>
-          <p className="muted hint">セルの終わりに「^b」と書くと、注 b の記号 ᵇ を付けます。例: 85^b、rt^a,c</p>
-          <div className="table-wrap">
-            <table className="study">
-              <thead>
-                <tr>
-                  <th />
-                  {table.columns.map((c) => (
-                    <th key={c.id} title={COLUMN_KINDS.find((k) => k.kind === c.kind)?.name}>
-                      {c.label}
-                      {c.unit ? ` (${c.unit})` : ''}
-                    </th>
-                  ))}
-                  <th />
-                </tr>
-              </thead>
-              <tbody>
-                {table.rows.map((r, ri) => (
-                  <tr
-                    key={r.id}
-                    data-testid="table-row"
-                    className={dragOver === ri && dragRow.current !== null && dragRow.current !== ri ? (dragRow.current < ri ? 'drop-below' : 'drop-above') : undefined}
-                    onDragOver={(e) => {
-                      if (dragRow.current === null) return;
-                      e.preventDefault();
-                      if (dragOver !== ri) setDragOver(ri);
-                    }}
-                    onDrop={(e) => {
-                      e.preventDefault();
-                      const from = dragRow.current;
-                      if (from !== null && from !== ri) commit((d) => moveRowTo(d, tid, table.rows[from].id, ri));
-                      dragRow.current = null;
-                      setDragOver(null);
-                    }}
-                  >
-                    <td className="drag-cell">
-                      <span
-                        className="drag-handle"
-                        draggable
-                        data-testid="row-drag"
-                        title="ドラッグで行を並べ替える"
-                        onDragStart={(e) => {
-                          e.dataTransfer.effectAllowed = 'move';
-                          e.dataTransfer.setData('text/plain', r.id);
-                          dragRow.current = ri;
-                        }}
-                        onDragEnd={() => {
-                          dragRow.current = null;
-                          setDragOver(null);
-                        }}
-                      >
-                        ⠿
-                      </span>
-                    </td>
-                    {table.columns.map((c) => (
-                      <td key={c.id}>
-                        {c.kind === 'entry' ? (
-                          <Cell value={r.cells[c.id] ?? ''} placeholder={cellText(table, ri, c)} onCommit={(v) => commit((d) => setCell(d, tid, r.id, c.id, v))} />
-                        ) : (
-                          <Cell value={r.cells[c.id] ?? ''} testId={`cell-${c.kind}`} onCommit={(v) => commit((d) => setCell(d, tid, r.id, c.id, v))} />
-                        )}
-                      </td>
-                    ))}
-                    <td className="row-actions">
-                      <button type="button" title="上へ" onClick={() => commit((d) => moveRow(d, tid, r.id, -1))}>↑</button>
-                      <button type="button" title="下へ" onClick={() => commit((d) => moveRow(d, tid, r.id, 1))}>↓</button>
-                      <button type="button" title="この行を複製" onClick={() => commit((d) => addRow(d, tid, r.id))}>⧉</button>
-                      <button type="button" title="この行を消す" onClick={() => commit((d) => removeRow(d, tid, r.id))}>×</button>
-                      {table.schemeId && (
-                        <button
-                          type="button"
-                          data-testid="row-to-scheme"
-                          title="この行の条件で反応式を作り、表の下に置く"
-                          onClick={() => {
-                            const out = schemeFromRow(store.get().doc, tid, r.id);
-                            if (out) {
-                              store.commit(out.doc, new Set());
-                              track('table:row-to-scheme');
-                            }
-                          }}
-                        >
-                          →式
-                        </button>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <div className="row">
-            <button type="button" data-testid="add-row" onClick={() => commit((d) => addRow(d, tid))}>行を足す</button>
-            <select
-              data-testid="add-column"
-              value=""
-              onChange={(e) => {
-                if (e.target.value) commit((d) => addColumn(d, tid, e.target.value as ColumnKind));
-              }}
-            >
-              <option value="">列を足す…</option>
-              {COLUMN_KINDS.map((k) => (
-                <option key={k.kind} value={k.kind}>{k.name}</option>
-              ))}
-            </select>
-            <button type="button" onClick={copy} title="タブ区切りでコピーする。Excel に貼れる">コピー</button>
-            <button type="button" onClick={() => download(`table-${table.number ?? tid}.csv`, `﻿${tableCsv(table)}`, 'text/csv')} title="CSV で保存する。Excel で開ける">CSV</button>
-            <button
-              type="button"
-              data-testid="table-xlsx"
-              onClick={() => download(`table-${table.number ?? tid}.xlsx`, new Blob([tableXlsx(table) as BlobPart], { type: XLSX_TYPE }), XLSX_TYPE)}
-              title="Excel のファイル（.xlsx）で保存する。題・見出し・注も入り、数は数として入る"
-            >
-              Excel
-            </button>
-          </div>
+          {gridHost ? createPortal(grid(tid, table), gridHost) : grid(tid, table)}
           <details className="table-sub">
             <summary>Excel から貼り付け</summary>
             <textarea

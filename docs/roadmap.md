@@ -21,8 +21,9 @@
 | M3 | AI の層（Gemini、BYOK）、言葉からスキーム、言葉で直す、仕上げの一括の指示、画像からスキーム、実験項の文章 |
 | M5 | 名前から構造を置く（辞書・ライブラリ・SMILES・OPSIN・Gemini の順）、NMR の目安（教科書の加成則）、CAS 番号の形と検査数字の確認 |
 | M6 | 論文の PDF からスキーム（図の範囲を選ぶ・AI で探す、本文と SI の化合物番号で突き合わせる） |
+| 画面と実験の記録（2026-11） | 図の上で条件・番号を直す、選んだ物のそばの操作の帯と右クリックのメニュー、書き出す範囲の絵、道具を選ぶキー。実験の記録（仕込み・操作の流れと重さ・操作ごとの記録、フロー図と物質収支、PMI） |
 
-形式と決まりの説明: 塩と立体のまとまり（`docs/salt-design.md`）、略号のラベル（`docs/abbreviation-labels.md`）、図を開き直す（`docs/reopen-figure.md`）、OPSIN のサーバー（`docs/opsin-server.md`）。公開の手順は `docs/hosting.md`。
+形式と決まりの説明: 実験の記録（`docs/process-record.md`）、塩と立体のまとまり（`docs/salt-design.md`）、略号のラベル（`docs/abbreviation-labels.md`）、図を開き直す（`docs/reopen-figure.md`）、OPSIN のサーバー（`docs/opsin-server.md`）。公開の手順は `docs/hosting.md`。
 
 ## これから考えるもの（順番は決めていない）
 

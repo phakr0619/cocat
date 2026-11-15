@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { flushSync } from 'react-dom';
 import { track } from '../analytics';
 import { getLlmSettings, subscribeLlmSettings } from '../llm/settings';
@@ -15,12 +15,18 @@ import '../editor/tools3';
 import { alignCenters } from '../chem/align';
 import { cleanStructure } from '../chem/clean';
 import { setText } from '../chem/schemeOps';
-import { IoPanel } from './IoPanel';
+import { ExportDialog, IoPanel } from './IoPanel';
+import { fragmentOf, selectionFrame } from '../editor/tools2';
+import { kindOf } from '../chem/model';
 import { AnalysisPanel } from './AnalysisPanel';
 import { LibraryPanel } from './LibraryPanel';
 import { ProjectStore } from '../project/store';
 import { placeCompound } from '../project/library';
-import { SchemePanel } from './SchemePanel';
+import { activeSchemeId, SchemePanel } from './SchemePanel';
+import { RunDock, RunSummary } from './RunDock';
+import { createRun } from '../process/ops';
+import { NextStepGhost, SchemeEditPopover } from './OnCanvasEditors';
+import type { SchemeTarget } from '../scheme/pick';
 import { TablePanel } from './TablePanel';
 import { SAMPLES } from '../samples';
 import { About } from './About';
@@ -38,8 +44,9 @@ import { setStereoGroup } from '../chem/stereoGroups';
 import { PAGE_SIZES, pagesBox } from '../chem/page';
 import { layout } from '../render/layout';
 import { download } from './IoPanel';
-import { TOOL_GROUPS, Toolbar } from './Toolbar';
-import { Menu } from './Menu';
+import { TOOL_GROUPS, toolHint, Toolbar } from './Toolbar';
+import { Menu, PopupMenu, type MenuEntry, type MenuItem } from './Menu';
+import { CommandBar } from './CommandBar';
 import { AbbrDictionary } from './AbbrDictionary';
 import { applyAbbrs, setDocAbbrs, withUsedAbbrDefs } from './abbrStore';
 import { subscribeAbbrs } from '../chem/abbreviations';
@@ -74,6 +81,10 @@ export function App() {
   const canRedo = useEditor(store, (s) => s.future.length > 0);
   const selection = useEditor(store, (s) => s.selection);
   const toolsWidth = useToolsWidth();
+  const fileName = useEditor(store, (s) => s.fileName ?? '');
+  const tool = useEditor(store, (s) => s.tool);
+  const partName = useEditor(store, (s) => s.part?.name ?? '');
+  const message = useEditor(store, (s) => s.message);
   const [showAbbrDict, setShowAbbrDict] = useState(false);
   // 略号の辞書: 利用者の辞書と、開いた文書が持つ辞書を引けるようにする。変わったら図を描き直す
   useEffect(() => setDocAbbrs(doc.abbrDefs), [doc.abbrDefs]);
@@ -125,7 +136,9 @@ export function App() {
     if (!box || !el) return setView((v) => ({ ...v, x: 0, y: 0 }));
     const pad = 16;
     const w = el.clientWidth;
-    const h = el.clientHeight;
+    // 下の端は、今の道具の案内と拡大・縮小が重なるので、その分を空ける
+    const below = 48;
+    const h = Math.max(120, el.clientHeight - below);
     const z = Math.min(2.5, Math.max(MIN_ZOOM, Math.min(w / (box.x2 - box.x1 + pad * 2), h / (box.y2 - box.y1 + pad * 2))));
     setView({ zoom: z, x: (box.x1 + box.x2) / 2 - w / z / 2, y: (box.y1 + box.y2) / 2 - h / z / 2 });
   };
@@ -145,7 +158,56 @@ export function App() {
   const [showDrawStyle, setShowDrawStyle] = useState(false);
   const [showPageSetup, setShowPageSetup] = useState(false);
   // 右の欄に出す物。タブは無く、選んだ物か、押したボタンで替わる
-  const [side, setSide] = useState<SideView>('home');
+  const [side, setSideRaw] = useState<SideView>('home');
+  /** 開いている実験の記録（下の表の欄と、右の欄に出す） */
+  const [runId, setRunId] = useState<string | null>(null);
+  /** 下の表の欄を畳んでいる */
+  const [dockClosed, setDockClosed] = useState(false);
+  // 右の欄は畳める（キャンバスを広く使うため）。畳んだことはブラウザに置く
+  const [sideOpen, setSideOpenRaw] = useState(() => {
+    try {
+      // 狭い画面では、右の欄はキャンバスに重なって開く。はじめは畳んでおく
+      const saved = localStorage.getItem('ai-chem-editor:side');
+      return saved ? saved !== 'closed' : window.innerWidth >= 900;
+    } catch {
+      return true;
+    }
+  });
+  const setSideOpen = (open: boolean) => {
+    setSideOpenRaw(open);
+    try {
+      localStorage.setItem('ai-chem-editor:side', open ? 'open' : 'closed');
+    } catch {
+      // 置けなくても、開いている間は畳める
+    }
+  };
+  // 文書が空で何も選んでいないあいだは、右の欄を出さない（真ん中の入口と同じことを言うため）。
+  // 右の端のつまみやメニューで開いたら、そのあとは出す
+  const [sidePeek, setSidePeek] = useState(false);
+  const sideShown = sideOpen && !(isEmpty && side === 'home' && !sidePeek);
+  // 空の文書に見本などが入って右の欄が出たとき、キャンバスが狭くなる。図がはみ出したら合わせ直す
+  const sideShownRef = useRef(sideShown);
+  const viewRef = useRef(view);
+  viewRef.current = view;
+  // 描く前に合わせる（欄が出て狭くなったキャンバスの幅で、すぐに合わせ直す）
+  useLayoutEffect(() => {
+    const was = sideShownRef.current;
+    sideShownRef.current = sideShown;
+    if (was || !sideShown) return;
+    const el = stageRef.current;
+    const box = layout(store.get().doc).bbox;
+    if (!el || !box) return;
+    const v = viewRef.current;
+    const inside = box.x1 >= v.x && box.y1 >= v.y && box.x2 <= v.x + el.clientWidth / v.zoom && box.y2 <= v.y + el.clientHeight / v.zoom;
+    if (!inside) fitView();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sideShown]);
+  /** メニューやボタンから欄を出す。畳んであれば開く */
+  const setSide = (v: SideView) => {
+    setSideRaw(v);
+    setSideOpenRaw(true);
+    setSidePeek(true);
+  };
   const llm = useSyncExternalStore(subscribeLlmSettings, getLlmSettings);
   const hasKey = !!llm.apiKey;
   /** AI の欄の使い方（作る・直す・書く・仕上げ）。直す・書く・仕上げは、スキームの欄の「AI で」から開く */
@@ -163,13 +225,19 @@ export function App() {
     let next: SideView = 'analysis';
     for (const id of selection) {
       const ref = d.atoms[id]?.ref?.split(':')[0] ?? d.arrows[id]?.ref ?? d.texts[id]?.ref ?? d.pluses[id]?.ref;
+      const runRef = d.shapes?.[id]?.ref ?? d.arrows[id]?.ref ?? d.texts[id]?.ref;
+      if (runRef && d.runs?.[runRef]) {
+        next = 'run';
+        setRunId(runRef);
+        break;
+      }
       if (ref && d.schemes?.[ref]) next = 'scheme';
       else if (ref && d.tables?.[ref]) next = 'table';
       if (next !== 'analysis') break;
     }
-    setSide((cur) => {
+    setSideRaw((cur) => {
       // 分子の欄は、選んだ物（スキームの化合物も）の分子量などを見るので、選んでも替えない
-      if (cur === 'ai' || cur === 'name' || cur === 'io' || cur === 'new-scheme' || cur === 'analysis') return cur;
+      if (cur === 'ai' || cur === 'name' || cur === 'io' || cur === 'new-scheme' || (cur === 'analysis' && next !== 'run')) return cur;
       // スキーム・検討表の欄で分子を選ぶのは、その欄で使うため（生成物にする、母核にする）
       if ((cur === 'scheme' || cur === 'table') && next === 'analysis') return cur;
       return next;
@@ -178,7 +246,7 @@ export function App() {
   // 新しいスキームの欄でスキームを作ったら、そのスキームの欄にする
   const schemeCountRef = useRef(schemeCount);
   useEffect(() => {
-    if (schemeCount > schemeCountRef.current && side === 'new-scheme') setSide('scheme');
+    if (schemeCount > schemeCountRef.current && side === 'new-scheme') setSideRaw('scheme');
     schemeCountRef.current = schemeCount;
   }, [schemeCount, side]);
   /** 描いた反応式（スキームにしていない分子と矢印）があれば、キャンバスの上に「スキームにする」を出す */
@@ -221,6 +289,21 @@ export function App() {
     store.set({ selection: new Set(ids) });
     setSide(view);
   };
+  /** 実験の記録を開く: 下の表の欄と右の欄に出す */
+  const openRun = (id: string) => {
+    setRunId(id);
+    setDockClosed(false);
+    setSide('run');
+  };
+  /** 実験の記録を作って開く。スキームの段から作ると、その段の基質・試薬・溶媒が仕込みに入る */
+  const newRun = (from?: { schemeId: string; stepIndex: number }) => {
+    const first = Object.values(store.get().doc.schemes ?? {})[0];
+    const r = createRun(store.get().doc, from ?? (first ? { schemeId: first.id, stepIndex: 0 } : undefined));
+    store.commit(r.doc, new Set());
+    track(from ? 'run:new-from-step' : 'run:new');
+    openRun(r.runId);
+    fitView(r.doc);
+  };
   const openSample = (id: string) => {
     const s = SAMPLES.find((x) => x.id === id);
     if (!s) return;
@@ -232,6 +315,7 @@ export function App() {
       // 見本の中身に合うタブを開く
       if (s.id === 'conditions' || s.id === 'sar') setSide('table');
       else if (s.id === 'coupling' || s.id === 'multistep') setSide('scheme');
+      else if (s.id === 'run') openRun(Object.keys(store.get().doc.runs ?? {})[0]);
     } catch (err) {
       store.set({ message: String((err as Error).message ?? err) });
     }
@@ -254,6 +338,25 @@ export function App() {
     }
   };
   const [overlay, setOverlay] = useState<Overlay | null>(null);
+  /** キャンバスでドラッグなどをしている間（選んだ物の帯を隠す） */
+  const [busy, setBusy] = useState(false);
+  /** 図の上で直している段か化合物 */
+  const [schemeEdit, setSchemeEdit] = useState<SchemeTarget | null>(null);
+  const activeScheme = activeSchemeId(doc, selection);
+  const activeRun = runId && doc.runs?.[runId] ? runId : null;
+  const showDock = !!activeRun && !dockClosed && side === 'run';
+  /** 検討表の行と列の表を出す、キャンバスの下の欄 */
+  const [tableDock, setTableDock] = useState<HTMLElement | null>(null);
+  /** 化学量論表を出す、キャンバスの下の欄（開いた表があるときだけ中身が入る） */
+  const [stoichDock, setStoichDock] = useState<HTMLElement | null>(null);
+  const showStoichDock = side === 'scheme' && !!activeScheme;
+  const showTableDock = side === 'table' && Object.keys(doc.tables ?? {}).length > 0;
+  /** 右クリックのメニュー（画面の座標） */
+  const [ctxMenu, setCtxMenu] = useState<{ x: number; y: number } | null>(null);
+  /** 「書き出す」の画面 */
+  const [showExport, setShowExport] = useState<{ onlySelected: boolean } | null>(null);
+  /** 選んだ物の帯の、色の一覧 */
+  const [barColors, setBarColors] = useState<{ x: number; y: number } | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const textRef = useRef<HTMLTextAreaElement>(null);
 
@@ -381,45 +484,8 @@ export function App() {
     setOverlay(null);
   };
 
-  return (
-    <div className={`app${showLibrary ? ' with-library' : ''}`} style={toolsWidth.style}>
-      <header className="topbar">
-        <div className="brand">
-          <span className="logo" aria-hidden="true">⌬</span>
-          <h1>Cocat</h1>
-          <span className="beta">ベータ</span>
-        </div>
-        <Menu
-          label="ファイル"
-          testId="menu-file"
-          items={[
-            { label: '新規', title: '空の文書にする。ページの設定は変えず、元に戻すと前の文書に戻る', onClick: () => (store.commit({ ...emptyDoc(), ...(doc.page ? { page: doc.page } : {}) }, new Set()), store.set({ fileName: '' })) },
-            { label: '開く…', shortcut: 'Ctrl+O', title: `${DOC_EXT} の文書を開く`, onClick: () => fileRef.current?.click() },
-            { label: '保存', shortcut: 'Ctrl+S', title: `文書を ${DOC_EXT} で保存する`, onClick: saveDoc },
-            { label: 'SMILES・MOL・CDXML の読み込みと書き出し…', testId: 'open-io', onClick: () => setSide('io') },
-            ...(doc.page
-              ? [
-                  {
-                    label: `印刷・PDF（${PAGE_SIZES[doc.page.size].name}・${doc.page.cols * doc.page.rows} ページ）`,
-                    shortcut: 'Ctrl+P',
-                    title: 'ページを 1 枚ずつ、その大きさの紙に原寸で出す。印刷の画面で「PDF に保存」を選ぶと PDF になる',
-                    testId: 'print-pages',
-                    onClick: () => (printDoc(store.get().doc), track('print:pages')),
-                  },
-                ]
-              : [
-                  { label: '印刷・PDF（A4）', shortcut: 'Ctrl+P', title: '図を A4 の紙に収めて印刷する。印刷の画面で「PDF に保存」を選ぶと PDF になる', testId: 'print-a4', onClick: () => (printDoc(store.get().doc, 'A4'), track('print:a4')) },
-                  { label: '印刷・PDF（レター）', title: '図をレターの紙に収めて印刷する', testId: 'print-letter', onClick: () => (printDoc(store.get().doc, 'Letter'), track('print:letter')) },
-                ]),
-            { sep: true },
-            { heading: '見本を開く' },
-            ...SAMPLES.map((s) => ({ label: s.name, testId: `sample-${s.id}`, onClick: () => openSample(s.id) })),
-          ]}
-        />
-        <Menu
-          label="編集"
-          testId="menu-edit"
-          items={[
+  // 操作の一覧。上のバーのメニュー、選んだ物の帯、右クリックのメニューで同じ物を使う
+  const editItems: MenuEntry[] = [
             { label: '切り取り', shortcut: 'Ctrl+X', onClick: () => actions.cut(store) },
             { label: 'コピー', shortcut: 'Ctrl+C', onClick: () => actions.copy(store) },
             { label: '貼り付け', shortcut: 'Ctrl+V', title: 'ほかのアプリでコピーした SMILES・Molfile・CDXML も貼れます', onClick: () => actions.pasteMenu(store) },
@@ -428,12 +494,8 @@ export function App() {
             { sep: true },
             { label: '⇋ 左右反転', shortcut: 'Ctrl+Shift+H', onClick: () => actions.flip(store, 'h') },
             { label: '⇵ 上下反転', shortcut: 'Ctrl+Shift+V', onClick: () => actions.flip(store, 'v') },
-          ]}
-        />
-        <Menu
-          label="整える"
-          testId="menu-arrange"
-          items={[
+  ];
+  const arrangeItems: MenuEntry[] = [
             { label: 'Clean Structure', shortcut: 'Ctrl+Shift+K', title: '結合の長さと角度を整える', onClick: clean },
             { label: '横にそろえる', title: '選んだ物の中心の高さをそろえる。何も選んでいなければ全部をそろえる', onClick: () => align('h') },
             { label: '縦にそろえる', title: '選んだ物の中心の左右の位置をそろえる。何も選んでいなければ全部をそろえる', onClick: () => align('v') },
@@ -477,8 +539,130 @@ export function App() {
               disabled: !selection.size,
               onClick: () => store.commit(setStereoGroup(store.get().doc, store.get().selection, 'or')),
             },
-          ]}
+  ];
+  const fileItems: MenuEntry[] = [
+            { label: '新規', title: '空の文書にする。ページの設定は変えず、元に戻すと前の文書に戻る', onClick: () => (store.commit({ ...emptyDoc(), ...(doc.page ? { page: doc.page } : {}) }, new Set()), store.set({ fileName: '' })) },
+            { label: '開く…', shortcut: 'Ctrl+O', title: `${DOC_EXT} の文書を開く`, onClick: () => fileRef.current?.click() },
+            { label: '保存', shortcut: 'Ctrl+S', title: `文書を ${DOC_EXT} で保存する`, onClick: saveDoc },
+            { label: 'SMILES・MOL・CDXML の読み込みと書き出し…', testId: 'open-io', onClick: () => setSide('io') },
+            { label: '名前から構造を置く…', testId: 'open-name', title: '化合物名から構造を置く。慣用名や略称は AI に調べさせられる', onClick: () => setSide('name') },
+            ...(doc.page
+              ? [
+                  {
+                    label: `印刷・PDF（${PAGE_SIZES[doc.page.size].name}・${doc.page.cols * doc.page.rows} ページ）`,
+                    shortcut: 'Ctrl+P',
+                    title: 'ページを 1 枚ずつ、その大きさの紙に原寸で出す。印刷の画面で「PDF に保存」を選ぶと PDF になる',
+                    testId: 'print-pages',
+                    onClick: () => (printDoc(store.get().doc), track('print:pages')),
+                  },
+                ]
+              : [
+                  { label: '印刷・PDF（A4）', shortcut: 'Ctrl+P', title: '図を A4 の紙に収めて印刷する。印刷の画面で「PDF に保存」を選ぶと PDF になる', testId: 'print-a4', onClick: () => (printDoc(store.get().doc, 'A4'), track('print:a4')) },
+                  { label: '印刷・PDF（レター）', title: '図をレターの紙に収めて印刷する', testId: 'print-letter', onClick: () => (printDoc(store.get().doc, 'Letter'), track('print:letter')) },
+                ]),
+            { sep: true },
+            { heading: '見本を開く' },
+            ...SAMPLES.map((s) => ({ label: s.name, testId: `sample-${s.id}`, onClick: () => openSample(s.id) })),
+  ];
+  const viewItems: MenuEntry[] = [
+            { label: '全体を表示', shortcut: 'Shift+1', title: '図の全体が入るように合わせる', onClick: () => fitView() },
+            { label: '拡大', onClick: () => setZoom((z) => Math.min(6, z + 0.5)) },
+            { label: '縮小', onClick: () => setZoom((z) => (z > 1 ? z - 0.5 : z / 1.5)) },
+            { sep: true },
+            { label: showLibrary ? 'ライブラリを閉じる' : 'ライブラリを開く', onClick: toggleLibrary },
+            { label: sideShown ? '右の欄を畳む' : '右の欄を開く', onClick: () => (setSideOpen(!sideShown), setSidePeek(true)) },
+  ];
+  const settingsItems: MenuEntry[] = [
+            { label: 'AI の設定…', testId: 'open-llm-settings', title: 'AI の会社とモデルを選び、API キーを入れる', onClick: () => (setShowLlm(true), track('llm:settings')) },
+            { label: '図の設定…', title: '線の太さと文字の大きさを変える', testId: 'open-draw-style', onClick: () => setShowDrawStyle(true) },
+            { label: 'ページの設定…', title: 'キャンバスの大きさを、A4 かスライドを何枚並べるかで決める', testId: 'open-page-setup', onClick: () => setShowPageSetup(true) },
+            { label: '略号の辞書…', testId: 'open-abbr-dict', title: '標準の略号と自分で足した略号を見て、略号を足す。NHFmoc、CO2tBu、BF3K のようなラベルがどう読まれるかも試せる', onClick: () => setShowAbbrDict(true) },
+  ];
+  const helpItems: MenuEntry[] = [
+            { label: 'キーの操作の一覧', testId: 'open-shortcuts', onClick: () => setShowKeys(true) },
+            { label: 'このツールについて', testId: 'open-about', title: 'ベータ版について・データの扱い・感想の送り先', onClick: () => setShowAbout(true) },
+  ];
+  const colorItems: MenuEntry[] = COLORS.map(([name, hex]) => ({
+    label: name,
+    swatch: hex ?? '#000',
+    testId: `color-${name}`,
+    onClick: () => {
+      const st = store.get();
+      if (!st.selection.size) return store.set({ message: '色を変える物を選んでください' });
+      store.commit(setColor(st.doc, st.selection, hex));
+    },
+  }));
+  /** 上の段の「整える」: 並べ方などと、色 */
+  const arrangeMenu: MenuEntry[] = [...arrangeItems, { heading: '色' }, ...colorItems];
+  /** 右クリックのメニューと、選んだ物の帯の「ほかの操作」に出す項目 */
+  const contextItems = (): MenuEntry[] => {
+    const has = store.get().selection.size > 0;
+    const pick = (items: MenuEntry[], labels: string[]) => items.filter((it): it is MenuItem => 'label' in it && labels.includes(it.label));
+    if (!has)
+      return [
+        ...pick(editItems, ['貼り付け', 'すべて選択']),
+        { sep: true },
+        { label: '全体を表示', shortcut: 'Shift+1', onClick: () => fitView() },
+        { label: '書き出す…', testId: 'ctx-export', onClick: () => setShowExport({ onlySelected: false }) },
+      ];
+    return [
+      ...pick(editItems, ['切り取り', 'コピー', '貼り付け', '図を画像でコピー']),
+      { sep: true },
+      ...pick(arrangeItems, ['Clean Structure', '横にそろえる', '縦にそろえる', '略号を展開', '略号に縮約']),
+      ...pick(arrangeItems, ['塩としてまとめる', 'まとまりを解く']).filter((it) => !it.disabled),
+      { sep: true },
+      { label: '選んだ物だけ書き出す…', testId: 'ctx-export', onClick: () => setShowExport({ onlySelected: true }) },
+      { label: '分子量などを見る', testId: 'ctx-analysis', onClick: () => setSide('analysis') },
+      ...(showLibrary ? [] : [{ label: 'ライブラリを開く', onClick: toggleLibrary }]),
+    ];
+  };
+  // 下の表の欄を開くとキャンバスが低くなるので、図の全体が見えるように合わせ直す
+  const dockShown = useRef(false);
+  useEffect(() => {
+    // 開いたときと閉じたときだけ（はじめの描画では合わせ直さない）
+    // 欄の中身が並んで高さが決まってから合わせる
+    const t = (showDock || showTableDock) !== dockShown.current ? setTimeout(() => fitView(), 60) : undefined;
+    dockShown.current = showDock || showTableDock;
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showDock, showTableDock]);
+  /** 選んだ物の帯を出す所（キャンバスの左上からの px）。選択の道具で選んでいて、ドラッグしていないときだけ */
+  const selBar = (() => {
+    if (busy || overlay || schemeEdit || !selection.size || (tool !== 'select' && tool !== 'lasso')) return null;
+    const r = selectionFrame(doc, selection);
+    const el = stageRef.current;
+    if (!r || !el) return null;
+    const W = 300;
+    const H = 34;
+    // 枠の上の回転のつまみ（枠より 8 pt 上）のさらに上。上に入らなければ枠の下
+    let top = (r.y1 - 8 - view.y) * zoom - 12 - H;
+    if (top < 6) top = (r.y2 - view.y) * zoom + 8;
+    if (top > el.clientHeight - H - 6) return null;
+    const left = Math.max(6, Math.min((r.x1 - view.x) * zoom, el.clientWidth - W - 6));
+    return { left, top };
+  })();
+
+  return (
+    <div className={`app${showLibrary ? ' with-library' : ''}${sideShown ? '' : ' side-closed'}`} style={toolsWidth.style}>
+      <header className="topbar">
+        <div className="brand">
+          <span className="logo" aria-hidden="true">⌬</span>
+          <h1>Cocat</h1>
+          <span className="beta">ベータ</span>
+        </div>
+        <input
+          className="doc-name"
+          data-testid="doc-name"
+          aria-label="文書の名前"
+          title="保存と書き出しで使うファイルの名前"
+          placeholder="名前のない文書"
+          value={fileName}
+          onChange={(e) => store.set({ fileName: e.target.value })}
         />
+        <Menu label="ファイル" testId="menu-file" items={fileItems} />
+        <Menu label="編集" testId="menu-edit" items={editItems} />
+        <Menu label="整える" testId="menu-arrange" items={arrangeMenu} />
+        <Menu label="表示" testId="menu-view" items={viewItems} />
         <input
           ref={fileRef}
           type="file"
@@ -491,93 +675,66 @@ export function App() {
             e.target.value = '';
           }}
         />
-        <Menu
-          label="色"
-          testId="menu-color"
-          title="選んだ原子・結合・矢印・文字・図形の色を変える"
-          items={COLORS.map(([name, hex]) => ({
-            label: name,
-            swatch: hex ?? '#000',
-            testId: `color-${name}`,
-            onClick: () => {
-              const s = store.get();
-              if (!s.selection.size) return store.set({ message: '色を変える物を選んでください' });
-              store.commit(setColor(s.doc, s.selection, hex));
-            },
-          }))}
-        />
         <span className="sep" />
         <button type="button" className="icon-text" onClick={() => store.undo()} disabled={!canUndo} title="元に戻す (Ctrl+Z)">
-          ↶ 元に戻す
+          ↶<span className="wide-only"> 元に戻す</span>
         </button>
         <button type="button" className="icon-text" onClick={() => store.redo()} disabled={!canRedo} title="やり直す (Ctrl+Y)">
-          ↷ やり直す
+          ↷<span className="wide-only"> やり直す</span>
         </button>
         <span className="sep" />
-        <div className="zoom-group" role="group" aria-label="拡大・縮小">
-          <button type="button" data-testid="zoom-out" onClick={() => setZoom((z) => (z > 1 ? z - 0.5 : z / 1.5))} title="縮小">
-            −
-          </button>
-          <button type="button" className="zoom" data-testid="zoom-level" onClick={() => fitView()} title="図の全体が入るように合わせる">{Math.round(zoom * 100)}%</button>
-          <button type="button" onClick={() => setZoom((z) => Math.min(6, z + 0.5))} title="拡大">
-            ＋
-          </button>
-          <button type="button" className="icon-text" data-testid="zoom-fit" onClick={() => fitView()} title="図の全体が入るように合わせる (Shift+1)">
-            全体を表示
-          </button>
-        </div>
-        <span className="sep" />
-        <button type="button" className="icon-text" data-testid="open-name" onClick={() => setSide('name')} title="化合物名から構造を置く">
-          名前から置く
-        </button>
         {hasKey && (
           <button type="button" className="icon-text ai-button" data-testid="open-ai" onClick={() => openAi('create')} title="文章や図から、スキームの下書きを AI で作る">
             ✦ AI で作る
           </button>
         )}
         <span className="spacer" />
-        <Menu
-          label="設定"
-          testId="menu-settings"
-          items={[
-            { label: 'AI の設定…', testId: 'open-llm-settings', title: 'AI の会社とモデルを選び、API キーを入れる', onClick: () => (setShowLlm(true), track('llm:settings')) },
-            { label: '図の設定…', title: '線の太さと文字の大きさを変える', testId: 'open-draw-style', onClick: () => setShowDrawStyle(true) },
-            { label: 'ページの設定…', title: 'キャンバスの大きさを、A4 かスライドを何枚並べるかで決める', testId: 'open-page-setup', onClick: () => setShowPageSetup(true) },
-            { label: '略号の辞書…', testId: 'open-abbr-dict', title: '標準の略号と自分で足した略号を見て、略号を足す。NHFmoc、CO2tBu、BF3K のようなラベルがどう読まれるかも試せる', onClick: () => setShowAbbrDict(true) },
+        <CommandBar
+          store={store}
+          library={() => Object.values(projects.get().project?.compounds ?? {})}
+          menus={[
+            { name: 'ファイル', items: [...fileItems, { label: '書き出す…', onClick: () => setShowExport({ onlySelected: false }) }, { label: '実験の記録を作る', onClick: () => newRun() }] },
+            { name: '編集', items: editItems },
+            { name: '整える', items: arrangeMenu },
+            { name: '表示', items: viewItems },
+            { name: '設定', items: settingsItems },
+            { name: 'ヘルプ', items: helpItems },
           ]}
         />
-        <Menu
-          label="ヘルプ"
-          testId="menu-help"
-          items={[
-            { label: 'キーの操作の一覧', testId: 'open-shortcuts', onClick: () => setShowKeys(true) },
-            { label: 'このツールについて', testId: 'open-about', title: 'ベータ版について・データの扱い・感想の送り先', onClick: () => setShowAbout(true) },
-          ]}
-        />
+        <button type="button" className="export-button" data-testid="open-export" onClick={() => setShowExport({ onlySelected: false })} title="図を SMILES・MOL・CDXML・CDX・SVG・PNG で書き出す。画像でのコピーもここから">
+          書き出す
+        </button>
+        <Menu label="⚙" ariaLabel="設定" title="設定" testId="menu-settings" items={settingsItems} />
+        <Menu label="?" ariaLabel="ヘルプ" title="ヘルプ" testId="menu-help" items={helpItems} />
       </header>
       {/* ダイアログは上のバーの外に置く（バーの文字の決まりを受け継がないように） */}
       {showLlm && <LlmSettings onClose={() => setShowLlm(false)} />}
       {showAbout && <About onClose={() => setShowAbout(false)} />}
+      {showExport && <ExportDialog store={store} visibleRect={visibleRect} onlySelected={showExport.onlySelected} onCopyImage={() => actions.copyImage(store)} onClose={() => setShowExport(null)} />}
       {showKeys && <Shortcuts onClose={() => setShowKeys(false)} />}
       {showDrawStyle && <DrawStyleDialog store={store} onClose={() => setShowDrawStyle(false)} />}
       {showAbbrDict && <AbbrDictionary store={store} onClose={() => setShowAbbrDict(false)} />}
       {showPageSetup && <PageSetupDialog store={store} onClose={() => setShowPageSetup(false)} onApplied={() => fitView()} />}
-      <Toolbar store={store} groups={TOOL_GROUPS} />
+      <Toolbar
+        store={store}
+        groups={TOOL_GROUPS}
+        footer={
+          <button
+            type="button"
+            className={`library-tab${showLibrary ? ' on' : ''}`}
+            onClick={toggleLibrary}
+            aria-pressed={showLibrary}
+            aria-label={showLibrary ? 'ライブラリを閉じる' : 'ライブラリを開く'}
+            data-testid="toggle-library"
+            title="化合物・図・表・部品をしまうプロジェクトのライブラリを開く・閉じる"
+          >
+            <span aria-hidden="true">{showLibrary ? '◂' : '▸'}</span> ライブラリ
+          </button>
+        }
+      />
       <ToolsResize width={toolsWidth.width} setWidth={toolsWidth.setWidth} />
-      {showLibrary && <LibraryPanel store={store} projects={projects} viewCenter={viewCenter} />}
+      {showLibrary && <LibraryPanel store={store} projects={projects} viewCenter={viewCenter} onPlaceRun={openRun} />}
       <main className="stage" ref={stageRef}>
-        {/* ライブラリの列は、キャンバスの左に開く。開け閉めのつまみも、開く所（キャンバスの左の縁）に置く */}
-        <button
-          type="button"
-          className={`library-tab${showLibrary ? ' on' : ''}`}
-          onClick={toggleLibrary}
-          aria-pressed={showLibrary}
-          aria-label={showLibrary ? 'ライブラリを閉じる' : 'ライブラリを開く'}
-          data-testid="toggle-library"
-          title="化合物・図・表・部品をしまうプロジェクトのライブラリを開く・閉じる"
-        >
-          <span aria-hidden="true">{showLibrary ? '◂' : '▸'}</span> ライブラリ
-        </button>
         <Canvas
           store={store}
           view={view}
@@ -591,8 +748,79 @@ export function App() {
             store.commit(d, ids);
             store.set({ tool: 'select' });
           }}
-          onLabelEdit={openLabelEditor} onTextEdit={openTextEditor} />
+          onLabelEdit={openLabelEditor}
+          onTextEdit={openTextEditor}
+          onBusy={setBusy}
+          onRunEdit={(id) => openRun(id)}
+          onTableEdit={(cell) => {
+            // その表の欄を出し、下の表のセル（見出しなら、その列のいちばん上のセル）にカーソルを入れる
+            selectRef(cell.tableId, 'table');
+            track('table:edit-from-canvas', { once: true });
+            // 下の欄が出て、図を合わせ直した後まで待つ（欄が出る前や、描き直しの途中では入らないことがある）
+            let tries = 0;
+            const focus = () => {
+              const rows = document.querySelectorAll('[data-testid="table-dock"] [data-testid="table-row"]');
+              const input = rows[Math.max(0, cell.row)]?.querySelectorAll('td')[cell.col + 1]?.querySelector('input');
+              if (input && document.activeElement !== input) {
+                input.focus();
+                input.select();
+              }
+              if (++tries < 6) setTimeout(focus, 60);
+            };
+            setTimeout(focus, 60);
+          }}
+          onSchemeEdit={(t) => {
+            if (store.get().doc.schemes?.[t.schemeId]?.pinned) return store.set({ message: '固定中のスキームです。直すときは、右の欄で固定を外してください' });
+            setSchemeEdit(t);
+            track(`scheme:edit-on-canvas-${t.kind}`, { once: true });
+          }}
+          onMenu={(at, hit) => {
+            // 選んでいない物の上で押したら、その物（分子なら分子全体）を選んでからメニューを出す
+            const st = store.get();
+            if (hit && !st.selection.has(hit)) {
+              const ids = kindOf(hit) === 'atom' || kindOf(hit) === 'bond' ? fragmentOf(st.doc, hit) : new Set([hit]);
+              store.set({ selection: ids, tool: st.tool === 'lasso' ? 'lasso' : 'select' });
+            } else if (!hit && st.selection.size) store.set({ selection: new Set() });
+            setCtxMenu(at);
+            track('menu:context', { once: true });
+          }}
+        />
+        {selBar && (
+          <div className="sel-bar" data-testid="sel-bar" style={selBar} role="toolbar" aria-label="選んだ物の操作">
+            <button type="button" data-testid="sel-clean" title="結合の長さと角度を整える (Ctrl+Shift+K)" onClick={clean}>Clean</button>
+            <button type="button" data-testid="sel-flip-h" title="左右反転 (Ctrl+Shift+H)" aria-label="左右反転" onClick={() => actions.flip(store, 'h')}>⇋</button>
+            <button type="button" data-testid="sel-flip-v" title="上下反転 (Ctrl+Shift+V)" aria-label="上下反転" onClick={() => actions.flip(store, 'v')}>⇵</button>
+            <span className="sep" />
+            <button type="button" data-testid="sel-color" title="色を変える" onClick={(e) => { const r = e.currentTarget.getBoundingClientRect(); setBarColors({ x: r.left, y: r.bottom + 4 }); }}>色</button>
+            <button type="button" data-testid="sel-copy-image" title="Word や PowerPoint に貼れる画像でコピーする" onClick={() => actions.copyImage(store)}>画像でコピー</button>
+            <span className="sep" />
+            <button type="button" data-testid="sel-more" title="ほかの操作" aria-label="ほかの操作" onClick={(e) => { const r = e.currentTarget.getBoundingClientRect(); setCtxMenu({ x: r.left, y: r.bottom + 4 }); }}>⋯</button>
+          </div>
+        )}
+        {schemeEdit && <SchemeEditPopover key={`${schemeEdit.kind}:${schemeEdit.schemeId}:${schemeEdit.kind === 'step' ? schemeEdit.stepIndex : schemeEdit.compoundId}`} store={store} target={schemeEdit} view={view} onClose={() => setSchemeEdit(null)} />}
+        {side === 'scheme' && sideShown && activeScheme && !busy && <NextStepGhost store={store} schemeId={activeScheme} view={view} />}
+        {ctxMenu && <PopupMenu at={ctxMenu} label="操作" items={contextItems()} onClose={() => setCtxMenu(null)} testId="ctx-menu" />}
+        {barColors && <PopupMenu at={barColors} label="色" items={colorItems} onClose={() => setBarColors(null)} testId="sel-colors" />}
         {isEmpty && <EntryCards onSample={openSample} onAi={() => openAi('create')} />}
+        <div className="tool-hint" data-testid="tool-hint" title={toolHint(tool, partName)}>{toolHint(tool, partName)}</div>
+        <div className="status" data-testid="status" role="status" aria-live="polite" key={message}>{message}</div>
+        <div className="stage-zoom" role="group" aria-label="拡大・縮小">
+          <button type="button" data-testid="zoom-out" onClick={() => setZoom((z) => (z > 1 ? z - 0.5 : z / 1.5))} title="縮小" aria-label="縮小">
+            −
+          </button>
+          <button type="button" className="zoom" data-testid="zoom-level" onClick={() => fitView()} title="図の全体が入るように合わせる">{Math.round(zoom * 100)}%</button>
+          <button type="button" data-testid="zoom-in" onClick={() => setZoom((z) => Math.min(6, z + 0.5))} title="拡大" aria-label="拡大">
+            ＋
+          </button>
+          <button type="button" data-testid="zoom-fit" onClick={() => fitView()} title="図の全体が入るように合わせる (Shift+1)">
+            全体を表示
+          </button>
+        </div>
+        {!sideShown && (
+          <button type="button" className="side-open" data-testid="side-open" onClick={() => (setSideOpen(true), setSidePeek(true))} title="右の欄を開く">
+            <span aria-hidden="true">◂</span> {SIDE_TITLE[side === 'ai' ? (`ai-${aiMode}` as const) : side]}
+          </button>
+        )}
         {issueMarks.map((m) => (
           <button
             key={m.key}
@@ -682,9 +910,13 @@ export function App() {
           />
         )}
       </main>
-      <aside className="side">
+      {showTableDock && <section className="dock table-dock" data-testid="table-dock" data-table-ui aria-label="検討表の行" ref={setTableDock} />}
+      {showStoichDock && <section className="dock stoich-dock" data-testid="stoich-dock" aria-label="化学量論表" ref={setStoichDock} />}
+      {showDock && activeRun && <RunDock store={store} runId={activeRun} onClose={() => setDockClosed(true)} />}
+      <aside className="side" hidden={!sideShown}>
         <div className="side-head" data-testid="side-head" data-view={side}>
           <b>{SIDE_TITLE[side === 'ai' ? (`ai-${aiMode}` as const) : side]}</b>
+          <span className="spacer" />
           {side !== 'home' && (
             <button
               type="button"
@@ -699,6 +931,9 @@ export function App() {
               {side === 'ai' && aiMode !== 'create' ? '← スキーム' : '← この文書'}
             </button>
           )}
+          <button type="button" className="side-collapse" data-testid="side-collapse" onClick={() => setSideOpen(false)} title="右の欄を畳む" aria-label="右の欄を畳む">
+            ▸
+          </button>
         </div>
         <div className="side-body">
           <div className="tab-page" hidden={side !== 'home'} data-tab="home">
@@ -709,6 +944,8 @@ export function App() {
               onScheme={(id) => selectRef(id, 'scheme')}
               onTable={(id) => selectRef(id, 'table')}
               onMolecules={() => setSide('analysis')}
+              onNewRun={() => newRun()}
+              onRun={openRun}
             />
           </div>
           <div className="tab-page" hidden={side !== 'ai'} data-tab="ai">
@@ -728,10 +965,16 @@ export function App() {
             />
           </div>
           <div className="tab-page" hidden={side !== 'scheme' && side !== 'new-scheme'} data-tab="scheme">
-            <SchemePanel store={store} newScheme={side === 'new-scheme'} onAi={hasKey ? openAi : undefined} />
+            <SchemePanel onNewRun={newRun} stoichHost={showStoichDock ? stoichDock : null} store={store} newScheme={side === 'new-scheme'} onAi={hasKey ? openAi : undefined} />
+          </div>
+          <div className="tab-page" hidden={side !== 'run'} data-tab="run">
+            {activeRun && <RunSummary store={store} runId={activeRun} onOpenTable={() => setSide('table')} />}
+            {activeRun && dockClosed && (
+              <button type="button" data-testid="run-dock-open" onClick={() => setDockClosed(false)}>下の表を開く</button>
+            )}
           </div>
           <div className="tab-page" hidden={side !== 'table'} data-tab="table">
-            <TablePanel store={store} onCreated={() => fitView()} />
+            <TablePanel gridHost={showTableDock ? tableDock : null} store={store} onCreated={() => fitView()} />
           </div>
           <div className="tab-page" hidden={side !== 'analysis'} data-tab="analysis">
             <section className="card">
@@ -747,7 +990,6 @@ export function App() {
           </div>
         </div>
       </aside>
-      <footer className="status" data-testid="status">{useEditor(store, (s) => s.message) || 'ヒント: 原子にカーソルを合わせて N や O のキーを押すと元素が変わり、Enter でラベルを入れられます'}</footer>
     </div>
   );
 }
@@ -764,7 +1006,7 @@ const COLORS: [string, string | undefined][] = [
 ];
 
 /** 右の欄に出す物 */
-export type SideView = 'home' | 'scheme' | 'new-scheme' | 'table' | 'analysis' | 'ai' | 'name' | 'io';
+export type SideView = 'home' | 'scheme' | 'new-scheme' | 'table' | 'analysis' | 'ai' | 'name' | 'io' | 'run';
 export type AiMode = 'create' | 'edit' | 'write' | 'finish';
 
 const SIDE_TITLE: Record<Exclude<SideView, 'ai'> | `ai-${AiMode}`, string> = {
@@ -772,6 +1014,7 @@ const SIDE_TITLE: Record<Exclude<SideView, 'ai'> | `ai-${AiMode}`, string> = {
   scheme: '反応スキーム',
   'new-scheme': '新しい反応スキーム',
   table: '検討表',
+  run: '実験の記録',
   analysis: '分子',
   name: '名前から置く',
   io: '読み込みと書き出し',
@@ -800,6 +1043,8 @@ function Shortcuts({ onClose }: { onClose(): void }) {
         <dd>NH2、OMe、Boc、N+ などのラベルを入れる</dd>
         <dt>結合に合わせて 1 2 3 / W H Y</dt>
         <dd>次数 / くさび・破線・波線</dd>
+        <dt>何も指さずに V / 1 2 3 / W H / A / R / T</dt>
+        <dd>道具を選ぶ。選択 / 単・二重・三重結合 / くさび（実線・破線） / ベンゼン / 反応矢印 / 文字</dd>
         <dt>Delete</dt>
         <dd>選んだ物を消す。何も選んでいなければカーソルの下を消す</dd>
         <dt>Ctrl+S / Ctrl+O</dt>

@@ -3,8 +3,8 @@ import type { Doc } from '../chem/model';
 import { normalizePage } from '../chem/page';
 
 export const DOC_FORMAT = 'ai-chem-editor';
-/** 2: 反応スキームのデータ（compounds・schemes）を足した。3: 検討表（tables）を足した */
-export const DOC_VERSION = 3;
+/** 2: 反応スキームのデータ（compounds・schemes）を足した。3: 検討表（tables）を足した。4: 実験の記録（runs）を足した */
+export const DOC_VERSION = 4;
 export const DOC_EXT = '.acedoc';
 
 export interface DocFile {
@@ -43,6 +43,7 @@ export function parseDocFile(text: string): Doc {
     compounds: d.compounds ?? {},
     schemes: d.schemes ?? {},
     tables: d.tables ?? {},
+    ...(d.runs && Object.keys(d.runs).length ? { runs: d.runs } : {}),
     ...(d.styles ? { styles: d.styles } : {}),
     ...(d.shapes ? { shapes: d.shapes } : {}),
     ...(d.drawStyle ? { drawStyle: d.drawStyle } : {}),

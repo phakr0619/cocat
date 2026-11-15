@@ -57,6 +57,15 @@ export async function canon(page: Page, s: string) {
 export async function goHome(page: Page) {
   for (let i = 0; i < 3 && (await page.getByTestId('side-back').isVisible()); i++) await page.getByTestId('side-back').click();
   await expect(page.getByTestId('side-head')).toHaveAttribute('data-view', 'home');
+  // 空の文書では、右の欄は出ていない。右の端のつまみで開く
+  if (await page.getByTestId('side-open').isVisible()) await page.getByTestId('side-open').click();
+}
+
+/** 「この文書」の「＋ 作る ▾」から、スキーム・検討表・実験の記録を作る */
+export async function createFromHome(page: Page, id: 'new-scheme' | 'new-table' | 'new-run') {
+  if (await page.getByTestId('side-open').isVisible()) await page.getByTestId('side-open').click();
+  await page.getByTestId('side-new').click();
+  await page.getByTestId(id).click();
 }
 
 /**
@@ -69,11 +78,11 @@ export async function showTab(page: Page, id: 'ai' | 'scheme' | 'table' | 'analy
   await goHome(page);
   if (id === 'scheme') {
     const first = page.getByTestId('home-scheme').first();
-    return (await first.count()) ? first.click() : page.getByTestId('new-scheme').click();
+    return (await first.count()) ? first.click() : createFromHome(page, 'new-scheme');
   }
   if (id === 'table') {
     const first = page.getByTestId('home-table').first();
-    return (await first.count()) ? first.click() : page.getByTestId('new-table').click();
+    return (await first.count()) ? first.click() : createFromHome(page, 'new-table');
   }
   await page.getByTestId('home-molecules').click();
 }
@@ -125,7 +134,7 @@ export async function importSmiles(page: Page, s: string) {
   await page.getByTestId('side-back').click();
   await expect(page.getByTestId('side-head')).toHaveAttribute('data-view', 'home');
   if (back === 'scheme' || back === 'table' || back === 'analysis' || back === 'io') await showTab(page, back);
-  if (back === 'new-scheme') await page.getByTestId('new-scheme').click();
+  if (back === 'new-scheme') await createFromHome(page, 'new-scheme');
   if (back === 'scheme' || back === 'table') await page.evaluate((ids) => window.__editor!.set({ selection: new Set(ids) }), sel);
   if (back === 'analysis' || back === 'io' || back === 'new-scheme') await expect(page.getByTestId('side-head')).toHaveAttribute('data-view', back);
 }

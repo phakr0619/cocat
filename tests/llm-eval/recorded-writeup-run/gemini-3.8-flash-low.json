@@ -1,0 +1,30 @@
+{
+  "model": "gemini-3.8-flash",
+  "thinking": "low",
+  "recordedAt": "2026-11-14T23-13-13",
+  "outcomes": {
+    "run-en": "correct",
+    "run-ja": "correct",
+    "run-en-short": "correct"
+  },
+  "raw": {
+    "run-en": [
+      {
+        "text": "To a solution of {{C1}} ({{s1.C1.mg}}, {{s1.C1.mmol}}, {{s1.C1.equiv}}), {{C2}} ({{s1.C2.mg}}, {{s1.C2.mmol}}, {{s1.C2.equiv}}), and {{s1.R2}} ({{s1.R2.mg}}, {{s1.R2.mmol}}, {{s1.R2.equiv}}) in {{s1.M1}} ({{s1.M1.amount}}) at 20 °C was added {{s1.R1}} ({{s1.R1.mg}}, {{s1.R1.mmol}}, {{s1.R1.equiv}}) in four portions (exothermic, internal temperature 2 to 6 °C). The mixture was stirred at 21 °C until the reaction was complete as confirmed by HPLC. The organic layer was washed with {{s1.M2}} ({{s1.M2.amount}}) (aqueous layer pH 1) at 20 °C, {{s1.M3}} ({{s1.M3.amount}}) (aqueous layer pH 8) at 21 °C, and {{s1.M4}} ({{s1.M4.amount}}). The solution was concentrated under reduced pressure at an internal temperature of 35 °C. The residue was dissolved in {{s1.M5}} ({{s1.M5.amount}}), and {{s1.M6}} ({{s1.M6.amount}}) was added while cooling from 45 to 5 °C (crystallization began at 25 °C). The precipitate was collected by filtration at 5 °C, washed with heptane, and dried under reduced pressure at 40 °C for 16 h to give {{C3}} ({{s1.C3.mg}}, {{s1.C3.mmol}}, {{s1.yield}}).",
+        "questions": []
+      }
+    ],
+    "run-ja": [
+      {
+        "text": "{{C1}} ({{s1.C1.mg}}, {{s1.C1.mmol}}, {{s1.C1.equiv}})、{{C2}} ({{s1.C2.mg}}, {{s1.C2.mmol}}, {{s1.C2.equiv}})、および{{s1.R2}} ({{s1.R2.mg}}, {{s1.R2.mmol}}, {{s1.R2.equiv}}) を {{s1.M1}} ({{s1.M1.amount}}) に溶解し（内温 20 °C）、無色の溶液を得た。内温 2〜6 °C にて発熱に注意しながら {{s1.R1}} ({{s1.R1.mg}}, {{s1.R1.mmol}}, {{s1.R1.equiv}}) を4回に分けて加えた。内温 21 °C で反応を行い、HPLCで{{C1}}の残存が 0.4 area% であることを確認した。反応混合物を {{s1.M2}} ({{s1.M2.amount}})（水層 pH 1）、{{s1.M3}} ({{s1.M3.amount}})（水層 pH 8）、{{s1.M4}} ({{s1.M4.amount}}) で順次洗浄した。有機層を内温 35 °C で減圧濃縮した後、残渣を {{s1.M5}} ({{s1.M5.amount}}) に溶解し、内温 45 °C から 5 °C まで冷却しながら {{s1.M6}} ({{s1.M6.amount}}) を加えた（25 °C で結晶が析出開始）。5 °C にて析出した結晶をろ過し、{{s1.M6}} で洗浄した。得られた湿結晶を 40 °C で 16時間 減圧乾燥することにより、{{C3}} ({{s1.C3.mg}}, {{s1.C3.mmol}}, {{s1.yield}}) を得た。",
+        "questions": []
+      }
+    ],
+    "run-en-short": [
+      {
+        "text": "To a solution of {{C1}} ({{s1.C1.mg}}, {{s1.C1.mmol}}, {{s1.C1.equiv}}), {{C2}} ({{s1.C2.mg}}, {{s1.C2.mmol}}, {{s1.C2.equiv}}), and {{s1.R2}} ({{s1.R2.mg}}, {{s1.R2.mmol}}, {{s1.R2.equiv}}) in {{s1.M1}} ({{s1.M1.amount}}) at 20 °C was added {{s1.R1}} ({{s1.R1.mg}}, {{s1.R1.mmol}}, {{s1.R1.equiv}}) in four portions at 2–6 °C. The mixture was stirred at 21 °C. The mixture was washed with {{s1.M2}} ({{s1.M2.amount}}), {{s1.M3}} ({{s1.M3.amount}}), and {{s1.M4}} ({{s1.M4.amount}}), and the organic layer was concentrated under reduced pressure at 35 °C. The residue was dissolved in {{s1.M5}} ({{s1.M5.amount}}), and {{s1.M6}} ({{s1.M6.amount}}) was added while cooling from 45 °C to 5 °C. The precipitate was collected by filtration at 5 °C, washed with {{s1.M6}}, and dried under reduced pressure at 40 °C for 16 h to afford {{C3}} ({{s1.C3.mg}}, {{s1.yield}}).",
+        "questions": []
+      }
+    ]
+  }
+}

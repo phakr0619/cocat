@@ -1,0 +1,70 @@
+{
+  "cases": [
+    {
+      "id": "coupling-full",
+      "title": "縮合: 時刻・重さ・水層・母液まで書いたメモ",
+      "known": [["Boc-Ala-OH", "10 g", "substrate"], ["H-Gly-OMe", "4.7 g", "substrate"], ["EDC·HCl", "12.2 g", "reagent"], ["HOBt", "8.6 g", "reagent"], ["CH2Cl2", "100 mL", "solvent"]],
+      "memo": "9:12 Boc-Ala-OH、H-Gly-OMe、HOBt を CH2Cl2 100 mL に入れた。内温 20 °C、無色の溶液。\n9:20 氷冷して EDC·HCl 12.2 g を 4 回に分けて入れた。内温 2 → 6 °C、発熱あり。\n12:30 HPLC で原料の残り 0.4 area%。\n12:41 1 M HCl 50 g で洗った。水層 pH 1。\n12:55 飽和重曹水 50 g で洗った。水層 pH 8、分離に 5 min。\n13:06 食塩水 50 g で洗った。有機層 152.0 g、水層は合わせて 163.9 g。\n13:30 35 °C で減圧濃縮。留出 131.0 g、濃縮物 18.4 g。\n14:10 AcOEt 18 g に溶かしてヘプタン 69 g を入れ、45 °C から 5 °C まで冷やした。25 °C で結晶が出はじめた。\n16:00 ろ過。母液と洗液で 89.2 g、湿結晶 14.9 g。\n16:20 40 °C で減圧乾燥して 11.9 g。",
+      "expect": {
+        "kinds": [["reaction"], ["wash", "separation"], ["concentration"], ["crystallization", "filtration"], ["drying"]],
+        "minEvents": 8,
+        "amounts": ["152 g", "163.9 g", "131 g", "18.4 g", "89.2 g", "14.9 g", "11.9 g"],
+        "materials": ["1 M HCl", "ヘプタン"],
+        "times": ["9:12", "12:41", "16:20"]
+      }
+    },
+    {
+      "id": "tfa-short",
+      "title": "Boc の除去: 短い話し言葉のメモ。重さはほとんど無い",
+      "known": [["ジペプチド", "5.0 g", "substrate"], ["TFA", "15 mL", "reagent"], ["CH2Cl2", "25 mL", "solvent"]],
+      "memo": "ジペプチドをジクロロ 25 mL に溶かして氷冷、TFA 15 mL を 10 分かけて滴下した。室温に戻して 1 時間、TLC で原料消失。エバポして、トルエン 20 mL で 2 回共沸した。白い固体 5.2 g。",
+      "expect": {
+        "kinds": [["reaction", "addition", "charge"], ["concentration", "swap"]],
+        "minEvents": 3,
+        "amounts": ["5.2 g"],
+        "materials": ["トルエン"],
+        "times": []
+      }
+    },
+    {
+      "id": "lioh-workup",
+      "title": "けん化: pH 調整・抽出・乾燥剤・濃縮",
+      "known": [["エステル", "8.0 g", "substrate"], ["LiOH·H2O", "2.1 g", "reagent"], ["THF", "40 mL", "solvent"], ["水", "40 mL", "water"]],
+      "memo": "10:05 エステルを THF 40 mL と水 40 mL に溶かし、0 °C で LiOH·H2O 2.1 g を入れた。\n12:10 HPLC で原料 0.2%。\n12:20 1 M HCl 55 mL で pH 3 にした。内温 8 °C まで上がった。\n12:35 酢酸エチル 80 mL で 2 回抽出。水層 131 g を捨てた。\n13:00 有機層を硫酸マグネシウム 5 g で乾燥、ろ過した。\n13:40 濃縮して白色固体 7.1 g。",
+      "expect": {
+        "kinds": [["reaction"], ["quench", "other", "heatcool", "addition"], ["extraction", "separation"], ["drying", "filtration", "other"], ["concentration"]],
+        "minEvents": 5,
+        "amounts": ["131 g", "7.1 g"],
+        "materials": ["1 M HCl", "酢酸エチル"],
+        "times": ["10:05", "13:40"]
+      }
+    },
+    {
+      "id": "kg-crystallization",
+      "title": "kg スケールの晶析: 種晶・熟成・ケーキ洗浄・乾燥減量",
+      "known": [["粗体", "2.40 kg", "substrate"], ["エタノール", "9.6 L", "solvent"]],
+      "memo": "8:30 粗体 2.40 kg をエタノール 9.6 L に 70 °C で溶かした。\n9:10 55 °C まで冷やして種晶 12 g を入れた。\n9:15 55 °C で 1 h 熟成、スラリーになった。\n10:20 水 4.8 L を 2 h かけて滴下。\n12:30 5 °C まで冷やして 2 h 撹拌。\n14:40 ろ過。エタノール/水 1:1 の 2.4 L でケーキを洗った。母液・洗液 14.9 kg、湿ケーキ 2.61 kg。\n15:10 50 °C で減圧乾燥。翌朝 2.13 kg、乾燥減量 0.2%。",
+      "expect": {
+        "kinds": [["charge", "heatcool", "other", "reaction"], ["crystallization"], ["filtration"], ["drying"]],
+        "minEvents": 6,
+        "amounts": ["14.9 kg", "2.61 kg", "2.13 kg"],
+        "materials": ["種晶", "水"],
+        "times": ["8:30", "14:40"]
+      }
+    },
+    {
+      "id": "ambiguous",
+      "title": "あいまいなメモ: 量が「適量」「少し」。数字を作らずに空けるか聞き返す",
+      "known": [["アルコール", "3.0 g", "substrate"], ["TBSCl", "3.3 g", "reagent"], ["イミダゾール", "2.2 g", "reagent"], ["DMF", "15 mL", "solvent"]],
+      "memo": "アルコールとイミダゾールを DMF に溶かして TBSCl を入れた。一晩。水を適量入れてヘキサンで抽出、少し食塩水で洗った。濃縮したら油状物。重さは量り忘れた。",
+      "expect": {
+        "kinds": [["reaction"], ["quench", "extraction", "wash", "separation", "other"], ["concentration"]],
+        "minEvents": 3,
+        "amounts": [],
+        "materials": ["ヘキサン"],
+        "times": [],
+        "noAmounts": true
+      }
+    }
+  ]
+}

@@ -5,6 +5,7 @@ import { setAbbr } from './chem/ops';
 import { importText } from './io/convert';
 import { addStepWithProduct, addSubstrate, freeFragments, numberCompounds, startScheme, updateCompound, updateStep } from './scheme/ops';
 import { createTable, pasteRows, setTableInfo } from './table/ops';
+import { sampleRun } from './process/sample';
 
 const BOC_ALA = 'CC(C)(C)OC(=O)N[C@@H](C)C(=O)O';
 const GLY_OME = 'NCC(=O)OC';
@@ -90,4 +91,5 @@ export const SAMPLES: Sample[] = [
   { id: 'multistep', name: '3段のスキーム', build: multiStep },
   { id: 'conditions', name: '条件検討の表', build: conditionsTable },
   { id: 'sar', name: 'SAR の表', build: sarTable },
+  { id: 'run', name: '実験の記録（縮合、10 g）', build: () => sampleRun(coupling().doc) },
 ];

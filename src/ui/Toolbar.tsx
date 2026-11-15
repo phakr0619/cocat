@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
+import { TOOL_KEYS } from '../editor/keys';
 import type { EditorStore, Tool } from '../editor/store';
 import { track } from '../analytics';
 import { useEditor } from '../editor/store';
@@ -89,6 +90,20 @@ export const TOOL_GROUPS: { name: string; tools: ToolDef[] }[] = [
   },
 ];
 
+/** 道具 → キー（大文字） */
+const KEY_OF = new Map(Object.entries(TOOL_KEYS).map(([k, t]) => [t, k.toUpperCase()]));
+/** 道具の短い名前（説明のはじめの 1 文） */
+const shortName = (title: string) => title.split(/[。:]/)[0];
+
+/** キャンバスの左下に出す、今の道具の案内 */
+export function toolHint(tool: Tool, partName: string): string {
+  if (tool === 'part') return partName ? `${partName}。クリックして置く` : '';
+  const t = TOOL_GROUPS.flatMap((g) => g.tools).find((x) => x.id === tool);
+  if (!t) return '';
+  const key = KEY_OF.get(tool);
+  return key ? `${t.title}。${key} キーで選べます` : t.title;
+}
+
 /** はじめに畳んでおくグループ（使う人が少なく、道具が多く見えるもの） */
 export const COLLAPSED_BY_DEFAULT = ['図形', '機構'];
 const COLLAPSE_KEY = 'ai-chem-editor:tool-groups-collapsed';
@@ -157,7 +172,9 @@ function saveCollapsed(v: Record<string, boolean>) {
   }
 }
 
-export function Toolbar({ store, groups }: { store: EditorStore; groups: typeof TOOL_GROUPS }) {
+export function Toolbar({ store, groups, footer }: { store: EditorStore; groups: typeof TOOL_GROUPS; footer?: ReactNode }) {
+  // 道具の名前とキーを出す吹き出し。すぐに出す（title の吹き出しは出るのが遅い）
+  const [tip, setTip] = useState<{ text: string; key?: string; x: number; y: number } | null>(null);
   const tool = useEditor(store, (s) => s.tool);
   const templateActive = useEditor(store, (s) => s.tool === 'part' && !!s.part?.id.startsWith('tpl:'));
   const [chosen, setChosen] = useState(loadCollapsed);
@@ -236,8 +253,13 @@ export function Toolbar({ store, groups }: { store: EditorStore; groups: typeof 
                   key={t.id}
                   type="button"
                   className={tool === t.id ? 'active' : ''}
-                  title={t.title}
                   aria-label={t.title}
+                  aria-keyshortcuts={KEY_OF.get(t.id)}
+                  onPointerEnter={(e) => {
+                    const r = e.currentTarget.getBoundingClientRect();
+                    setTip({ text: shortName(t.title), key: KEY_OF.get(t.id), x: r.right + 8, y: r.top + r.height / 2 });
+                  }}
+                  onPointerLeave={() => setTip(null)}
                   aria-pressed={tool === t.id}
                   data-tool={t.id}
                   onClick={() => (track(`tool:${t.id}`, { once: true }), store.set({ tool: t.id, selection: t.id === 'select' || t.id === 'lasso' ? store.get().selection : new Set() }))}
@@ -251,6 +273,13 @@ export function Toolbar({ store, groups }: { store: EditorStore; groups: typeof 
           </div>
         );
       })}
+      {footer && <div className="tools-foot">{footer}</div>}
+      {tip && (
+        <div className="tool-tip" role="tooltip" style={{ left: tip.x, top: tip.y }}>
+          {tip.text}
+          {tip.key && <kbd>{tip.key}</kbd>}
+        </div>
+      )}
     </nav>
   );
 }

@@ -1,6 +1,8 @@
 // 右の欄の「この文書」（何も選んでいないとき）と、空のキャンバスの入口
 import type { Doc } from '../chem/model';
 import { Thumb } from './LibraryPanel';
+import { Menu } from './Menu';
+import { runLabel } from '../process/ops';
 
 /** 文書の中の分子の数（つながった原子のまとまり） */
 function moleculeCount(doc: Doc): number {
@@ -19,7 +21,11 @@ export function SideHome({
   onScheme,
   onTable,
   onMolecules,
+  onNewRun,
+  onRun,
 }: {
+  onNewRun(): void;
+  onRun(id: string): void;
   doc: Doc;
   onNewScheme(): void;
   onNewTable(): void;
@@ -33,12 +39,15 @@ export function SideHome({
   return (
     <section className="side-home" data-testid="side-home">
       <div className="side-home-new">
-        <button type="button" className="primary" data-testid="new-scheme" onClick={onNewScheme}>
-          ＋ 反応スキーム
-        </button>
-        <button type="button" data-testid="new-table" onClick={onNewTable}>
-          ＋ 検討表
-        </button>
+        <Menu
+          label="＋ 作る"
+          testId="side-new"
+          items={[
+            { label: '反応スキーム', testId: 'new-scheme', title: '分子と矢印から、条件・番号・書式を持つスキームを作る', onClick: onNewScheme },
+            { label: '検討表', testId: 'new-table', title: '条件検討や SAR の表を作る', onClick: onNewTable },
+            { label: '実験の記録', testId: 'new-run', title: '実験の 1 回ぶんの記録を作る。仕込み・操作の流れと重さ・操作ごとの記録を入れると、フロー図と収支を描く', onClick: onNewRun },
+          ]}
+        />
       </div>
       <ul className="side-home-list">
         {schemes.map((s, i) => {
@@ -73,6 +82,17 @@ export function SideHome({
             </button>
           </li>
         ))}
+        {Object.values(doc.runs ?? {}).map((r) => (
+          <li key={r.id}>
+            <button type="button" className="home-item" data-testid="home-run" onClick={() => onRun(r.id)}>
+              <span className="home-icon" aria-hidden="true">▤</span>
+              <span className="home-text">
+                <b>{runLabel(r)}</b>
+                <small>{`${r.operations.length} 操作・記録 ${r.events.length} 行${r.date ? `・${r.date}` : ''}`}</small>
+              </span>
+            </button>
+          </li>
+        ))}
         <li>
           <button type="button" className="home-item" data-testid="home-molecules" onClick={onMolecules}>
             <span className="home-icon" aria-hidden="true">⌬</span>
@@ -96,7 +116,7 @@ export function EntryCards({ onSample, onAi }: { onSample(id: string): void; onA
       <div className="entry-cards">
         <div className="entry-card">
           <h3>描く</h3>
-          <p>左の道具を選んで、ここをクリックします。SMILES や MOL は貼り付けでも入ります。</p>
+          <p>左の道具を選んで、ここをクリックします。名前や SMILES は、上の入力欄から置けます。</p>
         </div>
         <div className="entry-card" data-testid="welcome">
           <h3>見本を開く</h3>
