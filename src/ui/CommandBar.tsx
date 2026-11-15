@@ -84,7 +84,7 @@ export function CommandBar({ store, menus, library }: { store: EditorStore; menu
           try {
             const r = await resolveName(t);
             if (r) (place(r.smiles, 'OPSIN'), track('command:structure-opsin'));
-            else store.set({ message: `「${t}」を構造にできませんでした。慣用名は「名前から置く」で AI に調べさせられます` });
+            else store.set({ message: `「${t}」を構造にできませんでした。慣用名は「ファイル」の「名前から構造を置く…」で AI に調べさせられます` });
           } finally {
             setBusy(false);
           }

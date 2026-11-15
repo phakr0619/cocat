@@ -1,6 +1,7 @@
 // 右の欄の「この文書」（何も選んでいないとき）と、空のキャンバスの入口
 import type { Doc } from '../chem/model';
 import { Thumb } from './LibraryPanel';
+import { Menu } from './Menu';
 import { runLabel } from '../process/ops';
 
 /** 文書の中の分子の数（つながった原子のまとまり） */
@@ -38,17 +39,15 @@ export function SideHome({
   return (
     <section className="side-home" data-testid="side-home">
       <div className="side-home-new">
-        <button type="button" className="primary" data-testid="new-scheme" onClick={onNewScheme}>
-          ＋ 反応スキーム
-        </button>
-        <button type="button" data-testid="new-table" onClick={onNewTable}>
-          ＋ 検討表
-        </button>
-      </div>
-      <div className="side-home-new">
-        <button type="button" data-testid="new-run" title="実験の 1 回ぶんの記録を作る。仕込み・操作の流れと重さ・操作ごとの記録を入れると、フロー図と収支を描く" onClick={onNewRun}>
-          ＋ 実験の記録
-        </button>
+        <Menu
+          label="＋ 作る"
+          testId="side-new"
+          items={[
+            { label: '反応スキーム', testId: 'new-scheme', title: '分子と矢印から、条件・番号・書式を持つスキームを作る', onClick: onNewScheme },
+            { label: '検討表', testId: 'new-table', title: '条件検討や SAR の表を作る', onClick: onNewTable },
+            { label: '実験の記録', testId: 'new-run', title: '実験の 1 回ぶんの記録を作る。仕込み・操作の流れと重さ・操作ごとの記録を入れると、フロー図と収支を描く', onClick: onNewRun },
+          ]}
+        />
       </div>
       <ul className="side-home-list">
         {schemes.map((s, i) => {

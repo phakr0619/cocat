@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { openSample, setApiKey, showTab } from './helpers';
+import { openSample, setApiKey, showTab, createFromHome } from './helpers';
 
 // 実験の記録: 仕込み・操作の流れと重さ・操作ごとの記録を入れ、フロー図と収支を描く
 test.beforeEach(async ({ page }) => {
@@ -239,7 +239,7 @@ test('記録を出す: 1 枚のページにまとめて印刷し、表を Excel 
 });
 
 test('記録を消す・フロー図だけを残す。スキームが無くても作れる', async ({ page }) => {
-  await page.getByTestId('new-run').click();
+  await createFromHome(page, 'new-run');
   const dock = page.getByTestId('run-dock');
   await expect(dock).toBeVisible();
   expect((await boxes(page)).length).toBe(3);
@@ -305,7 +305,7 @@ async function fakeGemini(page: Page, answer: unknown) {
 }
 
 test('メモから作る: キーがあるときだけ出る。メモに無い数字は要確認にして入れず、「記録に入れる」を押すまで記録は変わらない', async ({ page }) => {
-  await page.getByTestId('new-run').click();
+  await createFromHome(page, 'new-run');
   const dock = page.getByTestId('run-dock');
   await expect(dock.getByTestId('run-tab-memo')).toHaveCount(0);
   await setApiKey(page);

@@ -116,7 +116,7 @@ test('キーが違うと、理由を言う', async ({ page }) => {
 test('狭い画面でも、上のバーのボタンは横にはみ出さず、すべて見える', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 800 });
   await open(page);
-  for (const id of ['menu-help', 'menu-settings', 'open-name']) {
+  for (const id of ['menu-help', 'menu-settings', 'open-export']) {
     const box = await page.getByTestId(id).boundingBox();
     expect(box, id).not.toBeNull();
     expect(box!.x + box!.width, id).toBeLessThanOrEqual(1280);

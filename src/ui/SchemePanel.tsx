@@ -203,10 +203,10 @@ export function SchemePanel({
               className={`step${activeStep === i ? ' active' : ''}`}
               key={st.id}
               data-testid="scheme-step"
-              open={stepOpen[st.id] ?? (scheme.steps.length <= 2 || activeStep === i)}
+              open={stepOpen[st.id] ?? (scheme.steps.length === 1 || activeStep === i)}
               onToggle={(e) => {
                 const open = (e.currentTarget as HTMLDetailsElement).open;
-                if (open !== (stepOpen[st.id] ?? (scheme.steps.length <= 2 || activeStep === i))) setStepOpen((m) => ({ ...m, [st.id]: open }));
+                if (open !== (stepOpen[st.id] ?? (scheme.steps.length === 1 || activeStep === i))) setStepOpen((m) => ({ ...m, [st.id]: open }));
               }}
             >
               <summary data-testid="step-summary">
@@ -261,10 +261,10 @@ export function SchemePanel({
                   className={`compound${activeCompound === cid ? ' active' : ''}`}
                   key={cid}
                   data-testid="scheme-compound"
-                  open={compoundOpen[cid] ?? (compoundIds.length <= 3 || activeCompound === cid || isPlaceholder(c.structure))}
+                  open={compoundOpen[cid] ?? (activeCompound === cid || isPlaceholder(c.structure))}
                   onToggle={(e) => {
                     const open = (e.currentTarget as HTMLDetailsElement).open;
-                    if (open !== (compoundOpen[cid] ?? (compoundIds.length <= 3 || activeCompound === cid || isPlaceholder(c.structure)))) setCompoundOpen((m) => ({ ...m, [cid]: open }));
+                    if (open !== (compoundOpen[cid] ?? (activeCompound === cid || isPlaceholder(c.structure)))) setCompoundOpen((m) => ({ ...m, [cid]: open }));
                   }}
                 >
                   <summary data-testid="compound-summary">

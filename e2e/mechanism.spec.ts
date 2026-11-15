@@ -146,14 +146,14 @@ test('雛形: 一覧からアミノ酸を選び、キャンバスをクリック
 test('色のメニューで選んだ物の色を変える。文字の欄に ^{…}・*…* と書くと上付き・斜体で描く', async ({ page }) => {
   await importSmiles(page, 'CCO');
   // 読み込んだ分子は選ばれている
-  await menuItem(page, 'menu-color', '赤');
+  await menuItem(page, 'menu-arrange', '赤');
   await expect.poll(async () => Object.values((await doc(page)).atoms).map((a) => a.color)).toEqual(['#d32f2f', '#d32f2f', '#d32f2f']);
   await expect(page.locator('[data-testid=canvas] .drawing [stroke="#d32f2f"]').first()).toBeVisible();
-  await menuItem(page, 'menu-color', '黒');
+  await menuItem(page, 'menu-arrange', '黒');
   await expect.poll(async () => Object.values((await doc(page)).atoms).some((a) => a.color)).toBe(false);
   // 何も選んでいなければ知らせる
   await page.keyboard.press('Escape');
-  await menuItem(page, 'menu-color', '青');
+  await menuItem(page, 'menu-arrange', '青');
   await expect(page.locator('.status')).toContainText('色を変える物を選んでください');
 
   await tool(page, 'text');

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { flushSync } from 'react-dom';
 import { track } from '../analytics';
 import { getLlmSettings, subscribeLlmSettings } from '../llm/settings';
@@ -181,10 +181,32 @@ export function App() {
       // 置けなくても、開いている間は畳める
     }
   };
+  // 文書が空で何も選んでいないあいだは、右の欄を出さない（真ん中の入口と同じことを言うため）。
+  // 右の端のつまみやメニューで開いたら、そのあとは出す
+  const [sidePeek, setSidePeek] = useState(false);
+  const sideShown = sideOpen && !(isEmpty && side === 'home' && !sidePeek);
+  // 空の文書に見本などが入って右の欄が出たとき、キャンバスが狭くなる。図がはみ出したら合わせ直す
+  const sideShownRef = useRef(sideShown);
+  const viewRef = useRef(view);
+  viewRef.current = view;
+  // 描く前に合わせる（欄が出て狭くなったキャンバスの幅で、すぐに合わせ直す）
+  useLayoutEffect(() => {
+    const was = sideShownRef.current;
+    sideShownRef.current = sideShown;
+    if (was || !sideShown) return;
+    const el = stageRef.current;
+    const box = layout(store.get().doc).bbox;
+    if (!el || !box) return;
+    const v = viewRef.current;
+    const inside = box.x1 >= v.x && box.y1 >= v.y && box.x2 <= v.x + el.clientWidth / v.zoom && box.y2 <= v.y + el.clientHeight / v.zoom;
+    if (!inside) fitView();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sideShown]);
   /** メニューやボタンから欄を出す。畳んであれば開く */
   const setSide = (v: SideView) => {
     setSideRaw(v);
     setSideOpenRaw(true);
+    setSidePeek(true);
   };
   const llm = useSyncExternalStore(subscribeLlmSettings, getLlmSettings);
   const hasKey = !!llm.apiKey;
@@ -523,6 +545,7 @@ export function App() {
             { label: '開く…', shortcut: 'Ctrl+O', title: `${DOC_EXT} の文書を開く`, onClick: () => fileRef.current?.click() },
             { label: '保存', shortcut: 'Ctrl+S', title: `文書を ${DOC_EXT} で保存する`, onClick: saveDoc },
             { label: 'SMILES・MOL・CDXML の読み込みと書き出し…', testId: 'open-io', onClick: () => setSide('io') },
+            { label: '名前から構造を置く…', testId: 'open-name', title: '化合物名から構造を置く。慣用名や略称は AI に調べさせられる', onClick: () => setSide('name') },
             ...(doc.page
               ? [
                   {
@@ -547,7 +570,7 @@ export function App() {
             { label: '縮小', onClick: () => setZoom((z) => (z > 1 ? z - 0.5 : z / 1.5)) },
             { sep: true },
             { label: showLibrary ? 'ライブラリを閉じる' : 'ライブラリを開く', onClick: toggleLibrary },
-            { label: sideOpen ? '右の欄を畳む' : '右の欄を開く', onClick: () => setSideOpen(!sideOpen) },
+            { label: sideShown ? '右の欄を畳む' : '右の欄を開く', onClick: () => (setSideOpen(!sideShown), setSidePeek(true)) },
   ];
   const settingsItems: MenuEntry[] = [
             { label: 'AI の設定…', testId: 'open-llm-settings', title: 'AI の会社とモデルを選び、API キーを入れる', onClick: () => (setShowLlm(true), track('llm:settings')) },
@@ -569,6 +592,8 @@ export function App() {
       store.commit(setColor(st.doc, st.selection, hex));
     },
   }));
+  /** 上の段の「整える」: 並べ方などと、色 */
+  const arrangeMenu: MenuEntry[] = [...arrangeItems, { heading: '色' }, ...colorItems];
   /** 右クリックのメニューと、選んだ物の帯の「ほかの操作」に出す項目 */
   const contextItems = (): MenuEntry[] => {
     const has = store.get().selection.size > 0;
@@ -618,7 +643,7 @@ export function App() {
   })();
 
   return (
-    <div className={`app${showLibrary ? ' with-library' : ''}${sideOpen ? '' : ' side-closed'}`} style={toolsWidth.style}>
+    <div className={`app${showLibrary ? ' with-library' : ''}${sideShown ? '' : ' side-closed'}`} style={toolsWidth.style}>
       <header className="topbar">
         <div className="brand">
           <span className="logo" aria-hidden="true">⌬</span>
@@ -636,7 +661,7 @@ export function App() {
         />
         <Menu label="ファイル" testId="menu-file" items={fileItems} />
         <Menu label="編集" testId="menu-edit" items={editItems} />
-        <Menu label="整える" testId="menu-arrange" items={arrangeItems} />
+        <Menu label="整える" testId="menu-arrange" items={arrangeMenu} />
         <Menu label="表示" testId="menu-view" items={viewItems} />
         <input
           ref={fileRef}
@@ -650,7 +675,6 @@ export function App() {
             e.target.value = '';
           }}
         />
-        <Menu label="色" testId="menu-color" title="選んだ原子・結合・矢印・文字・図形の色を変える" items={colorItems} />
         <span className="sep" />
         <button type="button" className="icon-text" onClick={() => store.undo()} disabled={!canUndo} title="元に戻す (Ctrl+Z)">
           ↶<span className="wide-only"> 元に戻す</span>
@@ -659,9 +683,6 @@ export function App() {
           ↷<span className="wide-only"> やり直す</span>
         </button>
         <span className="sep" />
-        <button type="button" className="icon-text mid-only" data-testid="open-name" onClick={() => setSide('name')} title="化合物名から構造を置く">
-          名前から置く
-        </button>
         {hasKey && (
           <button type="button" className="icon-text ai-button" data-testid="open-ai" onClick={() => openAi('create')} title="文章や図から、スキームの下書きを AI で作る">
             ✦ AI で作る
@@ -674,7 +695,7 @@ export function App() {
           menus={[
             { name: 'ファイル', items: [...fileItems, { label: '書き出す…', onClick: () => setShowExport({ onlySelected: false }) }, { label: '実験の記録を作る', onClick: () => newRun() }] },
             { name: '編集', items: editItems },
-            { name: '整える', items: arrangeItems },
+            { name: '整える', items: arrangeMenu },
             { name: '表示', items: viewItems },
             { name: '設定', items: settingsItems },
             { name: 'ヘルプ', items: helpItems },
@@ -683,8 +704,8 @@ export function App() {
         <button type="button" className="export-button" data-testid="open-export" onClick={() => setShowExport({ onlySelected: false })} title="図を SMILES・MOL・CDXML・CDX・SVG・PNG で書き出す。画像でのコピーもここから">
           書き出す
         </button>
-        <Menu label="設定" testId="menu-settings" items={settingsItems} />
-        <Menu label="ヘルプ" testId="menu-help" items={helpItems} />
+        <Menu label="⚙" ariaLabel="設定" title="設定" testId="menu-settings" items={settingsItems} />
+        <Menu label="?" ariaLabel="ヘルプ" title="ヘルプ" testId="menu-help" items={helpItems} />
       </header>
       {/* ダイアログは上のバーの外に置く（バーの文字の決まりを受け継がないように） */}
       {showLlm && <LlmSettings onClose={() => setShowLlm(false)} />}
@@ -777,7 +798,7 @@ export function App() {
           </div>
         )}
         {schemeEdit && <SchemeEditPopover key={`${schemeEdit.kind}:${schemeEdit.schemeId}:${schemeEdit.kind === 'step' ? schemeEdit.stepIndex : schemeEdit.compoundId}`} store={store} target={schemeEdit} view={view} onClose={() => setSchemeEdit(null)} />}
-        {side === 'scheme' && sideOpen && activeScheme && !busy && <NextStepGhost store={store} schemeId={activeScheme} view={view} />}
+        {side === 'scheme' && sideShown && activeScheme && !busy && <NextStepGhost store={store} schemeId={activeScheme} view={view} />}
         {ctxMenu && <PopupMenu at={ctxMenu} label="操作" items={contextItems()} onClose={() => setCtxMenu(null)} testId="ctx-menu" />}
         {barColors && <PopupMenu at={barColors} label="色" items={colorItems} onClose={() => setBarColors(null)} testId="sel-colors" />}
         {isEmpty && <EntryCards onSample={openSample} onAi={() => openAi('create')} />}
@@ -795,8 +816,8 @@ export function App() {
             全体を表示
           </button>
         </div>
-        {!sideOpen && (
-          <button type="button" className="side-open" data-testid="side-open" onClick={() => setSideOpen(true)} title="右の欄を開く">
+        {!sideShown && (
+          <button type="button" className="side-open" data-testid="side-open" onClick={() => (setSideOpen(true), setSidePeek(true))} title="右の欄を開く">
             <span aria-hidden="true">◂</span> {SIDE_TITLE[side === 'ai' ? (`ai-${aiMode}` as const) : side]}
           </button>
         )}
@@ -892,7 +913,7 @@ export function App() {
       {showTableDock && <section className="dock table-dock" data-testid="table-dock" data-table-ui aria-label="検討表の行" ref={setTableDock} />}
       {showStoichDock && <section className="dock stoich-dock" data-testid="stoich-dock" aria-label="化学量論表" ref={setStoichDock} />}
       {showDock && activeRun && <RunDock store={store} runId={activeRun} onClose={() => setDockClosed(true)} />}
-      <aside className="side" hidden={!sideOpen}>
+      <aside className="side" hidden={!sideShown}>
         <div className="side-head" data-testid="side-head" data-view={side}>
           <b>{SIDE_TITLE[side === 'ai' ? (`ai-${aiMode}` as const) : side]}</b>
           <span className="spacer" />

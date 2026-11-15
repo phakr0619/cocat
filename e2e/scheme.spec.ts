@@ -54,6 +54,9 @@ test('分子を選んでスキームを組み立て、条件・番号・書式�
   await panel.getByRole('button', { name: '番号を振る' }).click();
   await expect(panel.getByTestId('compound-number')).toHaveCount(3);
   await expect(panel.getByTestId('compound-number').first()).toHaveValue('1');
+  // 化合物は、選んでいる物だけ開いている。ほかは 1 行の要約で、押すと開く
+  await expect(panel.getByTestId('compound-nickname').nth(2)).toBeHidden();
+  await panel.getByTestId('compound-summary').nth(2).click();
   await panel.getByTestId('compound-nickname').nth(2).fill('ジペプチド');
   await panel.getByTestId('compound-nickname').nth(2).press('Enter');
 

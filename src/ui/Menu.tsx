@@ -15,7 +15,8 @@ export interface MenuItem {
 /** 区切り線か、項目のまとまりの見出し */
 export type MenuEntry = MenuItem | { sep: true } | { heading: string };
 
-export function Menu({ label, items, testId, title, icon }: { label: string; items: MenuEntry[]; testId?: string; title?: string; icon?: ReactNode }) {
+/** ariaLabel を渡すと、label をアイコンとして出す（▾ を付けない） */
+export function Menu({ label, items, testId, title, icon, ariaLabel }: { label: string; items: MenuEntry[]; testId?: string; title?: string; icon?: ReactNode; ariaLabel?: string }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -35,12 +36,12 @@ export function Menu({ label, items, testId, title, icon }: { label: string; ite
   }, [open]);
   return (
     <div className="menu" ref={ref}>
-      <button type="button" className="menu-button" aria-haspopup="menu" aria-expanded={open} data-testid={testId} title={title} onClick={() => setOpen((v) => !v)}>
+      <button type="button" className={`menu-button${ariaLabel ? ' icon-menu' : ''}`} aria-haspopup="menu" aria-expanded={open} aria-label={ariaLabel} data-testid={testId} title={title} onClick={() => setOpen((v) => !v)}>
         {icon}
-        {label}
-        <span className="caret" aria-hidden="true">▾</span>
+        {ariaLabel ? <span aria-hidden="true">{label}</span> : label}
+        {!ariaLabel && <span className="caret" aria-hidden="true">▾</span>}
       </button>
-      {open && <MenuList label={label} items={items} onPick={() => setOpen(false)} />}
+      {open && <MenuList label={ariaLabel ?? label} items={items} onPick={() => setOpen(false)} />}
     </div>
   );
 }

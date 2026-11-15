@@ -1,6 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
-import { canon, importSmiles, menuItem, openSample, showTab, tool } from './helpers';
+import { canon, importSmiles, menuItem, openSample, showTab, tool, createFromHome } from './helpers';
 
 // 画面の使い勝手: タブ・メニュー・はじめに・何も無いときの案内・化合物の小さな絵・検討表の行のドラッグ
 test.beforeEach(async ({ page }) => {
@@ -19,7 +19,34 @@ test('何も描いていないときだけ案内を出し、案内はキャン�
   await expect(page.getByTestId('empty-hint')).toBeVisible();
 });
 
+test('右の欄は、空の文書では出さず、右の端のつまみで開ける。何も選んでいなければ「この文書」で、作る物は「＋ 作る」にまとめる', async ({ page }) => {
+  await expect(page.getByTestId('empty-hint')).toBeVisible();
+  await expect(page.getByTestId('side-home')).toBeHidden();
+  await expect(page.getByTestId('new-scheme')).toBeHidden();
+  await page.getByTestId('side-open').click();
+  await expect(page.getByTestId('side-home')).toBeVisible();
+  await expect(page.getByTestId('new-scheme')).toBeHidden();
+  await page.getByTestId('side-new').click();
+  for (const id of ['new-scheme', 'new-table', 'new-run']) await expect(page.getByTestId(id)).toBeVisible();
+  await page.getByTestId('new-table').click();
+  await expect(page.getByTestId('side-head')).toHaveAttribute('data-view', 'table');
+});
+
+test('上の段: 色は「整える」に、名前から構造を置くは「ファイル」にあり、設定とヘルプはアイコン', async ({ page }) => {
+  await expect(page.getByTestId('menu-color')).toHaveCount(0);
+  await expect(page.getByTestId('open-name')).toBeHidden();
+  await expect(page.getByRole('button', { name: '設定' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'ヘルプ' })).toBeVisible();
+  await page.getByTestId('menu-arrange').click();
+  await expect(page.getByTestId('color-赤')).toBeVisible();
+  await page.keyboard.press('Escape');
+  await page.getByTestId('menu-file').click();
+  await page.getByTestId('open-name').click();
+  await expect(page.getByTestId('side-head')).toHaveAttribute('data-view', 'name');
+});
+
 test('右の欄は、何も選んでいなければ「この文書」。押した物の欄を出し、見本を開くと中身に合う欄を出す', async ({ page }) => {
+  await page.getByTestId('side-open').click();
   await expect(page.getByTestId('side-head')).toHaveAttribute('data-view', 'home');
   await expect(page.getByTestId('side-home')).toBeVisible();
   await expect(page.getByTestId('tts')).toBeHidden();
@@ -59,7 +86,7 @@ test('何も描いていないときは、キャンバスに 3 つの入口を�
 test('「＋ 反応スキーム」で、何も無いところからスキームを始められる。スキームがあっても新しく始める', async ({ page }) => {
   await openSample(page, 'coupling');
   await page.getByTestId('side-back').click();
-  await page.getByTestId('new-scheme').click();
+  await createFromHome(page, 'new-scheme');
   await expect(page.getByTestId('side-head')).toHaveAttribute('data-view', 'new-scheme');
   const panel = page.getByTestId('scheme-panel');
   await expect(panel.getByRole('button', { name: '描いた反応式をスキームにする' })).toBeVisible();
@@ -97,7 +124,7 @@ test('上のバーのメニューは、押すと開き、外を押すか Esc で
   await expect(list).toHaveCount(0);
   await page.getByTestId('menu-arrange').click();
   await expect(page.getByRole('menu', { name: '整える' })).toBeVisible();
-  await page.getByTestId('canvas').click({ position: { x: 400, y: 400 } });
+  await page.getByTestId('canvas').click({ position: { x: 700, y: 120 } });
   await expect(page.getByRole('menu', { name: '整える' })).toHaveCount(0);
   // キーの操作の一覧
   await menuItem(page, 'menu-help', 'キーの操作の一覧');
@@ -368,7 +395,7 @@ test('サービスの名前は Cocat。タブの題・上のバー・「この�
 });
 
 test('名前や SMILES から作る: 段ごとに入れてスキームにする。空の欄と読めない名前は枠にし、描いた分子で埋められる', async ({ page }) => {
-  await page.getByTestId('new-scheme').click();
+  await createFromHome(page, 'new-scheme');
   const form = page.getByTestId('new-scheme-form');
   await form.locator('summary').click();
   await form.getByTestId('new-scheme-substrate-1').fill('CCO');
@@ -443,6 +470,7 @@ test('道具のキー: 何も指していないときは道具を選び、原子
 
 test('右の欄は畳める。メニューから欄を出すと開く。畳んだことは開き直しても残る', async ({ page }) => {
   const canvasWidth = async () => (await page.getByTestId('canvas').boundingBox())!.width;
+  await page.getByTestId('side-open').click();
   const before = await canvasWidth();
   await page.getByTestId('side-collapse').click();
   await expect(page.getByTestId('side-head')).toBeHidden();
@@ -596,6 +624,7 @@ test('狭い画面: 幅 1024px でも上のバーは 1 行に収まる。幅 900
   expect(await page.locator('.topbar').evaluate((e) => e.scrollWidth <= e.clientWidth)).toBe(true);
   await expect(page.getByTestId('open-export')).toBeVisible();
   await expect(page.getByTestId('command-input')).toBeVisible();
+  await page.getByTestId('side-open').click();
   await expect(page.getByTestId('side-head')).toBeVisible();
   // 幅 860px: 覚えた開け閉めが無ければ、畳んで始める
   await page.evaluate(() => localStorage.clear());
