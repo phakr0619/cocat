@@ -184,7 +184,7 @@ export const PROVIDERS: Record<ProviderId, ProviderInfo> = {
       timeout: 'Bedrock から時間内に答えが返りませんでした。少し待ってからやり直すか、文章を短くしてください',
       server: 'Bedrock の側でエラーが起きました。少し待ってからやり直してください',
       refused: 'Bedrock が答えを返しませんでした（安全のための制限）。言い方を変えてください',
-      model: 'モデルが見つからないか、このアカウントでは使えません。AI の設定でモデルの ID を確かめてください',
+      model: 'このモデルは、見つからないか、このアカウントではまだ使えません。モデルの ID を確かめるか、ほかのモデルを選んでください。Anthropic のモデルは、AWS のコンソールで利用の申し込み（ユースケースの書式）が要ることがあり、出してから 15 分ほどで使えるようになります',
     },
     // 無料のキーの注意は Bedrock には無い（showFreeKeyNotes が false なので出さない）
     freeKeyNotes: { quota: '', timeout: '' },

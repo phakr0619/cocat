@@ -62,6 +62,7 @@ function errorName(body: BedrockErrorBody, header?: string | null): string {
 }
 
 const MODEL_PROBLEM = /model identifier|inference profile|model ?id|model.*(not found|invalid|not supported|isn't supported|does not exist|doesn't exist)|(invalid|unknown|unsupported).*model/i;
+const MODEL_ACCESS = /not available for this account|use case details|model access/i;
 const QUOTA_WORDS = /quota|per day|tokens per/i;
 
 /** 失敗を、利用者に言える理由に分ける。混んでいてやり直す価値のあるもの（busy）も返す */
@@ -71,6 +72,8 @@ export function classifyBedrockError(status: number, body: BedrockErrorBody, err
   const out = (kind: LlmError['kind'], busy = false) => ({ error: { kind, message }, busy });
   if (name === 'ModelNotReadyException') return out('server', true);
   if (name === 'ServiceQuotaExceededException') return out('quota');
+  // アカウントでそのモデルを使えない（ユースケースの書式がまだ・アカウントに出していないモデル）。キーの誤りと分ける（2026-11-15 に本物の文で確認）
+  if ((name === 'AccessDeniedException' || status === 403) && MODEL_ACCESS.test(message)) return out('model');
   if (name === 'AccessDeniedException' || name === 'UnrecognizedClientException' || status === 401 || status === 403) return out('auth');
   if (name === 'ResourceNotFoundException' || status === 404) return out('model');
   if (name === 'ThrottlingException' || status === 429) return out(QUOTA_WORDS.test(message) ? 'quota' : 'rate');
