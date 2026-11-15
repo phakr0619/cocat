@@ -2,6 +2,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createGemini, GEMINI_API, geminiError } from '../src/llm/gemini';
 import { addUsage, llmErrorText } from '../src/llm/types';
 
+const PAID = { provider: 'gemini', paidKey: true } as const;
+const FREE = { provider: 'gemini', paidKey: false } as const;
+
 const json = (status: number, body: unknown) => Promise.resolve(new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json' } }));
 const schema = { type: 'object', properties: { a: { type: 'number' } }, required: ['a'] };
 
@@ -69,18 +72,18 @@ describe('Gemini の呼び出し', () => {
     expect(geminiError(402, { error: { code: 402, status: 'RESOURCE_EXHAUSTED', message: 'Your prepayment credits are depleted.' } }).kind).toBe('quota');
     expect(geminiError(503, { error: { message: 'The model is overloaded.' } }).kind).toBe('server');
     expect(geminiError(400, { error: { message: 'Invalid JSON schema' } }).kind).toBe('invalid-output');
-    expect(llmErrorText({ kind: 'auth', message: '' })).toContain('キー');
+    expect(llmErrorText({ kind: 'auth', message: '' }, PAID)).toContain('キー');
   });
 
   it('無料のキーなら、時間切れと上限によくあることを添える（有料のキーやほかの失敗には添えない）', () => {
     for (const kind of ['timeout', 'quota'] as const) {
-      expect(llmErrorText({ kind, message: '' }, false)).toContain('無料のキー');
-      expect(llmErrorText({ kind, message: '' }, false)).toContain('請求先を付けて');
-      expect(llmErrorText({ kind, message: '' }, true)).not.toContain('無料のキー');
-      expect(llmErrorText({ kind, message: '' })).toBe(llmErrorText({ kind, message: '' }, true));
+      expect(llmErrorText({ kind, message: '' }, FREE)).toContain('無料のキー');
+      expect(llmErrorText({ kind, message: '' }, FREE)).toContain('請求先を付けて');
+      expect(llmErrorText({ kind, message: '' }, PAID)).not.toContain('無料のキー');
+      expect(llmErrorText({ kind, message: '' }, PAID)).toBe(llmErrorText({ kind, message: '' }, PAID));
     }
-    expect(llmErrorText({ kind: 'quota', message: '' }, false)).toContain('16〜17 時ごろに戻ります');
-    expect(llmErrorText({ kind: 'auth', message: '' }, false)).toBe(llmErrorText({ kind: 'auth', message: '' }));
+    expect(llmErrorText({ kind: 'quota', message: '' }, FREE)).toContain('16〜17 時ごろに戻ります');
+    expect(llmErrorText({ kind: 'auth', message: '' }, FREE)).toBe(llmErrorText({ kind: 'auth', message: '' }, PAID));
   });
 
   it('つながらない・やめたを分ける', async () => {
@@ -132,7 +135,7 @@ describe('Gemini の呼び出し', () => {
     const g = createGemini({ apiKey: 'K', model: 'm', fetch: hang as unknown as typeof fetch, timeoutMs: 20 });
     const r = await g.generateJson({ system: '', user: '', schema });
     expect(r).toMatchObject({ ok: false, error: { kind: 'timeout' } });
-    if (!r.ok) expect(llmErrorText(r.error)).toContain('時間内');
+    if (!r.ok) expect(llmErrorText(r.error, PAID)).toContain('時間内');
 
     const ctrl = new AbortController();
     const g2 = createGemini({ apiKey: 'K', model: 'm', fetch: hang as unknown as typeof fetch, timeoutMs: 60_000 });

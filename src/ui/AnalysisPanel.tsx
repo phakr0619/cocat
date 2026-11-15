@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import { track } from '../analytics';
 import { docToSmiles } from '../io/smiles';
-import { providerLabel } from '../llm/providerLabel';
+import { providerInfo } from '../llm/providers';
 import { getLlmSettings, llmProvider, setLlmSettings, subscribeLlmSettings } from '../llm/settings';
 import { nameLocally, structureToName } from '../llm/structureToName';
 import { llmErrorText } from '../llm/types';
@@ -76,7 +76,7 @@ function NameRow({ store, atomIds }: { store: EditorStore; atomIds: string[] }) 
   const local = useMemo(() => (smiles ? nameLocally(smiles) : []), [smiles]);
   const [st, setSt] = useState<NameState>({ state: 'idle' });
   const [consent, setConsent] = useState(false);
-  const product = providerLabel(s.provider).product;
+  const product = providerInfo(s.provider).product;
   // 構造が変わったら、前の答えは捨てる
   useEffect(() => setSt({ state: 'idle' }), [smiles]);
   if (!smiles) return null;
@@ -100,7 +100,7 @@ function NameRow({ store, atomIds }: { store: EditorStore; atomIds: string[] }) 
     const r = await structureToName(llm, { smiles, thinking: getLlmSettings().thinking, signal: abort.signal });
     if (!r.ok) {
       if (r.error.kind === 'aborted') return setSt({ state: 'idle' });
-      return setSt({ state: 'error', text: llmErrorText(r.error, getLlmSettings().paidKey) });
+      return setSt({ state: 'error', text: llmErrorText(r.error, getLlmSettings()) });
     }
     setSt({ state: 'done', name: r.name, verified: r.verified, checkedBy: r.checkedBy, warnings: r.warnings });
   };

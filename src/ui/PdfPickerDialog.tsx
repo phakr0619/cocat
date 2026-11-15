@@ -4,7 +4,7 @@ import { track } from '../analytics';
 import { figureToCrop, findFigures } from '../llm/findFigures';
 import { imageSummary, type PreparedImage } from '../llm/image';
 import { isLowRes, type OpenedPdf, type PdfCrop } from '../llm/pdf';
-import { providerLabel } from '../llm/providerLabel';
+import { providerInfo } from '../llm/providers';
 import { getLlmSettings, llmProvider, setLlmSettings, subscribeLlmSettings } from '../llm/settings';
 import { llmErrorText } from '../llm/types';
 import { LlmConsent } from './LlmConsent';
@@ -95,7 +95,7 @@ export function PdfPickerDialog({
   /** dpi を測り終えた所（「ページ」か「ページ:crop」）。E2E が、測り終えたかを data-dpi-at で待つ */
   const [dpiAt, setDpiAt] = useState('');
   const s = useSyncExternalStore(subscribeLlmSettings, getLlmSettings);
-  const to = providerLabel(s.provider).label;
+  const to = providerInfo(s.provider).label;
   const hasKey = !!s.apiKey;
   const [found, setFound] = useState<Record<number, Found>>({});
   /** 探し始めたページ（同じページは一度だけ。やめた・失敗したページは外して、押して探し直せるようにする） */
@@ -158,7 +158,7 @@ export function PdfPickerDialog({
       if (!r.ok) {
         if (r.error.kind === 'aborted') return fail({ state: 'cancelled' });
         track(`llm:error-${r.error.kind}`);
-        return fail({ state: 'error', text: llmErrorText(r.error as Parameters<typeof llmErrorText>[0], getLlmSettings().paidKey) });
+        return fail({ state: 'error', text: llmErrorText(r.error, getLlmSettings()) });
       }
       const size = await pdf.pageSize(n);
       // 反応スキームを先に。無ければ、矢印の無い構造の図

@@ -2,10 +2,9 @@ import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { track } from '../analytics';
 import type { Doc } from '../chem/model';
 import { useEditor, type EditorStore } from '../editor/store';
-import { GEMINI_MODELS } from '../llm/gemini';
 import { imageSummary, LLM_IMAGE_TYPES, prepareImage, type PreparedImage } from '../llm/image';
 import { isLowRes, isPdfFile, openPdf, parsePdfImageName, type OpenedPdf } from '../llm/pdf';
-import { providerLabel, showFreeKeyNotes } from '../llm/providerLabel';
+import { providerInfo, showFreeKeyNotes } from '../llm/providers';
 import { getLlmSettings, llmProvider, setLlmSettings, subscribeLlmSettings } from '../llm/settings';
 import { applyEdit, editChanges, editPrompt, textEdit, type EditOp } from '../llm/textEdit';
 import { applyNameStructure, confirmDraft, discardDraft, draftScheme, existingCompounds, textToScheme, userPrompt, type CheckedPlan } from '../llm/textToScheme';
@@ -177,7 +176,7 @@ export function TextToSchemePanel({
       setPicking(true);
       return;
     }
-    const r = await prepareImage(file);
+    const r = await prepareImage(file, s.provider);
     if (r.ok) dropPdf();
     setImage(r.ok ? r.image : null);
     setImageDpi(null);
@@ -217,7 +216,7 @@ export function TextToSchemePanel({
     const two = await addPaperFacts(llm, { checked: plan, collected: c, opsin: opsinSmiles, thinking: getLlmSettings().thinking, signal });
     if (!two.ok) {
       if (two.error.kind !== 'aborted') track(`llm:error-${two.error.kind}`);
-      const text = two.error.kind === 'aborted' ? '途中でやめました' : llmErrorText(two.error, getLlmSettings().paidKey);
+      const text = two.error.kind === 'aborted' ? '途中でやめました' : llmErrorText(two.error, getLlmSettings());
       return { checked: plan, notes: undefined as ReconcileNotes | undefined, result: { ok: false as const, text } };
     }
     return { checked: two.checked, notes: two.notes, result: { ok: true as const, dropped: two.dropped } };
@@ -244,7 +243,7 @@ export function TextToSchemePanel({
     store.commit(out.doc, new Set());
     setPaperRun({ ...pr, schemeId: out.schemeId, removed, result: got.result });
   };
-  const modelName = GEMINI_MODELS.find((m) => m.id === s.model)?.name ?? s.model;
+  const modelName = providerInfo(s.provider).models.find((m) => m.id === s.model)?.name ?? s.model;
 
   /** replace: 今の下書きの質問に答えて送り直すとき（前の下書きと置き換える） */
   const send = async (input: string, qa?: { question: string; answer: string }[], replace = false, img: PreparedImage | null = null, dpi: number | null = null) => {
@@ -268,7 +267,7 @@ export function TextToSchemePanel({
     setSeconds(Math.round((Date.now() - started) / 1000));
     setAnswers({});
     if (!r.ok) {
-      setRun(r.error.kind === 'aborted' ? { state: 'idle' } : { state: 'error', text: llmErrorText(r.error, getLlmSettings().paidKey) });
+      setRun(r.error.kind === 'aborted' ? { state: 'idle' } : { state: 'error', text: llmErrorText(r.error, getLlmSettings()) });
       if (r.error.kind !== 'aborted') track(`llm:error-${r.error.kind}`);
       return;
     }
@@ -322,7 +321,7 @@ export function TextToSchemePanel({
     setSeconds(Math.round((Date.now() - started) / 1000));
     setAnswers({});
     if (!r.ok) {
-      setRun(r.error.kind === 'aborted' ? { state: 'idle' } : { state: 'error', text: llmErrorText(r.error, getLlmSettings().paidKey) });
+      setRun(r.error.kind === 'aborted' ? { state: 'idle' } : { state: 'error', text: llmErrorText(r.error, getLlmSettings()) });
       if (r.error.kind !== 'aborted') track(`llm:error-${r.error.kind}`);
       return;
     }
@@ -347,7 +346,7 @@ export function TextToSchemePanel({
   if (!s.apiKey) {
     return (
       <section className="tts" data-testid="tts">
-        <p className="muted">{`文章から反応スキームの下書きを作ります。使うには、AI の設定で ${providerLabel(s.provider).product} の API キーを入れてください。`}</p>
+        <p className="muted">{`文章から反応スキームの下書きを作ります。使うには、AI の設定で ${providerInfo(s.provider).product} の API キーを入れてください。`}</p>
         <button type="button" className="primary" data-testid="tts-open-settings" onClick={onOpenSettings}>AI の設定を開く</button>
       </section>
     );
@@ -497,14 +496,14 @@ export function TextToSchemePanel({
         </button>
       </div>
       {showFreeKeyNotes(s) && (
-        <p className="warn" data-testid="tts-free-warning">{`無料のキーでは、送った内容が ${providerLabel(s.provider).company} の製品の改善に使われます。秘密の内容は送らないでください。`}</p>
+        <p className="warn" data-testid="tts-free-warning">{providerInfo(s.provider).freeKeyWarning.short}</p>
       )}
       {mode === 'create' && (
         <details className="tts-send-notes" data-testid="tts-send-notes">
           <summary>送る前に: 画像の権利と、回数の目安</summary>
           <p data-testid="tts-image-rights">送れる画像は、権利を持っているものか、AI に入れてよいと許されているものだけです。出版社によっては、論文の図を AI に入れることを認めていません。</p>
           {showFreeKeyNotes(s) && (
-            <p data-testid="tts-free-limits">無料のキーでは、1 回に 1〜3 分かかることがあり、下書きは 1 日に 10〜20 回ほど作れます。速く多く使うには、AI Studio でキーに請求先を付けます。</p>
+            <p data-testid="tts-free-limits">{providerInfo(s.provider).freeKeyWarning.textToSchemeLimits}</p>
           )}
         </details>
       )}

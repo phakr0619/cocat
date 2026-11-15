@@ -1,13 +1,13 @@
 import { useEffect, useRef } from 'react';
 import { getLlmSettings } from '../llm/settings';
-import { providerLabel } from '../llm/providerLabel';
+import { providerInfo, showFreeKeyNotes } from '../llm/providers';
 import { AiNotice } from './AiNotice';
 
 /** 初めて送るときの同意: 何を（設定の送り先に）送るか。onlyName: 名前から構造（送るのは名前だけ） */
 export function LlmConsent({ paidKey, onlyName = false, onClose }: { paidKey: boolean; onlyName?: boolean; onClose(ok: boolean): void }) {
   const ref = useRef<HTMLDialogElement>(null);
   const ok = useRef(false);
-  const to = providerLabel(getLlmSettings().provider).label;
+  const to = providerInfo(getLlmSettings().provider).label;
   useEffect(() => {
     const d = ref.current;
     if (d && !d.open) d.showModal();
@@ -24,7 +24,7 @@ export function LlmConsent({ paidKey, onlyName = false, onClose }: { paidKey: bo
         <li data-testid="llm-consent-image">送れる画像は、権利を持っているものか、AI に入れてよいと許されているものだけです。出版社によっては、論文の図を AI に入れることを認めていません。画像には未発表の構造が写りやすいので、送る前に確かめてください。</li>
         <li data-testid="llm-consent-pdf">{`PDF はこの端末の中で開き、外へは送りません。${to}に送るのは選んだ範囲の画像だけですが、図の範囲を探すときは、選んだページ全体の画像を送ることがあります。`}未発表の論文、投稿前の原稿、学位論文の草稿は、共著者や所属の決まりで AI に入れてよいかを確かめてください。秘密のものは、請求先を付けた有料のキーで送ってください。査読で預かった原稿は送らないでください。多くの出版社が、査読中の原稿を AI に入れることを禁じています。</li>
         <li data-testid="llm-consent-pdf-text">本文・SI の PDF からは、図の化合物の段落の文字も送ります。PDF そのものは送りません。系統名は、構造に直して確かめるために、名前だけをこのサイトの OPSIN のサーバーに送ります。</li>
-        {!paidKey && providerLabel(getLlmSettings().provider).freeKeyUsedForTraining && <li className="warn">無料のキーでは、送った内容が Google の製品の改善に使われ、人が読むこともあります。未発表の構造など秘密の内容は送らないでください。</li>}
+        {showFreeKeyNotes({ provider: getLlmSettings().provider, paidKey }) && <li className="warn">{providerInfo(getLlmSettings().provider).freeKeyWarning.consent}</li>}
       </ul>
       <AiNotice kind="general" />
       <form method="dialog" className="row">

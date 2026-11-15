@@ -2,7 +2,7 @@
 // 図の箱を選ぶと、その操作の行を同じ色で示す
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { applyRunDraft, runPrompt, textToRun, type RunDraft } from '../llm/textToRun';
-import { providerLabel } from '../llm/providerLabel';
+import { providerInfo, showFreeKeyNotes } from '../llm/providers';
 import { getLlmSettings, llmProvider, setLlmSettings, subscribeLlmSettings } from '../llm/settings';
 import { llmErrorText } from '../llm/types';
 import { AiNotice } from './AiNotice';
@@ -506,7 +506,7 @@ function MemoToRun({ store, runId, onDone }: { store: EditorStore; runId: string
     track('llm:run-memo');
     const r = await textToRun(p, { doc: store.get().doc, runId, memo, thinking: getLlmSettings().thinking, signal: abort.signal });
     if (!r.ok) {
-      setState(r.error.kind === 'aborted' ? { state: 'idle' } : { state: 'error', text: llmErrorText(r.error, getLlmSettings().paidKey) });
+      setState(r.error.kind === 'aborted' ? { state: 'idle' } : { state: 'error', text: llmErrorText(r.error, getLlmSettings()) });
       if (r.error.kind !== 'aborted') track(`llm:error-${r.error.kind}`);
       return;
     }
@@ -549,7 +549,7 @@ function MemoToRun({ store, runId, onDone }: { store: EditorStore; runId: string
             </button>
           )}
         </div>
-        {!s.paidKey && providerLabel(s.provider).freeKeyUsedForTraining && <p className="warn" data-testid="run-memo-free-warning">無料のキーでは、送った内容が Google の製品の改善に使われます。秘密の内容は送らないでください。</p>}
+        {showFreeKeyNotes(s) && <p className="warn" data-testid="run-memo-free-warning">{providerInfo(s.provider).freeKeyWarning.short}</p>}
         {state.state === 'error' && <p className="warn" data-testid="run-memo-error">{state.text}</p>}
         <details className="tts-preview">
           <summary>送る内容を見る</summary>
@@ -630,11 +630,11 @@ function MemoConsent({ paidKey, onClose }: { paidKey: boolean; onClose(ok: boole
   }, []);
   return (
     <dialog ref={ref} className="about" data-testid="llm-consent" onClose={() => onClose(ok.current)}>
-      <h2>{providerLabel(getLlmSettings().provider).label}に送ります</h2>
+      <h2>{providerInfo(getLlmSettings().provider).label}に送ります</h2>
       <ul>
         <li>送るのは、入力したメモと、今の仕込みの名前・量・役割、生成物の名前です。構造（SMILES）、ロット、描いた図は送りません。</li>
         <li>送る前に、「送る内容を見る」で中身を確かめられます。</li>
-        {!paidKey && <li className="warn">無料のキーでは、送った内容が Google の製品の改善に使われ、人が読むこともあります。未発表の内容など秘密の内容は送らないでください。</li>}
+        {showFreeKeyNotes({ provider: getLlmSettings().provider, paidKey }) && <li className="warn">{providerInfo(getLlmSettings().provider).freeKeyWarning.consentRun}</li>}
       </ul>
       <AiNotice kind="run" />
       <form method="dialog" className="row">
