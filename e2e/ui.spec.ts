@@ -642,3 +642,16 @@ test('狭い画面: 幅 1024px でも上のバーは 1 行に収まる。幅 900
   // 重なって開くので、キャンバスの幅は変わらない
   expect((await page.getByTestId('canvas').boundingBox())!.width).toBe(before);
 });
+
+test('上のバーの右の端のメニュー（設定・ヘルプ）は、画面の右からはみ出さない', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto('/');
+  for (const id of ['menu-settings', 'menu-help']) {
+    await page.getByTestId(id).click();
+    const list = page.getByRole('menu');
+    await expect(list).toBeVisible();
+    const box = await list.boundingBox();
+    expect(box!.x + box!.width).toBeLessThanOrEqual(1280);
+    await page.keyboard.press('Escape');
+  }
+});

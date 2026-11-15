@@ -80,7 +80,8 @@ body { font-family: system-ui, -apple-system, 'Hiragino Sans', 'Noto Sans JP', s
 .menu-list kbd { font: 12px ui-monospace, monospace; color: var(--muted); }
 .menu-list hr { border: none; border-top: 1px solid var(--border); margin: 4px 2px; }
 .menu-heading { font-size: 12px; color: var(--muted); padding: 4px 10px 2px; }
-.topbar .menu:last-child .menu-list { left: auto; right: 0; }
+/* 右の端の絵のメニュー（設定・ヘルプ）は、ボタンの右の端にそろえて開く（左にそろえると画面の右からはみ出す） */
+.topbar .menu:last-child .menu-list, .topbar .menu:has(> .icon-menu) .menu-list { left: auto; right: 0; }
 
 /* ボタン: ふつうは白、主な操作は青で塗る */
 button { font: inherit; padding: 4px 10px; border: 1px solid var(--border-strong); border-radius: var(--radius); background: var(--surface); color: var(--text); cursor: pointer; transition: background 0.1s, border-color 0.1s; }
