@@ -80,6 +80,7 @@ describe('Bedrock の呼び出し', () => {
     expect(k(401, 'x')).toBe('auth');
     // アカウントでそのモデルを使えないときは、キーの誤りでなくモデルの問題（2026-11-15 に本物で返った文）
     expect(k(403, 'anthropic.claude-haiku-5-5 is not available for this account. You can explore other available models on Amazon Bedrock.', 'AccessDeniedException')).toBe('model');
+    expect(k(400, 'The provided model identifier is invalid.', 'ValidationException')).toBe('model');
     expect(k(403, 'Model use case details have not been submitted for this account. Fill out the Anthropic use case details form before using the model.', 'AccessDeniedException')).toBe('model');
     expect(k(404, 'not found', 'ResourceNotFoundException')).toBe('model');
     expect(k(400, 'The provided model identifier is invalid.', 'ValidationException')).toBe('model');
