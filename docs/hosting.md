@@ -112,7 +112,7 @@ Deploy の最後に `tools/smoke.mjs` が自動で動き、公開したサイト
 
 ## 気をつけること
 
-- CSP の `connect-src` は、自分のサイトと Gemini の API（`https://generativelanguage.googleapis.com`）だけ。OPSIN の Lambda は CloudFront の同じサイトの道筋から呼ぶ（`infra/cloudfront.tf`）。AI の機能は、利用者が自分で作った API キーで、ブラウザから Gemini を直接呼ぶ
+- CSP の `connect-src` は、自分のサイトと、Gemini の API（`https://generativelanguage.googleapis.com`）と、Bedrock の東京の API（`https://bedrock-runtime.ap-northeast-1.amazonaws.com`）だけ。OPSIN の Lambda は CloudFront の同じサイトの道筋から呼ぶ（`infra/cloudfront.tf`）。AI の機能は、利用者が自分で作った API キーで、ブラウザから Gemini か Bedrock を直接呼ぶ（Bedrock は `docs/ai-bedrock.md`）
 - CSP に `'unsafe-eval'` が入っている。RDKit.js（Emscripten の embind）が文字列から関数を作るためで、外すと RDKit を読み込めない。外部のスクリプトは読まない（`script-src 'self'`）ので、影響は限られる
 - `index.html` は毎回確かめさせ（`no-cache`）、`assets/` は名前にハッシュが付くので 1 年持たせる。RDKit の `.wasm` は `application/wasm` で送る
 - 料金の目安: 利用が少ないうちは月数十円〜数百円（S3 と CloudFront の転送量。RDKit の wasm が約 7 MB あり、初回の読み込みごとにかかる）
