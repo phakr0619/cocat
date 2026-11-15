@@ -470,11 +470,15 @@ test('道具のキー: 何も指していないときは道具を選び、原子
 
 test('右の欄は畳める。メニューから欄を出すと開く。畳んだことは開き直しても残る', async ({ page }) => {
   const canvasWidth = async () => (await page.getByTestId('canvas').boundingBox())!.width;
+  // キャンバスの幅は、欄の開け閉めの後に少し遅れて変わる。測る前に、変わり終わるのを待つ
+  const wide = await canvasWidth();
   await page.getByTestId('side-open').click();
+  await expect(page.getByTestId('side-head')).toBeVisible();
+  await expect.poll(canvasWidth).toBeLessThanOrEqual(wide - 300);
   const before = await canvasWidth();
   await page.getByTestId('side-collapse').click();
   await expect(page.getByTestId('side-head')).toBeHidden();
-  expect(await canvasWidth()).toBeGreaterThanOrEqual(before + 300);
+  await expect.poll(canvasWidth).toBeGreaterThanOrEqual(before + 300);
   await page.reload();
   await page.getByTestId('canvas').waitFor();
   await expect(page.getByTestId('side-head')).toBeHidden();
