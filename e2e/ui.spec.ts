@@ -471,6 +471,8 @@ test('道具のキー: 何も指していないときは道具を選び、原子
 test('右の欄は畳める。メニューから欄を出すと開く。畳んだことは開き直しても残る', async ({ page }) => {
   const canvasWidth = async () => (await page.getByTestId('canvas').boundingBox())!.width;
   await page.getByTestId('side-open').click();
+  // 欄が開き切ってから測る（開く前の幅を測ると、畳んでも広がらないように見える）
+  await expect(page.getByTestId('side-head')).toBeVisible();
   const before = await canvasWidth();
   await page.getByTestId('side-collapse').click();
   await expect(page.getByTestId('side-head')).toBeHidden();
