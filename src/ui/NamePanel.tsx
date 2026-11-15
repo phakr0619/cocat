@@ -5,7 +5,7 @@ import { checkCasNumber } from '../chem/casNumber';
 import { opsinName } from '../chem/opsin';
 import { importText } from '../io/convert';
 import { nameToStructure, resolveLocally, type NameSource } from '../llm/nameToStructure';
-import { providerLabel } from '../llm/providerLabel';
+import { providerInfo } from '../llm/providers';
 import { getLlmSettings, llmProvider, setLlmSettings, subscribeLlmSettings } from '../llm/settings';
 import { llmErrorText } from '../llm/types';
 import type { LibraryCompound } from '../project/model';
@@ -33,7 +33,7 @@ export function NamePanel({ store, library, onOpenSettings }: { store: EditorSto
   const [name, setName] = useState('');
   const [result, setResult] = useState<Result>({ state: 'idle' });
   const [consent, setConsent] = useState(false);
-  const product = providerLabel(s.provider).product;
+  const product = providerInfo(s.provider).product;
 
   const place = (smiles: string, source: NameSource, warnings: string[] = []) => {
     try {
@@ -55,7 +55,7 @@ export function NamePanel({ store, library, onOpenSettings }: { store: EditorSto
     if (!r.ok) {
       if (r.error.kind === 'aborted') return setResult({ state: 'idle' });
       track(`name:error-${r.error.kind}`);
-      return setResult({ state: 'error', text: r.error.kind === 'unresolved' ? r.error.message : llmErrorText(r.error, getLlmSettings().paidKey) });
+      return setResult({ state: 'error', text: r.error.kind === 'unresolved' ? r.error.message : llmErrorText(r.error, getLlmSettings()) });
     }
     place(r.smiles, 'llm', r.warnings);
   };

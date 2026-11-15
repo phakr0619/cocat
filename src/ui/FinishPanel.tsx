@@ -3,7 +3,7 @@ import { track } from '../analytics';
 import { useEditor, type EditorStore } from '../editor/store';
 import { applyFinish, finishableSchemes, finishChanges, finishKey, finishPrompt, finishSchemes, finishTargets, type FinishChangeGroup, type FinishOp } from '../llm/finish';
 import { getLlmSettings, llmProvider, setLlmSettings, subscribeLlmSettings } from '../llm/settings';
-import { showFreeKeyNotes } from '../llm/providerLabel';
+import { providerInfo, showFreeKeyNotes } from '../llm/providers';
 import { llmErrorText } from '../llm/types';
 import { loadMyStyles, type SchemeStyle } from '../scheme/style';
 import { AiNotice } from './AiNotice';
@@ -71,7 +71,7 @@ export function FinishPanel({ store, onOpenSettings, modelName }: { store: Edito
     setSeconds(Math.round((Date.now() - started) / 1000));
     setAnswers({});
     if (!r.ok) {
-      setRun(r.error.kind === 'aborted' ? { state: 'idle' } : { state: 'error', text: llmErrorText(r.error, getLlmSettings().paidKey) });
+      setRun(r.error.kind === 'aborted' ? { state: 'idle' } : { state: 'error', text: llmErrorText(r.error, getLlmSettings()) });
       if (r.error.kind !== 'aborted') track(`llm:error-${r.error.kind}`);
       return;
     }
@@ -121,7 +121,7 @@ export function FinishPanel({ store, onOpenSettings, modelName }: { store: Edito
         </button>
       </div>
       <p className="muted" data-testid="finish-rules">投稿先の決まりは AI の知識によるものです。最後は投稿規定で確かめてください。</p>
-      {showFreeKeyNotes(s) && <p className="warn">無料のキーでは、送った内容が Google の製品の改善に使われます。秘密の内容は送らないでください。</p>}
+      {showFreeKeyNotes(s) && <p className="warn">{providerInfo(s.provider).freeKeyWarning.short}</p>}
       {run.state === 'error' && <p className="warn" data-testid="finish-error">{run.text}</p>}
       {text.trim() && targets.length > 0 && (
         <details className="tts-preview">

@@ -6,15 +6,13 @@
 // Interactions API は既定で会話を Google の側に保存する（store=true）ので、1回で終わる呼び出しには、何も残さない generateContent を使う。
 // キーはこの API にだけ送る。CSP の connect-src で、ほかへは送れないようにしてある（infra/cloudfront.tf）
 
+import { PROVIDERS } from './providers';
 import type { JsonSchema, LlmError, LlmImage, LlmModel, LlmProvider, LlmResult, ThinkingLevel } from './types';
 
 export const GEMINI_API = 'https://generativelanguage.googleapis.com/v1beta';
 
-/**
- * 既定のモデル。2026-10-24 の時点の安定版の Flash（ai.google.dev の Models と Deprecations で確認。終了の予定は無い）。
- * 設定画面で、キーで引いたモデルの一覧から選び直せる
- */
-export const DEFAULT_GEMINI_MODEL = 'gemini-3.8-flash';
+/** 既定のモデル。値は接続の型の一覧（providers.ts）にある。設定画面で、キーで引いたモデルの一覧から選び直せる */
+export const DEFAULT_GEMINI_MODEL = PROVIDERS.gemini.defaultModel;
 
 type GeminiError = { error?: { code?: number; message?: string; status?: string; details?: { reason?: string }[] } };
 type GeminiPart = { text?: string; thought?: boolean };
@@ -24,14 +22,8 @@ type GeminiResponse = {
   usageMetadata?: { promptTokenCount?: number; candidatesTokenCount?: number; thoughtsTokenCount?: number };
 };
 
-/**
- * 設定画面で選べるモデル（開発の間は絞る。2026-10-24 に ai.google.dev の Models と Pricing で確認）。
- * Argon は無料のキーでは使えない。Pro（gemini-3.1-pro-preview）はプレビュー版で、Argon より新しくも安くもないので入れない
- */
-export const GEMINI_MODELS: { id: string; name: string; paidOnly?: boolean }[] = [
-  { id: 'gemini-3.8-flash', name: 'Gemini 3.8 Flash（速い・安い）' },
-  { id: 'gemini-4-argon', name: 'Gemini 4 Argon（いちばん賢い）', paidOnly: true },
-];
+/** 設定画面で選べるモデル（接続の型の一覧 providers.ts の値の別名） */
+export const GEMINI_MODELS = PROVIDERS.gemini.models;
 
 /** 文章を返すモデルか（音声・画像・リアルタイム・埋め込みなどの専用のモデルは除く。一覧は generateContent に対応していても、言葉からスキームには使えない） */
 export function isTextModel(id: string): boolean {

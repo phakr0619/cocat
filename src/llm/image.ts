@@ -2,12 +2,13 @@
 //
 // 画像はブラウザの中で縮めてから送る。文書・下書きには画像を残さない（下書きに残すのはファイル名だけ）
 
+import { providerInfo, PROVIDERS, type ProviderId } from './providers';
 import type { LlmImage } from './types';
 
-/** Gemini に送れる形式（2026-10-25 に ai.google.dev の Image understanding で確認）。HEIC・HEIF はブラウザで描けないことが多いので、そのまま送る */
-export const LLM_IMAGE_TYPES = ['image/png', 'image/jpeg', 'image/webp', 'image/heic', 'image/heif'];
-/** 受け付ける元のファイルの大きさ。Gemini はリクエスト全体で 20 MB まで */
-export const MAX_IMAGE_FILE_BYTES = 20 * 1024 * 1024;
+/** Gemini に送れる形式（値は接続の型の一覧 providers.ts にある） */
+export const LLM_IMAGE_TYPES = PROVIDERS.gemini.imageTypes;
+/** 受け付ける元のファイルの大きさ（Gemini の値） */
+export const MAX_IMAGE_FILE_BYTES = PROVIDERS.gemini.maxImageFileBytes;
 /** 縮めた後の長辺（px）。Gemini 3 は画像を決まったトークン数（既定で 1120）に収めるので、これより大きく送っても読み取りは良くならない */
 export const MAX_IMAGE_SIDE = 2048;
 /** 縮めずにそのまま送ってよい大きさ（base64 で 4/3 倍になる） */
@@ -16,10 +17,11 @@ const KEEP_AS_IS_BYTES = 4 * 1024 * 1024;
 /** 送る画像と、画面に出す説明 */
 export type PreparedImage = LlmImage & { name: string; width?: number; height?: number; bytes: number };
 
-/** 送れるファイルか。だめなら理由 */
-export function imageFileError(file: { type: string; size: number }): string | null {
-  if (!LLM_IMAGE_TYPES.includes(file.type)) return '送れる画像は PNG・JPEG・WebP・HEIC・HEIF です';
-  if (file.size > MAX_IMAGE_FILE_BYTES) return '画像が大きすぎます（20 MB まで）';
+/** 送れるファイルか。だめなら理由。形式と大きさの条件は、送り先の会社（既定は Gemini）の値 */
+export function imageFileError(file: { type: string; size: number }, provider: ProviderId = 'gemini'): string | null {
+  const info = providerInfo(provider);
+  if (!info.imageTypes.includes(file.type)) return info.imageTypeText;
+  if (file.size > info.maxImageFileBytes) return info.imageSizeText;
   return null;
 }
 
@@ -43,8 +45,8 @@ export const blobToBase64 = (b: Blob): Promise<string> =>
  * 送る形にする（ブラウザでだけ使える）。小さければそのまま、大きければ長辺を MAX_IMAGE_SIDE に縮める。
  * 縮めるとき、PNG（線画の図）は PNG のまま、写真は JPEG にする。透明な所は白で塗る
  */
-export async function prepareImage(file: File): Promise<{ ok: true; image: PreparedImage } | { ok: false; error: string }> {
-  const err = imageFileError(file);
+export async function prepareImage(file: File, provider: ProviderId = 'gemini'): Promise<{ ok: true; image: PreparedImage } | { ok: false; error: string }> {
+  const err = imageFileError(file, provider);
   if (err) return { ok: false, error: err };
   const name = file.name || '貼り付けた画像';
   let bitmap: ImageBitmap | null = null;

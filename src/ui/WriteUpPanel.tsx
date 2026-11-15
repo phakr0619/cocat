@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { track } from '../analytics';
 import { useEditor, type EditorStore } from '../editor/store';
-import { providerLabel } from '../llm/providerLabel';
+import { providerInfo, showFreeKeyNotes } from '../llm/providers';
 import { getLlmSettings, llmProvider, setLlmSettings, subscribeLlmSettings } from '../llm/settings';
 import { llmErrorText } from '../llm/types';
 import { refillWriteUp, runsForScheme, schemeNotebook, schemeStoichTables, writeFacts, writeUp, writeUpPrompt, type CheckedWriteUp, type WriteLanguage } from '../llm/writeUp';
@@ -84,7 +84,7 @@ export function WriteUpPanel({ store }: { store: EditorStore }) {
     const r = await writeUp(llm, { doc: d0, schemeId: target, text, language, thinking: getLlmSettings().thinking, signal: abort.signal, useRuns: withRuns });
     setSeconds(Math.round((Date.now() - started) / 1000));
     if (!r.ok) {
-      setRun(r.error.kind === 'aborted' ? { state: 'idle' } : { state: 'error', text: llmErrorText(r.error, getLlmSettings().paidKey) });
+      setRun(r.error.kind === 'aborted' ? { state: 'idle' } : { state: 'error', text: llmErrorText(r.error, getLlmSettings()) });
       if (r.error.kind !== 'aborted') track(`llm:error-${r.error.kind}`);
       return;
     }
@@ -188,8 +188,8 @@ export function WriteUpPanel({ store }: { store: EditorStore }) {
         )}
         {run.state !== 'busy' && seconds !== null && <span className="muted">{seconds} 秒</span>}
       </div>
-      {!s.apiKey && <p className="muted">{`文章を書くには、AI の設定で ${providerLabel(s.provider).product} の API キーを入れてください。`}</p>}
-      {s.apiKey && !s.paidKey && <p className="warn" data-testid="tts-write-free-warning">無料のキーでは、送った内容が Google の製品の改善に使われます。秘密の内容は送らないでください。</p>}
+      {!s.apiKey && <p className="muted">{`文章を書くには、AI の設定で ${providerInfo(s.provider).product} の API キーを入れてください。`}</p>}
+      {s.apiKey && showFreeKeyNotes(s) && <p className="warn" data-testid="tts-write-free-warning">{providerInfo(s.provider).freeKeyWarning.short}</p>}
       {run.state === 'error' && <p className="warn" data-testid="tts-write-error">{run.text}</p>}
       <details className="tts-preview">
         <summary>送る内容を見る</summary>
@@ -287,12 +287,12 @@ function WriteUpConsent({ paidKey, withRuns, onClose }: { paidKey: boolean; with
   }, []);
   return (
     <dialog ref={ref} className="about" data-testid="llm-consent" onClose={() => onClose(ok.current)}>
-      <h2>{providerLabel(getLlmSettings().provider).label}に送ります</h2>
+      <h2>{providerInfo(getLlmSettings().provider).label}に送ります</h2>
       <ul>
         <li>送るのは、入力した指示の文と、選んでいる反応スキームの化合物の番号・呼び名・分子式・分子量、試薬と条件、化学量論表の量です。構造（SMILES）と、描いた図のほかの部分は送りません。</li>
         {withRuns && <li data-testid="llm-consent-run">実験の記録を使うので、その仕込みの名前と量、操作の名前、記録の行も送ります。記録の行は、したこと・量・内温・測定と観察です。時刻とロットは送りません。</li>}
         <li>送る前に、「送る内容を見る」で中身を確かめられます。</li>
-        {!paidKey && <li className="warn">無料のキーでは、送った内容が Google の製品の改善に使われ、人が読むこともあります。未発表の構造など秘密の内容は送らないでください。</li>}
+        {showFreeKeyNotes({ provider: getLlmSettings().provider, paidKey }) && <li className="warn">{providerInfo(getLlmSettings().provider).freeKeyWarning.consent}</li>}
       </ul>
       <AiNotice kind="general" />
       <form method="dialog" className="row">

@@ -3,7 +3,7 @@
 // ページ全体を送ると図が小さくなり、置換の位置を読み違えやすい（段2の評価）。そこで、まずページ全体から図の四角だけを答えさせ、
 // その四角で PDF を切り出し直してから、今の「画像から作る」に送る。四角は画面に先に描き、利用者が確かめて直せるようにする
 
-import type { JsonSchema, LlmImage, LlmProvider, LlmUsage, ThinkingLevel } from './types';
+import type { JsonSchema, LlmError, LlmImage, LlmProvider, LlmUsage, ThinkingLevel } from './types';
 
 /** 見つけた図。位置はページに対する割合（0〜1、左上が原点） */
 export interface FoundFigure {
@@ -79,7 +79,7 @@ export function figureToCrop(f: FoundFigure, page: { width: number; height: numb
 export async function findFigures(
   llm: LlmProvider,
   req: { image: LlmImage; thinking?: ThinkingLevel; signal?: AbortSignal },
-): Promise<{ ok: true; figures: FoundFigure[]; usage?: LlmUsage } | { ok: false; error: { kind: string; message: string }; usage?: LlmUsage }> {
+): Promise<{ ok: true; figures: FoundFigure[]; usage?: LlmUsage } | { ok: false; error: LlmError; usage?: LlmUsage }> {
   const r = await llm.generateJson<unknown>({
     system: FIGURE_SYSTEM_PROMPT,
     user: 'Locate the figures on this page.',

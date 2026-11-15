@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { isOptedOut, setOptOut } from '../analytics';
 import { APP_VERSION, FEEDBACK_EMAIL, feedbackLink } from '../feedback';
-import { providerLabel } from '../llm/providerLabel';
+import { providerInfo } from '../llm/providers';
 import { getLlmSettings } from '../llm/settings';
 import { AiNotice } from './AiNotice';
 
@@ -10,7 +10,7 @@ import { AiNotice } from './AiNotice';
 export function About({ onClose }: { onClose(): void }) {
   const ref = useRef<HTMLDialogElement>(null);
   const [share, setShare] = useState(() => !isOptedOut());
-  const to = providerLabel(getLlmSettings().provider).label;
+  const to = providerInfo(getLlmSettings().provider).label;
   useEffect(() => {
     const d = ref.current;
     if (d && !d.open) d.showModal();
