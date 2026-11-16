@@ -756,16 +756,20 @@ export function App() {
             // その表の欄を出し、下の表のセル（見出しなら、その列のいちばん上のセル）にカーソルを入れる
             selectRef(cell.tableId, 'table');
             track('table:edit-from-canvas', { once: true });
-            // 下の欄が出て、図を合わせ直した後まで待つ（欄が出る前や、描き直しの途中では入らないことがある）
+            // 下の欄が出て、図を合わせ直した後まで待つ（欄が出る前や、描き直しの途中では入らないことがある）。
+            // 遅い PC では欄が出るのが 0.4 秒より遅れることがあるので、2 秒まで待つ。
+            // 入ってから 0.3 秒、外れなければやめる（その後に利用者がほかを押しても、取り返さない）
             let tries = 0;
+            let held = 0;
             const focus = () => {
               const rows = document.querySelectorAll('[data-testid="table-dock"] [data-testid="table-row"]');
               const input = rows[Math.max(0, cell.row)]?.querySelectorAll('td')[cell.col + 1]?.querySelector('input');
               if (input && document.activeElement !== input) {
                 input.focus();
                 input.select();
-              }
-              if (++tries < 6) setTimeout(focus, 60);
+                held = 0;
+              } else if (input) held++;
+              if (++tries < 33 && held < 5) setTimeout(focus, 60);
             };
             setTimeout(focus, 60);
           }}
