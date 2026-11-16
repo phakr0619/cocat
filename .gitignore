@@ -9,6 +9,7 @@ out/
 infra/.terraform/
 infra/terraform.tfvars
 server/opsin/target/
+server/ai-relay/dist/
 # 評価のページ全体の PNG（大きい）と、Gemini が見つけた範囲の PNG は入れない（MAKE_EVAL_PDFS=pages・auto で PDF から作る）
 tests/llm-eval/pdf-images/*-page.png
 tests/llm-eval/pdf-images/*-auto.png

@@ -12,6 +12,7 @@
     "test:e2e": "playwright test",
     "samples": "vitest run tests/io.test.ts tests/structures.test.ts tests/table.test.ts tests/cdx.test.ts tests/salt.test.ts tests/stereoGroups.test.ts tests/abbrLabels.test.ts",
     "verify:cdxml": "npm run samples && .venv/bin/python tools/verify_cdxml.py out/*.cdxml out/*.cdx out/structures/*.cdxml out/abbr-labels/*.cdxml",
+    "build:relay": "node scripts/build-relay.mjs",
     "eval:llm": "vitest run --config tests/llm-eval/vitest.config.ts",
     "eval:llm-edit": "vitest run --config tests/llm-eval/vitest.edit.config.ts",
     "eval:llm-image": "vitest run --config tests/llm-eval/vitest.image.config.ts",
@@ -33,11 +34,13 @@
     "react-dom": "^19.3.1"
   },
   "devDependencies": {
+    "@aws-sdk/client-bedrock-runtime": "^3.1169.0",
     "@playwright/test": "1.64",
     "@types/node": "^26.6.5",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.2",
+    "rolldown": "^1.2.15",
     "typescript": "^7.0.2",
     "vite": "^8.3.5",
     "vitest": "^5.0.5"
