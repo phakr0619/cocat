@@ -1,0 +1,66 @@
+name: Deploy AI relay
+
+# Amazon Bedrock の中継（server/ai-relay）を Lambda へ上げる。
+# main で server/ai-relay か、中継と共用する src/llm の部品を変えたマージで動く。Lambda は先に Terraform（infra/ai-relay.tf、ai_relay_enabled = true）で作っておく。
+# リポジトリの Variables に AI_RELAY_FUNCTION_NAME（terraform output ai_relay_function_name の値）が無いときは、中継を使っていないサイトなので何もしない。手でも動かせる（Run workflow）
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'server/ai-relay/**'
+      - 'src/llm/bedrockConverse.ts'
+      - 'src/llm/bedrock.ts'
+      - 'src/llm/providers.ts'
+      - 'src/llm/types.ts'
+      - 'scripts/build-relay.mjs'
+      - '.github/workflows/deploy-ai-relay.yml'
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+concurrency:
+  group: deploy-ai-relay
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/main' && vars.AI_RELAY_FUNCTION_NAME != ''
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      FUNCTION_NAME: ${{ vars.AI_RELAY_FUNCTION_NAME }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: 中継を作る
+        run: |
+          npm ci
+          npm run build:relay
+      - name: zip にまとめる
+        working-directory: server/ai-relay/dist
+        run: zip -q ../ai-relay.zip index.mjs
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ap-northeast-1
+      - name: Lambda の中身を入れ替える
+        run: |
+          aws lambda update-function-code --function-name "$FUNCTION_NAME" --zip-file fileb://server/ai-relay/ai-relay.zip >/dev/null
+          aws lambda wait function-updated-v2 --function-name "$FUNCTION_NAME"
+      # 公開したサイトの /api/ai を GET で呼んで確かめる。GET は AI を呼ばないので、費用はかからない
+      - name: 公開したサイトで確かめる
+        env:
+          SITE_URL: ${{ vars.SITE_URL }}
+        run: |
+          if [ -z "$SITE_URL" ]; then
+            echo "::error::リポジトリの Variables に SITE_URL（terraform output site_url の値）を入れてください"
+            exit 1
+          fi
+          out=$(curl -sS --fail-with-body "$SITE_URL/api/ai")
+          echo "$out"
+          echo "$out" | grep -q '"provider":"bedrock"'

@@ -77,6 +77,23 @@ resource "aws_cloudfront_distribution" "site" {
     }
   }
 
+  # AI の中継（ai-relay.tf。ai_relay_enabled が true のときだけ）
+  dynamic "origin" {
+    for_each = var.ai_relay_enabled ? [1] : []
+    content {
+      domain_name              = split("/", aws_lambda_function_url.ai_relay[0].function_url)[2]
+      origin_id                = local.ai_relay_origin_id
+      origin_access_control_id = aws_cloudfront_origin_access_control.ai_relay[0].id
+
+      custom_origin_config {
+        http_port              = 80
+        https_port             = 443
+        origin_protocol_policy = "https-only"
+        origin_ssl_protocols   = ["TLSv1.2"]
+      }
+    }
+  }
+
   origin {
     domain_name              = aws_s3_bucket.site.bucket_regional_domain_name
     origin_id                = local.origin_id
@@ -118,6 +135,22 @@ resource "aws_cloudfront_distribution" "site" {
     cache_policy_id            = data.aws_cloudfront_cache_policy.disabled.id
     origin_request_policy_id   = data.aws_cloudfront_origin_request_policy.all_except_host.id
     response_headers_policy_id = aws_cloudfront_response_headers_policy.security.id
+  }
+
+  # AI の中継（ai-relay.tf）。POST を Lambda へ渡し、キャッシュしない。圧縮もしない（空白を流して接続を保つため）
+  dynamic "ordered_cache_behavior" {
+    for_each = var.ai_relay_enabled ? [1] : []
+    content {
+      path_pattern               = "/api/ai"
+      target_origin_id           = local.ai_relay_origin_id
+      viewer_protocol_policy     = "https-only"
+      allowed_methods            = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
+      cached_methods             = ["GET", "HEAD"]
+      compress                   = false
+      cache_policy_id            = data.aws_cloudfront_cache_policy.disabled.id
+      origin_request_policy_id   = data.aws_cloudfront_origin_request_policy.all_except_host.id
+      response_headers_policy_id = aws_cloudfront_response_headers_policy.security.id
+    }
   }
 
   # 1ページのアプリなので、無いパスは index.html を返す

@@ -2,3 +2,7 @@
 # アカウントの ID は account.auto.tfvars にある
 # domain_name    = "editor.example.com"
 # hosted_zone_id = "Z0123456789ABCDEFGHIJ"
+
+# AI の中継（Amazon Bedrock）を作るとき。サイトを開ける人は誰でも、この組織の費用で AI を使える。
+# サイト自体が IP 制限や SSO などで守られているときだけ true にする
+# ai_relay_enabled = true

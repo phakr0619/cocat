@@ -27,3 +27,8 @@ output "opsin_function_name" {
   description = "名前 → 構造（OPSIN）の Lambda の名前。GitHub の Variables の OPSIN_FUNCTION_NAME に入れる"
   value       = aws_lambda_function.opsin.function_name
 }
+
+output "ai_relay_function_name" {
+  description = "AI の中継の Lambda の名前（ai_relay_enabled が true のときだけ）。GitHub の Variables の AI_RELAY_FUNCTION_NAME に入れる"
+  value       = one(aws_lambda_function.ai_relay[*].function_name)
+}

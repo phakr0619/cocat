@@ -65,6 +65,15 @@ data "aws_iam_policy_document" "deploy" {
     actions   = ["lambda:UpdateFunctionCode", "lambda:GetFunction", "lambda:GetFunctionConfiguration"]
     resources = [aws_lambda_function.opsin.arn]
   }
+  # AI の中継の中身を入れ替える（.github/workflows/deploy-ai-relay.yml）。中継を作ったときだけ
+  dynamic "statement" {
+    for_each = var.ai_relay_enabled ? [1] : []
+    content {
+      sid       = "UpdateAiRelay"
+      actions   = ["lambda:UpdateFunctionCode", "lambda:GetFunction", "lambda:GetFunctionConfiguration"]
+      resources = [aws_lambda_function.ai_relay[0].arn]
+    }
+  }
   statement {
     sid       = "Invalidate"
     actions   = ["cloudfront:CreateInvalidation"]
