@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { track } from '../analytics';
 import { forgetLlmKey, getLlmSettings, llmProvider, setLlmSettings, subscribeLlmSettings } from '../llm/settings';
-import { providerInfo, showFreeKeyNotes } from '../llm/providers';
+import { PROVIDERS, providerInfo, showFreeKeyNotes, type ProviderId } from '../llm/providers';
+import { testConnection } from '../llm/testConnection';
 import { llmErrorText, type ThinkingLevel } from '../llm/types';
 
 type Check = { state: 'idle' } | { state: 'busy' } | { state: 'ok'; missing: string[] } | { state: 'ng'; text: string };
@@ -24,10 +25,10 @@ export function LlmSettings({ onClose }: { onClose(): void }) {
     const p = llmProvider(getLlmSettings());
     if (!p) return setCheck({ state: 'ng', text: 'キーを入れてください' });
     setCheck({ state: 'busy' });
-    const r = await p.listModels();
+    const r = await testConnection(p);
     if (r.ok) {
-      const ids = new Set(r.value.map((m) => m.id));
-      setCheck({ state: 'ok', missing: to.models.filter((m) => !ids.has(m.id)).map((m) => m.name) });
+      const ids = r.modelIds && new Set(r.modelIds);
+      setCheck({ state: 'ok', missing: ids ? to.models.filter((m) => !ids.has(m.id)).map((m) => m.name) : [] });
       track('llm:test-ok');
     } else {
       setCheck({ state: 'ng', text: llmErrorText(r.error, getLlmSettings()) });
@@ -38,11 +39,33 @@ export function LlmSettings({ onClose }: { onClose(): void }) {
   return (
     <dialog ref={ref} className="about llm-settings" data-testid="llm-settings" onClose={onClose} onClick={(e) => e.target === ref.current && ref.current?.close()}>
       <h2>AI の設定</h2>
+      <label className="field">
+        <span>会社</span>
+        <select
+          data-testid="llm-provider"
+          value={s.provider}
+          onChange={(e) => {
+            setLlmSettings({ provider: e.target.value as ProviderId });
+            setCheck({ state: 'idle' });
+          }}
+        >
+          {Object.values(PROVIDERS).map((p) => (
+            <option key={p.id} value={p.id}>
+              {p.label}
+            </option>
+          ))}
+        </select>
+      </label>
       <p>
         {`「言葉から作る」などの機能は、あなたの ${to.product}（${to.company}）の API キーを使い、このブラウザから ${to.product} を直接呼びます。こちらのサーバーは通りません。`}キーは
         <a href={to.keyHelp.url} target="_blank" rel="noreferrer">{to.keyHelp.siteName}</a>
         で作れます。
       </p>
+      {to.regionText && (
+        <p data-testid="llm-region">
+          リージョン: {to.regionText}
+        </p>
+      )}
       <label className="field">
         <span>API キー</span>
         <input
@@ -81,19 +104,47 @@ export function LlmSettings({ onClose }: { onClose(): void }) {
           {to.freeKeyWarning.settingsLimits}
         </p>
       )}
-      <label className="field">
-        <span>モデル</span>
-        <select data-testid="llm-model" value={s.model} onChange={(e) => setLlmSettings({ model: e.target.value })}>
-          {/* 前に選んだモデルが一覧から外れていても、それも出す */}
-          {!to.models.some((m) => m.id === s.model) && <option value={s.model}>{s.model}</option>}
-          {to.models.map((m) => (
-            <option key={m.id} value={m.id}>
-              {m.name}
-              {m.paidOnly ? ' ・有料のキーだけ' : ''}
-            </option>
-          ))}
-        </select>
-      </label>
+      {to.allowCustomModel ? (
+        // モデルは使う人が決める。一覧は、Cocat で動作を確かめたモデルの候補として出す
+        <>
+          <label className="field">
+            <span>モデルの ID</span>
+            <input
+              type="text"
+              autoComplete="off"
+              spellCheck={false}
+              list="llm-model-list"
+              data-testid="llm-model-id"
+              value={s.model}
+              placeholder={to.defaultModel}
+              onChange={(e) => setLlmSettings({ model: e.target.value.trim() })}
+              onBlur={() => !s.model && setLlmSettings({ model: to.defaultModel })}
+            />
+            <datalist id="llm-model-list">
+              {to.models.map((m) => (
+                <option key={m.id} value={m.id} label={m.name} />
+              ))}
+            </datalist>
+          </label>
+          <p className="muted" data-testid="llm-model-note">
+            {`候補は、Cocat で動作を確かめたモデルです（${to.models.map((m) => m.name).join('、')}）。ほかのモデルの ID も入れられます。`}
+          </p>
+        </>
+      ) : (
+        <label className="field">
+          <span>モデル</span>
+          <select data-testid="llm-model" value={s.model} onChange={(e) => setLlmSettings({ model: e.target.value })}>
+            {/* 前に選んだモデルが一覧から外れていても、それも出す */}
+            {!to.models.some((m) => m.id === s.model) && <option value={s.model}>{s.model}</option>}
+            {to.models.map((m) => (
+              <option key={m.id} value={m.id}>
+                {m.name}
+                {m.paidOnly ? ' ・有料のキーだけ' : ''}
+              </option>
+            ))}
+          </select>
+        </label>
+      )}
       {to.hasPaidKeyOption && !s.paidKey && to.models.find((m) => m.id === s.model)?.paidOnly && (
         <p className="warn" data-testid="llm-paid-only">このモデルは、無料のキーでは使えません。</p>
       )}
@@ -106,6 +157,11 @@ export function LlmSettings({ onClose }: { onClose(): void }) {
             <option value="high">深い・遅い</option>
           </select>
         </label>
+      )}
+      {to.testCostNote && (
+        <p className="muted" data-testid="llm-test-note">
+          {to.testCostNote}
+        </p>
       )}
       <div className="row">
         <button type="button" data-testid="llm-test" onClick={test} disabled={check.state === 'busy'}>

@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { getLlmSettings, keyStorageName, reloadLlmSettings, setLlmSettings } from '../src/llm/settings';
+import { forgetLlmKey, getLlmSettings, keyStorageName, llmProvider, reloadLlmSettings, setLlmSettings } from '../src/llm/settings';
 import { PROVIDERS } from '../src/llm/providers';
 
 // localStorage の代わり（node の環境でも動くように）
@@ -55,5 +55,45 @@ describe('AI の設定の保存', () => {
     expect(localStorage.getItem('ai-chem-editor:llm-key')).toBe('NEW');
     setLlmSettings({ remember: false });
     expect(localStorage.getItem('ai-chem-editor:llm-key')).toBeNull();
+  });
+  it('会社を切り替えると、会社ごとのモデルとキーに替わり、戻ると元の分が残る', () => {
+    setLlmSettings({ apiKey: 'GKEY', model: 'gemini-4-argon', remember: true });
+    setLlmSettings({ provider: 'bedrock' });
+    expect(getLlmSettings()).toMatchObject({ provider: 'bedrock', model: PROVIDERS.bedrock.defaultModel, apiKey: '', remember: false });
+    // 覚えていないキーは、メモリにだけ置く
+    setLlmSettings({ apiKey: 'BKEY', model: 'jp.anthropic.claude-opus-5-5' });
+    expect(localStorage.getItem(keyStorageName('bedrock'))).toBeNull();
+    expect(localStorage.getItem('ai-chem-editor:llm-key')).toBe('GKEY');
+    setLlmSettings({ provider: 'gemini' });
+    expect(getLlmSettings()).toMatchObject({ provider: 'gemini', model: 'gemini-4-argon', apiKey: 'GKEY', remember: true });
+    setLlmSettings({ provider: 'bedrock' });
+    expect(getLlmSettings()).toMatchObject({ provider: 'bedrock', model: 'jp.anthropic.claude-opus-5-5', apiKey: 'BKEY', remember: false });
+    // 覚えると、会社ごとの名前で置く。開き直すとその会社の分を読む
+    setLlmSettings({ remember: true });
+    expect(localStorage.getItem('ai-chem-editor:llm-key:bedrock')).toBe('BKEY');
+    expect(keyStorageName('bedrock')).toBe('ai-chem-editor:llm-key:bedrock');
+    reloadLlmSettings();
+    expect(getLlmSettings()).toMatchObject({ provider: 'bedrock', model: 'jp.anthropic.claude-opus-5-5', apiKey: 'BKEY', remember: true });
+    setLlmSettings({ provider: 'gemini' });
+    expect(getLlmSettings()).toMatchObject({ apiKey: 'GKEY', remember: true, model: 'gemini-4-argon' });
+  });
+  it('キーを消した会社へ戻っても、消したまま', () => {
+    setLlmSettings({ provider: 'bedrock', apiKey: 'B', remember: true });
+    forgetLlmKey();
+    setLlmSettings({ provider: 'gemini' });
+    setLlmSettings({ provider: 'bedrock' });
+    expect(getLlmSettings()).toMatchObject({ apiKey: '', remember: false });
+    expect(localStorage.getItem(keyStorageName('bedrock'))).toBeNull();
+  });
+  it('llmProvider は会社に合う口を返す。キーが無ければ null', () => {
+    expect(llmProvider({ ...getLlmSettings(), provider: 'bedrock', apiKey: '' })).toBeNull();
+    expect(llmProvider({ ...getLlmSettings(), provider: 'bedrock', apiKey: 'K' })?.id).toBe('bedrock');
+    expect(llmProvider({ ...getLlmSettings(), provider: 'gemini', apiKey: 'K' })?.id).toBe('gemini');
+  });
+  it('ほかの会社の旧い形の設定は、そのまま読む（provider が bedrock）', () => {
+    localStorage.setItem('ai-chem-editor:llm', JSON.stringify({ provider: 'bedrock', models: { bedrock: 'custom-id' } }));
+    localStorage.setItem('ai-chem-editor:llm-key:bedrock', 'BK');
+    reloadLlmSettings();
+    expect(getLlmSettings()).toMatchObject({ provider: 'bedrock', model: 'custom-id', apiKey: 'BK', remember: true });
   });
 });

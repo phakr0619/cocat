@@ -4,6 +4,7 @@
 // - キーは文書・プロジェクト・zip・使い方の統計には入れない（ここ以外から読まない）
 // - モデル・有料のキーか・同意したか、は秘密ではないので、いつも覚える
 
+import { createBedrock } from './bedrock';
 import { createGemini } from './gemini';
 import { isProviderId, providerInfo, type ProviderId } from './providers';
 import type { LlmProvider, ThinkingLevel } from './types';
@@ -51,6 +52,8 @@ function storage(): Storage | null {
 
 /** 会社ごとに覚えたモデル（今の provider の分を state.model に持つので、ほかの会社の分はここに残す） */
 let models: Partial<Record<ProviderId, string>> = {};
+/** 会社ごとのキー（このページを開いている間だけ。覚えていないキーも、会社を切り替えて戻ったときに残すため） */
+let keys: Partial<Record<ProviderId, string>> = {};
 
 function load(): LlmSettings {
   const s = storage();
@@ -63,6 +66,7 @@ function load(): LlmSettings {
   }
   const provider: ProviderId = isProviderId(prefs.provider) ? prefs.provider : 'gemini';
   models = {};
+  keys = {};
   const saved = prefs.models && typeof prefs.models === 'object' ? prefs.models : {};
   for (const id of Object.keys(saved)) {
     const m = saved[id];
@@ -94,9 +98,19 @@ export function subscribeLlmSettings(f: () => void): () => void {
   return () => listeners.delete(f);
 }
 
-export function setLlmSettings(patch: Partial<Omit<LlmSettings, 'provider'>>) {
-  state = { ...state, ...patch, apiKey: (patch.apiKey ?? state.apiKey).trim() };
+export function setLlmSettings(patch: Partial<LlmSettings>) {
   const s = storage();
+  const { provider, ...rest } = patch;
+  if (provider && provider !== state.provider && isProviderId(provider)) {
+    // 今の会社のモデルとキーを残し、切り替え先の会社の分を読む
+    models = { ...models, [state.provider]: state.model };
+    keys = { ...keys, [state.provider]: state.apiKey };
+    const stored = s?.getItem(keyStorageName(provider)) ?? '';
+    const key = keys[provider] ?? stored;
+    state = { ...state, provider, model: models[provider] ?? providerInfo(provider).defaultModel, apiKey: key, remember: !!stored };
+  }
+  state = { ...state, ...rest, apiKey: (rest.apiKey ?? state.apiKey).trim() };
+  keys = { ...keys, [state.provider]: state.apiKey };
   if (s) {
     models = { ...models, [state.provider]: state.model };
     s.setItem(PREFS_KEY, JSON.stringify({ provider: state.provider, models, paidKey: state.paidKey, consented: state.consented, thinking: state.thinking }));
@@ -119,6 +133,8 @@ export function llmProvider(s = state, f?: typeof fetch): LlmProvider | null {
   switch (s.provider) {
     case 'gemini':
       return createGemini({ apiKey: s.apiKey, model, fetch: f });
+    case 'bedrock':
+      return createBedrock({ apiKey: s.apiKey, model, fetch: f });
   }
 }
 

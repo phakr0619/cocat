@@ -5,14 +5,12 @@
 import { providerInfo, PROVIDERS, type ProviderId } from './providers';
 import type { LlmImage } from './types';
 
-/** Gemini に送れる形式（値は接続の型の一覧 providers.ts にある） */
+/** 既定の会社（Gemini）に送れる形式（値は接続の型の一覧 providers.ts にある） */
 export const LLM_IMAGE_TYPES = PROVIDERS.gemini.imageTypes;
 /** 受け付ける元のファイルの大きさ（Gemini の値） */
 export const MAX_IMAGE_FILE_BYTES = PROVIDERS.gemini.maxImageFileBytes;
 /** 縮めた後の長辺（px）。Gemini 3 は画像を決まったトークン数（既定で 1120）に収めるので、これより大きく送っても読み取りは良くならない */
 export const MAX_IMAGE_SIDE = 2048;
-/** 縮めずにそのまま送ってよい大きさ（base64 で 4/3 倍になる） */
-const KEEP_AS_IS_BYTES = 4 * 1024 * 1024;
 
 /** 送る画像と、画面に出す説明 */
 export type PreparedImage = LlmImage & { name: string; width?: number; height?: number; bytes: number };
@@ -60,7 +58,7 @@ export async function prepareImage(file: File, provider: ProviderId = 'gemini'):
   try {
     const { width, height } = bitmap;
     const fit = fitSize(width, height);
-    if (fit.width === width && file.size <= KEEP_AS_IS_BYTES) return { ok: true, image: { name, mimeType: file.type, data: await blobToBase64(file), width, height, bytes: file.size } };
+    if (fit.width === width && file.size <= providerInfo(provider).keepAsIsImageBytes) return { ok: true, image: { name, mimeType: file.type, data: await blobToBase64(file), width, height, bytes: file.size } };
     const canvas = document.createElement('canvas');
     canvas.width = fit.width;
     canvas.height = fit.height;
@@ -69,9 +67,17 @@ export async function prepareImage(file: File, provider: ProviderId = 'gemini'):
     ctx.fillStyle = '#fff';
     ctx.fillRect(0, 0, fit.width, fit.height);
     ctx.drawImage(bitmap, 0, 0, fit.width, fit.height);
-    const type = file.type === 'image/png' ? 'image/png' : 'image/jpeg';
-    const blob = await new Promise<Blob | null>((res) => canvas.toBlob(res, type, 0.92));
+    let type = file.type === 'image/png' ? 'image/png' : 'image/jpeg';
+    const encode = (t: string) => new Promise<Blob | null>((res) => canvas.toBlob(res, t, 0.92));
+    let blob = await encode(type);
+    const limit = providerInfo(provider).maxSendImageBytes;
+    // 送り先の 1 枚の上限を超えたら、JPEG にし直す（PNG の写真は大きくなりやすい）
+    if (blob && limit && blob.size > limit && type !== 'image/jpeg') {
+      type = 'image/jpeg';
+      blob = await encode(type);
+    }
     if (!blob) return { ok: false, error: '画像を縮められませんでした' };
+    if (limit && blob.size > limit) return { ok: false, error: '縮めても画像が大きすぎて、送れませんでした' };
     return { ok: true, image: { name, mimeType: type, data: await blobToBase64(blob), width: fit.width, height: fit.height, bytes: blob.size } };
   } finally {
     bitmap.close();
