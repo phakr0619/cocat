@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { track } from '../analytics';
-import { forgetLlmKey, getLlmSettings, llmProvider, setLlmSettings, subscribeLlmSettings } from '../llm/settings';
+import { forgetLlmKey, getLlmSettings, llmProvider, providerModels, setLlmSettings, subscribeLlmSettings } from '../llm/settings';
 import { PROVIDERS, providerInfo, showFreeKeyNotes, type ProviderId } from '../llm/providers';
 import { testConnection } from '../llm/testConnection';
 import { llmErrorText, type ThinkingLevel } from '../llm/types';
@@ -12,6 +12,7 @@ export function LlmSettings({ onClose }: { onClose(): void }) {
   const ref = useRef<HTMLDialogElement>(null);
   const s = useSyncExternalStore(subscribeLlmSettings, getLlmSettings);
   const to = providerInfo(s.provider);
+  const models = providerModels(s);
   const [key, setKey] = useState(s.apiKey);
   const [check, setCheck] = useState<Check>({ state: 'idle' });
   useEffect(() => {
@@ -23,12 +24,12 @@ export function LlmSettings({ onClose }: { onClose(): void }) {
   const test = async () => {
     setLlmSettings({ apiKey: key });
     const p = llmProvider(getLlmSettings());
-    if (!p) return setCheck({ state: 'ng', text: 'キーを入れてください' });
+    if (!p) return setCheck({ state: 'ng', text: to.needsKey ? 'キーを入れてください' : 'この組織の AI が見つかりません。サイトを管理している人に伝えてください' });
     setCheck({ state: 'busy' });
     const r = await testConnection(p);
     if (r.ok) {
       const ids = r.modelIds && new Set(r.modelIds);
-      setCheck({ state: 'ok', missing: ids ? to.models.filter((m) => !ids.has(m.id)).map((m) => m.name) : [] });
+      setCheck({ state: 'ok', missing: ids ? models.filter((m) => !ids.has(m.id)).map((m) => m.name) : [] });
       track('llm:test-ok');
     } else {
       setCheck({ state: 'ng', text: llmErrorText(r.error, getLlmSettings()) });
@@ -49,44 +50,53 @@ export function LlmSettings({ onClose }: { onClose(): void }) {
             setCheck({ state: 'idle' });
           }}
         >
-          {Object.values(PROVIDERS).map((p) => (
+          {/* この組織の中継は、このサイトに見つかったときだけ選べる */}
+          {Object.values(PROVIDERS).filter((p) => p.id !== 'relay' || s.relay || s.provider === 'relay').map((p) => (
             <option key={p.id} value={p.id}>
               {p.label}
             </option>
           ))}
         </select>
       </label>
-      <p>
-        {`「言葉から作る」などの機能は、あなたの ${to.product}（${to.company}）の API キーを使い、このブラウザから ${to.product} を直接呼びます。こちらのサーバーは通りません。`}キーは
-        <a href={to.keyHelp.url} target="_blank" rel="noreferrer">{to.keyHelp.siteName}</a>
-        で作れます。
-      </p>
-      {to.regionText && (
+      {to.keyHelp ? (
+        <p>
+          {`「言葉から作る」などの機能は、あなたの ${to.product}（${to.company}）の API キーを使い、このブラウザから ${to.product} を直接呼びます。こちらのサーバーは通りません。`}キーは
+          <a href={to.keyHelp.url} target="_blank" rel="noreferrer">{to.keyHelp.siteName}</a>
+          で作れます。
+        </p>
+      ) : (
+        <p data-testid="llm-relay-intro">「言葉から作る」などの機能は、この組織が用意した Amazon Bedrock の AI を使います。キーは要りません。</p>
+      )}
+      {(to.regionText || (!to.needsKey && s.relay?.region)) && (
         <p data-testid="llm-region">
-          リージョン: {to.regionText}
+          リージョン: {to.regionText ?? s.relay?.region}
         </p>
       )}
-      <label className="field">
-        <span>API キー</span>
-        <input
-          type="password"
-          autoComplete="off"
-          spellCheck={false}
-          data-testid="llm-key"
-          value={key}
-          onChange={(e) => setKey(e.target.value)}
-          onBlur={() => key.trim() !== s.apiKey && setLlmSettings({ apiKey: key })}
-        />
-      </label>
-      <p className="muted" data-testid="llm-key-session">キーは、このページを開いている間だけ使います。閉じるか読み込み直すと消えます。</p>
-      <label className="check">
-        <input type="checkbox" data-testid="llm-remember" checked={s.remember} onChange={(e) => setLlmSettings({ apiKey: key, remember: e.target.checked })} />
-        次に開いたときも、このキーを使う
-      </label>
-      {s.remember && (
-        <p className="muted" data-testid="llm-key-saved">
-          キーは、暗号化せずにこのブラウザに保存されます。ほかの人も使う PC では付けないでください。
-        </p>
+      {to.needsKey && (
+        <>
+        <label className="field">
+          <span>API キー</span>
+          <input
+            type="password"
+            autoComplete="off"
+            spellCheck={false}
+            data-testid="llm-key"
+            value={key}
+            onChange={(e) => setKey(e.target.value)}
+            onBlur={() => key.trim() !== s.apiKey && setLlmSettings({ apiKey: key })}
+          />
+        </label>
+        <p className="muted" data-testid="llm-key-session">キーは、このページを開いている間だけ使います。閉じるか読み込み直すと消えます。</p>
+        <label className="check">
+          <input type="checkbox" data-testid="llm-remember" checked={s.remember} onChange={(e) => setLlmSettings({ apiKey: key, remember: e.target.checked })} />
+          次に開いたときも、このキーを使う
+        </label>
+        {s.remember && (
+          <p className="muted" data-testid="llm-key-saved">
+            キーは、暗号化せずにこのブラウザに保存されます。ほかの人も使う PC では付けないでください。
+          </p>
+        )}
+        </>
       )}
       {to.hasPaidKeyOption && (
         <label className="check">
@@ -121,7 +131,7 @@ export function LlmSettings({ onClose }: { onClose(): void }) {
               onBlur={() => !s.model && setLlmSettings({ model: to.defaultModel })}
             />
             <datalist id="llm-model-list">
-              {to.models.map((m) => (
+              {models.map((m) => (
                 <option key={m.id} value={m.id} label={m.name} />
               ))}
             </datalist>
@@ -135,8 +145,8 @@ export function LlmSettings({ onClose }: { onClose(): void }) {
           <span>モデル</span>
           <select data-testid="llm-model" value={s.model} onChange={(e) => setLlmSettings({ model: e.target.value })}>
             {/* 前に選んだモデルが一覧から外れていても、それも出す */}
-            {!to.models.some((m) => m.id === s.model) && <option value={s.model}>{s.model}</option>}
-            {to.models.map((m) => (
+            {!models.some((m) => m.id === s.model) && <option value={s.model}>{s.model}</option>}
+            {models.map((m) => (
               <option key={m.id} value={m.id}>
                 {m.name}
                 {m.paidOnly ? ' ・有料のキーだけ' : ''}
@@ -145,7 +155,7 @@ export function LlmSettings({ onClose }: { onClose(): void }) {
           </select>
         </label>
       )}
-      {to.hasPaidKeyOption && !s.paidKey && to.models.find((m) => m.id === s.model)?.paidOnly && (
+      {to.hasPaidKeyOption && !s.paidKey && models.find((m) => m.id === s.model)?.paidOnly && (
         <p className="warn" data-testid="llm-paid-only">このモデルは、無料のキーでは使えません。</p>
       )}
       {to.thinking && (
@@ -167,9 +177,9 @@ export function LlmSettings({ onClose }: { onClose(): void }) {
         <button type="button" data-testid="llm-test" onClick={test} disabled={check.state === 'busy'}>
           つながるか試す
         </button>
-        <button type="button" data-testid="llm-forget" onClick={() => { forgetLlmKey(); setCheck({ state: 'idle' }); }} disabled={!s.apiKey && !key}>
+        {to.needsKey && <button type="button" data-testid="llm-forget" onClick={() => { forgetLlmKey(); setCheck({ state: 'idle' }); }} disabled={!s.apiKey && !key}>
           キーを消す
-        </button>
+        </button>}
       </div>
       <p className="muted" data-testid="llm-check" aria-live="polite">
         {check.state === 'busy' && '確かめています…'}
@@ -179,8 +189,14 @@ export function LlmSettings({ onClose }: { onClose(): void }) {
       <h3>送るもの・送らないもの</h3>
       <ul>
         <li>送るのは、AI の機能を使うときに入力した文章と添付した画像、今のスキームの化合物の構造・番号・呼び名・条件だけです。初めて使うときに、もう一度確かめます。</li>
-        <li>{`キーは ${to.product} の API にだけ送ります。`}文書・プロジェクト・書き出し・使い方の統計には入れません。</li>
-        <li>{to.keyHelp.advice}</li>
+        {to.keyHelp ? (
+          <>
+            <li>{`キーは ${to.product} の API にだけ送ります。`}文書・プロジェクト・書き出し・使い方の統計には入れません。</li>
+            <li>{to.keyHelp.advice}</li>
+          </>
+      ) : (
+          <li data-testid="llm-relay-data">送った内容は、このサイトの中継を通って Amazon Bedrock に届きます。中継は、文章と答えを記録しません。</li>
+        )}
       </ul>
       <form method="dialog">
         <button type="submit">閉じる</button>

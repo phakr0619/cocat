@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { applyRunDraft, runPrompt, textToRun, type RunDraft } from '../llm/textToRun';
 import { providerInfo, showFreeKeyNotes } from '../llm/providers';
-import { getLlmSettings, llmProvider, setLlmSettings, subscribeLlmSettings } from '../llm/settings';
+import { getLlmSettings, llmProvider, llmReady, setLlmSettings, subscribeLlmSettings } from '../llm/settings';
 import { llmErrorText } from '../llm/types';
 import { AiNotice } from './AiNotice';
 import { track } from '../analytics';
@@ -147,7 +147,7 @@ export function RunDock({ store, runId, onClose }: { store: EditorStore; runId: 
       <div className="dock-resize" onPointerDown={startResize} role="separator" aria-orientation="horizontal" aria-label="表の欄の高さを変える" />
       <div className="dock-head">
         <div className="dock-tabs" role="tablist">
-          {([['materials', '仕込み'], ['log', '操作と記録'], ['balance', '収支'], ...(llm.apiKey ? ([['memo', '✦ メモから作る']] as const) : [])] as const).map(([id, name]) => (
+          {([['materials', '仕込み'], ['log', '操作と記録'], ['balance', '収支'], ...(llmReady(llm) ? ([['memo', '✦ メモから作る']] as const) : [])] as const).map(([id, name]) => (
             <button key={id} type="button" role="tab" aria-selected={tab === id} className={tab === id ? 'on' : ''} data-testid={`run-tab-${id}`} onClick={() => setTab(id)}>
               {name}
             </button>

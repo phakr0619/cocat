@@ -6,7 +6,7 @@ import { opsinName } from '../chem/opsin';
 import { importText } from '../io/convert';
 import { nameToStructure, resolveLocally, type NameSource } from '../llm/nameToStructure';
 import { providerInfo } from '../llm/providers';
-import { getLlmSettings, llmProvider, setLlmSettings, subscribeLlmSettings } from '../llm/settings';
+import { getLlmSettings, llmProvider, llmReady, setLlmSettings, subscribeLlmSettings } from '../llm/settings';
 import { llmErrorText } from '../llm/types';
 import type { LibraryCompound } from '../project/model';
 import { AiNotice } from './AiNotice';
@@ -68,7 +68,7 @@ export function NamePanel({ store, library, onOpenSettings }: { store: EditorSto
     if (abort.signal.aborted) return setResult({ state: 'idle' });
     if (op) return place(op.smiles, 'opsin', op.warning ? [op.warning] : []);
     setResult({ state: 'idle' });
-    if (!getLlmSettings().apiKey) return setResult({ state: 'error', text: `IUPAC 名などの規則でも、手元の辞書やライブラリでも読めない名前です。慣用名や商品名は、AI の設定で ${product} の API キーを入れると、${product} に名前を送って調べます` });
+    if (!llmReady()) return setResult({ state: 'error', text: `IUPAC 名などの規則でも、手元の辞書やライブラリでも読めない名前です。慣用名や商品名は、AI の設定で ${product} の API キーを入れると、${product} に名前を送って調べます` });
     if (!getLlmSettings().consented) setConsent(true);
     else void ask(n);
   };
@@ -115,7 +115,7 @@ export function NamePanel({ store, library, onOpenSettings }: { store: EditorSto
           </button>
         )}
       </div>
-      {!s.apiKey && (
+      {!llmReady(s) && (
         <p className="muted">
           {`規則で読めない慣用名・商品名は、${product} の API キーがあれば調べます。`}<button type="button" className="link" data-testid="name-open-settings" onClick={onOpenSettings}>AI の設定</button>
         </p>

@@ -23,13 +23,16 @@ describe('providerInfo: 接続の型の一覧', () => {
   });
   it.each(Object.values(PROVIDERS))('$id: 一覧の中身が揃っている', (p) => {
     expect(PROVIDERS[p.id]).toBe(p);
-    expect(p.models.some((m) => m.id === p.defaultModel)).toBe(true);
+    // 中継のモデルは、サイトに聞いて決める（一覧は空）
+    if (p.needsKey) expect(p.models.some((m) => m.id === p.defaultModel)).toBe(true);
+    else expect([p.models.length, p.defaultModel]).toEqual([0, '']);
     expect(new Set(p.models.map((m) => m.id)).size).toBe(p.models.length);
     expect(p.models.find((m) => m.id === p.defaultModel)?.paidOnly).toBeFalsy();
     if (!p.hasPaidKeyOption) expect(p.models.some((m) => m.paidOnly)).toBe(false);
     expect(p.imageTypes.length).toBeGreaterThan(0);
     expect(p.maxImageFileBytes).toBeGreaterThan(0);
-    expect(p.keyHelp.url).toMatch(/^https:\/\//);
+    if (p.keyHelp) expect(p.keyHelp.url).toMatch(/^https:\/\//);
+    expect(!!p.keyHelp).toBe(p.needsKey);
     expect(p.connectSrc.every((o) => /^https:\/\/[^/]+$/.test(o))).toBe(true);
     for (const k of ['auth', 'quota', 'timeout', 'server', 'refused', 'model'] as const) expect(p.errors[k]).not.toBe('');
     expect(p.keepAsIsImageBytes).toBeGreaterThan(0);
@@ -50,6 +53,18 @@ describe('providerInfo: 接続の型の一覧', () => {
     expect(imageFileError({ type: 'image/heic', size: 1 }, 'gemini')).toBeNull();
     expect(providerInfo('gemini').keepAsIsImageBytes).toBe(4 * 1024 * 1024);
     expect(b.connectSrc).toEqual(['https://bedrock-runtime.ap-northeast-1.amazonaws.com']);
+  });
+  it('relay は、キーもモデルの一覧も持たず、同じドメインへ送る', () => {
+    const r = providerInfo('relay');
+    expect([r.needsKey, r.freeKeyUsedForTraining, r.hasPaidKeyOption, r.thinking, r.allowCustomModel, r.canListModels]).toEqual([false, false, false, false, false, false]);
+    expect([r.label, r.product]).toEqual(['この組織の AI（Amazon Bedrock・中継）', 'この組織の AI']);
+    expect([r.imageTypes, r.keepAsIsImageBytes, r.maxSendImageBytes]).toEqual([['image/png', 'image/jpeg', 'image/webp'], 3 * 1024 * 1024, 3.5 * 1024 * 1024]);
+    expect(r.connectSrc).toEqual([]);
+    expect(isProviderId('relay')).toBe(true);
+    expect(showFreeKeyNotes({ provider: 'relay', paidKey: false })).toBe(false);
+    // キーの話は出さず、サイトを管理している人に伝える
+    expect(r.errors.auth).toContain('サイトを管理している人');
+    expect(llmErrorText({ kind: 'too-large', message: '' }, { provider: 'relay', paidKey: false })).toBe(llmErrorText({ kind: 'too-large', message: '' }, { provider: 'gemini', paidKey: false }));
   });
   it('Gemini の別名と画像の値が一覧と同じ', () => {
     expect(GEMINI_MODELS).toBe(PROVIDERS.gemini.models);

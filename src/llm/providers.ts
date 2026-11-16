@@ -5,7 +5,7 @@
 import type { LlmErrorKind } from './types';
 
 /** 設定の provider の種類 */
-export type ProviderId = 'gemini' | 'bedrock';
+export type ProviderId = 'gemini' | 'bedrock' | 'relay';
 
 export type ProviderModel = {
   id: string;
@@ -54,14 +54,16 @@ export interface ProviderInfo {
   /** 送れない画像のときに出す文 */
   imageTypeText: string;
   imageSizeText: string;
-  /** キーの作り方 */
+  /** 利用者が自分の API キーを入れるか。false の会社（この組織の中継）は、キーの欄を出さず、モデルはサーバーに聞いて決める */
+  needsKey: boolean;
+  /** キーの作り方。キーを使わない会社は null */
   keyHelp: {
     /** キーを作る場所の名前と URL */
     siteName: string;
     url: string;
     /** 「キーは…この用途のために新しく作ることをおすすめします」の文 */
     advice: string;
-  };
+  } | null;
   /** 会社ごとに言い方が変わる失敗の文（auth・quota・timeout・server・refused・model） */
   errors: Record<'auth' | 'quota' | 'timeout' | 'server' | 'refused' | 'model', string>;
   /** 無料のキーのときに失敗の文へ添える注意 */
@@ -115,6 +117,7 @@ export const PROVIDERS: Record<ProviderId, ProviderInfo> = {
     keepAsIsImageBytes: 4 * 1024 * 1024,
     imageTypeText: '送れる画像は PNG・JPEG・WebP・HEIC・HEIF です',
     imageSizeText: '画像が大きすぎます（20 MB まで）',
+    needsKey: true,
     keyHelp: {
       siteName: 'Google AI Studio',
       url: 'https://aistudio.google.com/apikey',
@@ -174,6 +177,7 @@ export const PROVIDERS: Record<ProviderId, ProviderInfo> = {
     maxSendImageBytes: 3.5 * 1024 * 1024,
     imageTypeText: '送れる画像は PNG・JPEG・WebP です',
     imageSizeText: '画像が大きすぎます（20 MB まで）',
+    needsKey: true,
     keyHelp: {
       siteName: 'Amazon Bedrock の API キー（AWS の資料）',
       url: 'https://docs.aws.amazon.com/bedrock/latest/userguide/api-keys.html',
@@ -191,6 +195,44 @@ export const PROVIDERS: Record<ProviderId, ProviderInfo> = {
     freeKeyNotes: { quota: '', timeout: '' },
     freeKeyWarning: { short: '', consent: '', consentRun: '', settings: '', settingsLimits: '', textToSchemeLimits: '' },
     connectSrc: ['https://bedrock-runtime.ap-northeast-1.amazonaws.com'],
+  },
+  // この組織の中継（server/ai-relay）。同じドメインの /api/ai に送り、キーはブラウザに置かない。
+  // 使えるモデルは、中継に聞いて決める（settings.ts の relay）。ここの models は空
+  relay: {
+    id: 'relay',
+    company: 'この組織',
+    product: 'この組織の AI',
+    label: 'この組織の AI（Amazon Bedrock・中継）',
+    freeKeyUsedForTraining: false,
+    hasPaidKeyOption: false,
+    thinking: false,
+    thinkingMediumLabel: '',
+    models: [],
+    defaultModel: '',
+    allowCustomModel: false,
+    canListModels: false,
+    testCostNote: '短い質問を 1 回送ります。料金は 1 円未満で、この組織に請求されます。',
+    // Bedrock と同じ制限（中継が呼ぶのも Bedrock）
+    imageTypes: ['image/png', 'image/jpeg', 'image/webp'],
+    maxImageFileBytes: 20 * 1024 * 1024,
+    keepAsIsImageBytes: 3 * 1024 * 1024,
+    maxSendImageBytes: 3.5 * 1024 * 1024,
+    imageTypeText: '送れる画像は PNG・JPEG・WebP です',
+    imageSizeText: '画像が大きすぎます（20 MB まで）',
+    needsKey: false,
+    keyHelp: null,
+    errors: {
+      auth: 'この組織の AI を使う権限がありません。サイトを管理している人に伝えてください',
+      quota: 'AWS の使える量の上限に達しました。サイトを管理している人に、上限を確かめてもらってください',
+      timeout: 'この組織の AI から時間内に答えが返りませんでした。少し待ってからやり直すか、文章を短くしてください',
+      server: 'この組織の AI の側でエラーが起きました。少し待ってからやり直してください',
+      refused: 'AI が安全のための制限で答えを返しませんでした。言い方を変えてください',
+      model: 'このモデルは、この組織では使えません。ほかのモデルを選んでください。選べるモデルが無いときは、サイトを管理している人に伝えてください',
+    },
+    freeKeyNotes: { quota: '', timeout: '' },
+    freeKeyWarning: { short: '', consent: '', consentRun: '', settings: '', settingsLimits: '', textToSchemeLimits: '' },
+    // 同じドメインなので、CSP の connect-src の 'self' で足りる
+    connectSrc: [],
   },
 };
 

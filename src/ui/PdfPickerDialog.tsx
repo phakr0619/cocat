@@ -5,7 +5,7 @@ import { figureToCrop, findFigures } from '../llm/findFigures';
 import { imageSummary, type PreparedImage } from '../llm/image';
 import { isLowRes, type OpenedPdf, type PdfCrop } from '../llm/pdf';
 import { providerInfo } from '../llm/providers';
-import { getLlmSettings, llmProvider, setLlmSettings, subscribeLlmSettings } from '../llm/settings';
+import { getLlmSettings, llmProvider, llmReady, setLlmSettings, subscribeLlmSettings } from '../llm/settings';
 import { llmErrorText } from '../llm/types';
 import { LlmConsent } from './LlmConsent';
 
@@ -96,7 +96,7 @@ export function PdfPickerDialog({
   const [dpiAt, setDpiAt] = useState('');
   const s = useSyncExternalStore(subscribeLlmSettings, getLlmSettings);
   const to = providerInfo(s.provider).label;
-  const hasKey = !!s.apiKey;
+  const hasKey = llmReady(s);
   const [found, setFound] = useState<Record<number, Found>>({});
   /** 探し始めたページ（同じページは一度だけ。やめた・失敗したページは外して、押して探し直せるようにする） */
   const started = useRef(new Set<number>());

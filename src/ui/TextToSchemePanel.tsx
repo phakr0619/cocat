@@ -5,7 +5,7 @@ import { useEditor, type EditorStore } from '../editor/store';
 import { imageSummary, prepareImage, type PreparedImage } from '../llm/image';
 import { isLowRes, isPdfFile, openPdf, parsePdfImageName, type OpenedPdf } from '../llm/pdf';
 import { providerInfo, showFreeKeyNotes } from '../llm/providers';
-import { getLlmSettings, llmProvider, setLlmSettings, subscribeLlmSettings } from '../llm/settings';
+import { getLlmSettings, llmProvider, llmReady, providerModels, setLlmSettings, subscribeLlmSettings } from '../llm/settings';
 import { applyEdit, editChanges, editPrompt, textEdit, type EditOp } from '../llm/textEdit';
 import { applyNameStructure, confirmDraft, discardDraft, draftScheme, existingCompounds, textToScheme, userPrompt, type CheckedPlan } from '../llm/textToScheme';
 import { addPaperFacts, collectForFigure, guessSiIndex, indexPdf, withoutParts } from '../llm/paperFacts';
@@ -243,7 +243,7 @@ export function TextToSchemePanel({
     store.commit(out.doc, new Set());
     setPaperRun({ ...pr, schemeId: out.schemeId, removed, result: got.result });
   };
-  const modelName = providerInfo(s.provider).models.find((m) => m.id === s.model)?.name ?? s.model;
+  const modelName = providerModels(s).find((m) => m.id === s.model)?.name ?? s.model;
 
   /** replace: 今の下書きの質問に答えて送り直すとき（前の下書きと置き換える） */
   const send = async (input: string, qa?: { question: string; answer: string }[], replace = false, img: PreparedImage | null = null, dpi: number | null = null) => {
@@ -343,7 +343,7 @@ export function TextToSchemePanel({
   const pinnedTarget = !!(editTarget && doc.schemes?.[editTarget]?.pinned);
   const editable = mode === 'create' || (!!editTarget && !pinnedTarget);
 
-  if (!s.apiKey) {
+  if (!llmReady(s)) {
     return (
       <section className="tts" data-testid="tts">
         <p className="muted">{`文章から反応スキームの下書きを作ります。使うには、AI の設定で ${providerInfo(s.provider).product} の API キーを入れてください。`}</p>

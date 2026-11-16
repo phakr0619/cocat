@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'reac
 import { track } from '../analytics';
 import { useEditor, type EditorStore } from '../editor/store';
 import { providerInfo, showFreeKeyNotes } from '../llm/providers';
-import { getLlmSettings, llmProvider, setLlmSettings, subscribeLlmSettings } from '../llm/settings';
+import { getLlmSettings, llmProvider, llmReady, setLlmSettings, subscribeLlmSettings } from '../llm/settings';
 import { llmErrorText } from '../llm/types';
 import { refillWriteUp, runsForScheme, schemeNotebook, schemeStoichTables, writeFacts, writeUp, writeUpPrompt, type CheckedWriteUp, type WriteLanguage } from '../llm/writeUp';
 import { AiNotice } from './AiNotice';
@@ -182,14 +182,14 @@ export function WriteUpPanel({ store }: { store: EditorStore }) {
             <button type="button" onClick={() => run.abort.abort()}>やめる</button>
           </>
         ) : (
-          <button type="button" className="primary" data-testid="tts-write-run" disabled={!s.apiKey} onClick={start}>
+          <button type="button" className="primary" data-testid="tts-write-run" disabled={!llmReady(s)} onClick={start}>
             実験項を書く
           </button>
         )}
         {run.state !== 'busy' && seconds !== null && <span className="muted">{seconds} 秒</span>}
       </div>
-      {!s.apiKey && <p className="muted">{`文章を書くには、AI の設定で ${providerInfo(s.provider).product} の API キーを入れてください。`}</p>}
-      {s.apiKey && showFreeKeyNotes(s) && <p className="warn" data-testid="tts-write-free-warning">{providerInfo(s.provider).freeKeyWarning.short}</p>}
+      {!llmReady(s) && <p className="muted">{`文章を書くには、AI の設定で ${providerInfo(s.provider).product} の API キーを入れてください。`}</p>}
+      {llmReady(s) && showFreeKeyNotes(s) && <p className="warn" data-testid="tts-write-free-warning">{providerInfo(s.provider).freeKeyWarning.short}</p>}
       {run.state === 'error' && <p className="warn" data-testid="tts-write-error">{run.text}</p>}
       <details className="tts-preview">
         <summary>送る内容を見る</summary>

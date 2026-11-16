@@ -7,7 +7,7 @@ import { providerInfo, showFreeKeyNotes, type ProviderId } from './providers';
 /** 応答の形（JSON Schema の部分集合。各社の構造化出力に渡す） */
 export type JsonSchema = { [k: string]: unknown };
 
-export type LlmErrorKind = 'auth' | 'rate' | 'quota' | 'network' | 'timeout' | 'server' | 'invalid-output' | 'refused' | 'aborted' | 'model';
+export type LlmErrorKind = 'auth' | 'rate' | 'quota' | 'network' | 'timeout' | 'server' | 'invalid-output' | 'refused' | 'aborted' | 'model' | 'too-large';
 export type LlmError = { kind: LlmErrorKind; message: string };
 
 /** 使ったトークン。output は考えた分（thinking）を含む（どちらも出力として請求される） */
@@ -55,7 +55,9 @@ export function llmErrorText(e: LlmError, s: { provider: ProviderId; paidKey: bo
     case 'rate':
       return '短い間に呼びすぎました。少し待ってからやり直してください';
     case 'network':
-      return 'つながりませんでした。ネットワークを確かめてください';
+      return s.provider === 'relay' ? 'この組織の AI につながりませんでした。ネットワークを確かめるか、サイトを管理している人に伝えてください' : 'つながりませんでした。ネットワークを確かめてください';
+    case 'too-large':
+      return '一度に送れる大きさを超えました。画像を減らすか、範囲を狭めてください';
     case 'invalid-output':
       return '答えの形が崩れていました。もう一度試すか、文章を短くしてください';
     case 'aborted':

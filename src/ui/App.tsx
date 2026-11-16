@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { flushSync } from 'react-dom';
 import { track } from '../analytics';
-import { getLlmSettings, subscribeLlmSettings } from '../llm/settings';
+import { getLlmSettings, llmReady, subscribeLlmSettings } from '../llm/settings';
 import { schemeFromDrawing } from '../scheme/ops';
 import { EntryCards, SideHome } from './SideHome';
 import { rectUnion, type P, type Rect } from '../chem/geometry';
@@ -209,11 +209,11 @@ export function App() {
     setSidePeek(true);
   };
   const llm = useSyncExternalStore(subscribeLlmSettings, getLlmSettings);
-  const hasKey = !!llm.apiKey;
+  const hasKey = llmReady(llm);
   /** AI の欄の使い方（作る・直す・書く・仕上げ）。直す・書く・仕上げは、スキームの欄の「AI で」から開く */
   const [aiMode, setAiMode] = useState<AiMode>('create');
   const openAi = (mode: AiMode = 'create') => {
-    if (!getLlmSettings().apiKey) return setShowLlm(true);
+    if (!llmReady()) return setShowLlm(true);
     setAiMode(mode);
     setSide('ai');
   };

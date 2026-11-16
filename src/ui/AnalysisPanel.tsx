@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import { track } from '../analytics';
 import { docToSmiles } from '../io/smiles';
 import { providerInfo } from '../llm/providers';
-import { getLlmSettings, llmProvider, setLlmSettings, subscribeLlmSettings } from '../llm/settings';
+import { getLlmSettings, llmProvider, llmReady, setLlmSettings, subscribeLlmSettings } from '../llm/settings';
 import { nameLocally, structureToName } from '../llm/structureToName';
 import { llmErrorText } from '../llm/types';
 import { AiNotice } from './AiNotice';
@@ -109,7 +109,7 @@ function NameRow({ store, atomIds }: { store: EditorStore; atomIds: string[] }) 
       <dt>名前</dt>
       <dd className="struct-name" data-testid="struct-name">
         {st.state === 'idle' && (
-          <button type="button" className="paste" disabled={!s.apiKey} title={s.apiKey ? `構造（SMILES）を ${product} に送って、IUPAC 名を調べる` : `AI の設定で ${product} の API キーを入れると使えます`} onClick={() => setSt({ state: 'confirm' })} data-testid="struct-name-ask">
+          <button type="button" className="paste" disabled={!llmReady(s)} title={llmReady(s) ? `構造（SMILES）を ${product} に送って、IUPAC 名を調べる` : `AI の設定で ${product} の API キーを入れると使えます`} onClick={() => setSt({ state: 'confirm' })} data-testid="struct-name-ask">
             AI で名前を調べる
           </button>
         )}

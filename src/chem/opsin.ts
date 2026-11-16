@@ -22,7 +22,7 @@ export const OPSIN_MAX_LENGTH = 1000;
 /** 一度「無い」と分かったら、このページを開いているあいだは呼ばない */
 let missing = false;
 
-async function sha256Hex(text: string): Promise<string> {
+export async function sha256Hex(text: string): Promise<string> {
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
   return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
 }
