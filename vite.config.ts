@@ -50,8 +50,15 @@ function pdfjsAssets(): Plugin {
   };
 }
 
+/**
+ * 手元の画面（npm run dev）から、立てたサイトの /api/*（OPSIN・AI の中継）を使うときだけ、COCAT_API_PROXY にサイトの URL を入れる。
+ * 例: COCAT_API_PROXY=https://xxxx.cloudfront.net npm run dev
+ */
+const apiProxy = process.env.COCAT_API_PROXY;
+
 export default defineConfig({
   plugins: [react(), pdfjsAssets()],
+  server: apiProxy ? { proxy: { '/api': { target: apiProxy, changeOrigin: true } } } : undefined,
   test: {
     include: ['tests/**/*.test.ts'],
     testTimeout: 30000,
